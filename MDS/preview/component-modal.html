@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Modal</title>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .card { padding: 22px 28px; background: rgba(0,0,0,0.5); position: relative; min-height: 100%;}
+  .label { position: absolute; top: 12px; left: 16px; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: rgba(255,255,255,.7); text-transform: uppercase; letter-spacing: .08em;}
+  .modal {
+    max-width: 460px; margin: 32px auto 0;
+    background: #FFFFFF; border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,.12);
+    overflow: hidden;
+    animation: modalIn 300ms ease-in-out both;
+  }
+  .modal-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 20px 8px;
+  }
+  .modal-title { font-size: 18px; font-weight: 500; color: #131210;}
+  .x {
+    width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent;
+    color: #5C5A56; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+  .modal-body { padding: 4px 20px 16px; font-size: 13.5px; color: #5C5A56; line-height: 1.6;}
+  .summary {
+    margin: 12px 0 0; padding: 12px 14px;
+    border: 1px solid #D6D4CE; border-radius: 8px; background: #F8F8F6;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .summary-art { width: 36px; height: 50px; border-radius: 4px; background: #D94646;}
+  .summary-text { font-size: 12.5px; color: #131210; }
+  .summary-text small { display: block; color: #9B9892; margin-top: 2px;}
+  .modal-foot {
+    display: flex; justify-content: flex-end; gap: 8px;
+    padding: 12px 20px 20px;
+    border-top: 1px solid #F0EFEC;
+    margin-top: 4px;
+  }
+  .btn { height: 40px; padding: 0 16px; border-radius: 8px; font-weight: 500; font-size: 14px; cursor: pointer; border: 1px solid transparent; font-family: 'IBM Plex Sans', sans-serif;}
+  .btn-sec { background: transparent; color: #131210; border-color: #D6D4CE;}
+  .btn-pri { background: #1A6FB5; color: #fff;}
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(.96) translateY(8px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+</style>
+</head>
+<body>
+<section class="card">
+  <span class="label">Overlay rgba(0,0,0,.5) · Elevation 3 · radius-xl</span>
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Eliminar publicación</div>
+      <button class="x" aria-label="Cerrar"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+    </div>
+    <div class="modal-body">
+      Esta publicación dejará de aparecer en la búsqueda. Las watchlists de otros usuarios se mantienen, pero no recibirán nuevas alertas.
+      <div class="summary">
+        <div class="summary-art"></div>
+        <div class="summary-text">
+          Charizard ex (NM)
+          <small>USD 410 · 47 vistas · 8 watchlists</small>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-sec">Cancelar</button>
+      <button class="btn btn-pri" style="background:#D94646;">Eliminar</button>
+    </div>
+  </div>
+</section>
+</body>
+</html>

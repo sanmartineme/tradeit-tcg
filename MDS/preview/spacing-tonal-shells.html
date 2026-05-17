@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Tonal card shells</title>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .card { padding: 22px 28px;}
+  .lbl { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; color: #5C5A56; margin-bottom: 8px;}
+  .meta { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #9B9892;}
+  .row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 18px;}
+  .shell {
+    height: 130px; border-radius: 12px; border: 1px solid #D6D4CE; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .art {
+    width: 64px; height: 92px; border-radius: 6px;
+    background: #1A6FB5;
+    box-shadow: 0 4px 12px rgba(0,0,0,.18);
+  }
+  .tag {
+    position: absolute; top: 8px; right: 8px;
+    background: rgba(255,255,255,.85); color: #131210;
+    height: 18px; padding: 0 6px; line-height: 18px;
+    border-radius: 999px; font-size: 10px; font-weight: 500;
+  }
+  .tag.dark { background: #131210; color: #F0EFEC; border-radius: 4px; font-family: 'IBM Plex Mono', monospace;}
+
+  /* Option A — Canonical tonal (in use today) */
+  .A.single { background: linear-gradient(135deg, #EBF2FB 0%, #C5DAEF 100%);}
+  .A.graded { background: linear-gradient(135deg, #FAF0D8 0%, #F5D68C 100%);}
+  .A.sealed { background: linear-gradient(135deg, #F0EFEC 0%, #D6D4CE 100%);}
+
+  /* Option B — Muted neutral (all gray, type lives only in badge) */
+  .B { background: #F8F8F6;}
+  .B::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;}
+  .B.single::before { background: #1A6FB5;}
+  .B.graded::before { background: #E69A20;}
+  .B.sealed::before { background: #5C5A56;}
+
+  /* Option C — Saturated accent (deeper colors, more energy) */
+  .C.single { background: linear-gradient(160deg, #C5DAEF 0%, #6AAAD8 100%);}
+  .C.graded { background: linear-gradient(160deg, #F5D68C 0%, #E69A20 100%);}
+  .C.sealed { background: linear-gradient(160deg, #D6D4CE 0%, #9B9892 100%);}
+
+  /* Option D — Dark base (cards lift on dark surface) */
+  .D { background: #131210;}
+  .D.single { background: radial-gradient(ellipse at top, #042D55 0%, #131210 80%);}
+  .D.graded { background: radial-gradient(ellipse at top, #5E3B06 0%, #131210 80%);}
+  .D.sealed { background: radial-gradient(ellipse at top, #2E2D2A 0%, #131210 80%);}
+
+  /* Option E — Crosshatch / paper texture sutil (no gradients, just shade) */
+  .E { background-color: #F0EFEC; background-image: repeating-linear-gradient(45deg, rgba(0,0,0,.025) 0, rgba(0,0,0,.025) 1px, transparent 1px, transparent 6px);}
+  .E.single { background-color: #EBF2FB;}
+  .E.graded { background-color: #FAF0D8;}
+  .E.sealed { background-color: #F0EFEC;}
+</style>
+</head>
+<body>
+<section class="card">
+  <div class="lbl">A · Canónico — tonal suave (default)</div>
+  <div class="row">
+    <div class="shell A single"><div class="art"></div><span class="tag">SIR</span></div>
+    <div class="shell A graded"><div class="art" style="background:#9B6510;"></div><span class="tag dark">PSA 10</span></div>
+    <div class="shell A sealed"><div class="art" style="background:#5C5A56; width: 80px; height: 76px;"></div><span class="tag">ETB</span></div>
+  </div>
+
+  <div class="lbl">B · Muted neutral — todo gris, tipo en barra lateral 4px</div>
+  <div class="row">
+    <div class="shell B single"><div class="art"></div><span class="tag">SIR</span></div>
+    <div class="shell B graded"><div class="art" style="background:#9B6510;"></div><span class="tag dark">PSA 10</span></div>
+    <div class="shell B sealed"><div class="art" style="background:#5C5A56; width: 80px; height: 76px;"></div><span class="tag">ETB</span></div>
+  </div>
+
+  <div class="lbl">C · Saturated accent — más energía, gradiente direccional</div>
+  <div class="row">
+    <div class="shell C single"><div class="art"></div><span class="tag">SIR</span></div>
+    <div class="shell C graded"><div class="art" style="background:#9B6510;"></div><span class="tag dark">PSA 10</span></div>
+    <div class="shell C sealed"><div class="art" style="background:#5C5A56; width: 80px; height: 76px;"></div><span class="tag">ETB</span></div>
+  </div>
+
+  <div class="lbl">D · Dark base — para temas oscuros, glow radial sutil</div>
+  <div class="row">
+    <div class="shell D single" style="border-color:#2E2D2A;"><div class="art"></div><span class="tag dark" style="background:#1A6FB5; color:#fff;">SIR</span></div>
+    <div class="shell D graded" style="border-color:#2E2D2A;"><div class="art" style="background:#9B6510;"></div><span class="tag dark">PSA 10</span></div>
+    <div class="shell D sealed" style="border-color:#2E2D2A;"><div class="art" style="background:#5C5A56; width: 80px; height: 76px;"></div><span class="tag dark" style="background:#252421; color:#F0EFEC;">ETB</span></div>
+  </div>
+
+  <div class="lbl">E · Paper texture — patrón 1px diagonal a 2.5% opacidad</div>
+  <div class="row">
+    <div class="shell E single"><div class="art"></div><span class="tag">SIR</span></div>
+    <div class="shell E graded"><div class="art" style="background:#9B6510;"></div><span class="tag dark">PSA 10</span></div>
+    <div class="shell E sealed"><div class="art" style="background:#5C5A56; width: 80px; height: 76px;"></div><span class="tag">ETB</span></div>
+  </div>
+
+  <div class="meta" style="margin-top: 14px; line-height: 1.5;">
+    Currently in code → opción A. Tweakable via card-shell prop. B funciona mejor en grids muy densos; C aporta "drama" para hero/featured; D para una variante explícita de dark mode; E para una pista de coleccionable físico sin abandonar lo flat.
+  </div>
+</section>
+</body>
+</html>

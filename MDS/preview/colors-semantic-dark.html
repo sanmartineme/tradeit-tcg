@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Semantic — Dark</title>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  body { background: #131210; }
+  .card { padding: 24px 28px; background: #131210; color: #F0EFEC;}
+  .title { font-size: 13px; color: #9B9892; margin-bottom: 14px;}
+  .title b { color: #F0EFEC; font-weight: 500; }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;}
+  .tok {
+    border: 1px solid #2E2D2A;
+    border-radius: 8px;
+    padding: 12px;
+    background: #1E1D1A;
+    min-height: 92px;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .swatch {
+    height: 32px; border-radius: 4px; border: 1px solid #2E2D2A;
+  }
+  .name { font-size: 11px; font-weight: 500; color: #F0EFEC; margin-top:8px; }
+  .hex { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: #9B9892; }
+</style>
+</head>
+<body>
+<section class="card">
+  <div class="title"><b>Semantic tokens — Dark mode</b> <span style="color:#5C5A56; margin-left:8px;">.dark en &lt;html&gt;</span></div>
+  <div class="grid">
+    <div class="tok"><div class="swatch" style="background:#131210"></div><div class="name">--bg-page</div><div class="hex">#131210</div></div>
+    <div class="tok"><div class="swatch" style="background:#1E1D1A"></div><div class="name">--bg-primary</div><div class="hex">#1E1D1A</div></div>
+    <div class="tok"><div class="swatch" style="background:#252421"></div><div class="name">--bg-secondary</div><div class="hex">#252421</div></div>
+    <div class="tok"><div class="swatch" style="background:#F0EFEC"></div><div class="name">--text-primary</div><div class="hex">#F0EFEC</div></div>
+    <div class="tok"><div class="swatch" style="background:#9B9892"></div><div class="name">--text-secondary</div><div class="hex">#9B9892</div></div>
+    <div class="tok"><div class="swatch" style="background:#5C5A56"></div><div class="name">--text-muted</div><div class="hex">#5C5A56</div></div>
+    <div class="tok"><div class="swatch" style="background:#2E2D2A"></div><div class="name">--border</div><div class="hex">#2E2D2A</div></div>
+    <div class="tok"><div class="swatch" style="background:#6AAAD8"></div><div class="name">--interactive</div><div class="hex">#6AAAD8</div></div>
+    <div class="tok"><div class="swatch" style="background:#2DA67E"></div><div class="name">--success</div><div class="hex">#2DA67E</div></div>
+    <div class="tok"><div class="swatch" style="background:#E69A20"></div><div class="name">--warning</div><div class="hex">#E69A20</div></div>
+    <div class="tok"><div class="swatch" style="background:#D94646"></div><div class="name">--danger</div><div class="hex">#D94646</div></div>
+    <div class="tok"><div class="swatch" style="background:#3D3C38"></div><div class="name">--border-em</div><div class="hex">#3D3C38</div></div>
+  </div>
+</section>
+</body>
+</html>

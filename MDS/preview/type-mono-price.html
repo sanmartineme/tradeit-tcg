@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Type — Mono & Price</title>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .card { padding: 28px 32px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .specimen {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    background: var(--bg-primary);
+  }
+  .label-up { font-size:11px; font-weight:500; text-transform:uppercase; letter-spacing:0.08em; color: var(--text-secondary); margin-bottom: 8px;}
+  .price-hero {
+    font-family: 'IBM Plex Mono', monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: 36px;
+    font-weight: 300;
+    color: var(--text-primary);
+    line-height: 1.1;
+  }
+  .price-default {
+    font-family: 'IBM Plex Mono', monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: 28px;
+    font-weight: 400;
+    color: var(--text-primary);
+    line-height: 1.1;
+  }
+  .price-compact {
+    font-family: 'IBM Plex Mono', monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: 18px;
+    font-weight: 500;
+  }
+  .delta-up { color: var(--success); font-family: 'IBM Plex Mono', monospace; font-size: 13px; }
+  .delta-down { color: var(--danger); font-family: 'IBM Plex Mono', monospace; font-size: 13px; }
+  .meta { font-size: 11px; color: var(--text-muted); margin-top: 8px; font-family: 'IBM Plex Mono', monospace; }
+</style>
+</head>
+<body>
+<section class="card">
+  <div class="grid">
+    <div class="specimen">
+      <div class="label-up">Precio · Hero 36px</div>
+      <div class="price-hero">USD 412,50</div>
+      <div class="delta-up">↑ 3,8% · 30d</div>
+      <div class="meta">IBM Plex Mono · 300 · tabular-nums</div>
+    </div>
+    <div class="specimen">
+      <div class="label-up">Precio · Default 28px</div>
+      <div class="price-default">USD 398,20</div>
+      <div class="delta-up">↑ 9,7% · 60d</div>
+      <div class="meta">IBM Plex Mono · 400</div>
+    </div>
+    <div class="specimen">
+      <div class="label-up">Precio · Compact 18px</div>
+      <div class="price-compact">USD 376,10</div>
+      <div class="delta-down">↓ 1,2% · 7d</div>
+      <div class="meta">IBM Plex Mono · 500</div>
+    </div>
+    <div class="specimen">
+      <div class="label-up">Numéricos en tabla</div>
+      <div style="font-family:'IBM Plex Mono', monospace; font-variant-numeric: tabular-nums; font-size: 14px; line-height: 1.8;">
+        30d&nbsp;&nbsp;USD&nbsp;&nbsp;398,20&nbsp;&nbsp;<span style="color:var(--success)">+3,8%</span><br>
+        60d&nbsp;&nbsp;USD&nbsp;&nbsp;376,10&nbsp;&nbsp;<span style="color:var(--success)">+9,7%</span><br>
+        90d&nbsp;&nbsp;USD&nbsp;&nbsp;354,90&nbsp;&nbsp;<span style="color:var(--success)">+16,2%</span>
+      </div>
+      <div class="meta">Dígitos alineados con tabular-nums</div>
+    </div>
+  </div>
+</section>
+</body>
+</html>

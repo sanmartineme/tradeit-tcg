@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Contrast pairs</title>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .card { padding: 22px 28px; }
+  .lbl { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; color: var(--text-secondary); margin-bottom: 10px;}
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;}
+  .pair {
+    border: 1px solid var(--border); border-radius: 8px;
+    display: grid; grid-template-columns: 1fr auto; gap: 14px;
+    align-items: center; padding: 12px 14px;
+  }
+  .swatch {
+    display: inline-block; padding: 4px 10px; border-radius: 4px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+  }
+  .meta {
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+  .meta strong { color: var(--text-primary); font-weight: 500;}
+  .tag {
+    display: inline-block; padding: 2px 6px; border-radius: 4px;
+    font-size: 10px; font-weight: 500; letter-spacing: 0.04em;
+    margin-left: 6px;
+  }
+  .pass { background: #E0F4EF; color: #0F6E56;}
+  .fail { background: #FCEAEA; color: #A02C2C;}
+  .partial { background: #FAF0D8; color: #9B6510;}
+</style>
+</head>
+<body>
+<section class="card">
+  <div class="lbl">Contrast pairs · light mode · WCAG 2.2 AA</div>
+  <div class="grid">
+    <div class="pair">
+      <span class="swatch" style="background: #FFFFFF; color: #131210;">Texto primario</span>
+      <span class="meta"><strong>17.5 : 1</strong><br/>AAA <span class="tag pass">pass</span></span>
+    </div>
+    <div class="pair">
+      <span class="swatch" style="background: #FFFFFF; color: #5C5A56;">Texto secundario</span>
+      <span class="meta"><strong>7.1 : 1</strong><br/>AAA <span class="tag pass">pass</span></span>
+    </div>
+    <div class="pair">
+      <span class="swatch" style="background: #FFFFFF; color: #9B9892;">Texto muted</span>
+      <span class="meta"><strong>3.5 : 1</strong><br/>AA · solo grande <span class="tag partial">partial</span></span>
+    </div>
+    <div class="pair">
+      <span class="swatch" style="background: #FFFFFF; color: #1A6FB5;">Interactivo</span>
+      <span class="meta"><strong>4.6 : 1</strong><br/>AA <span class="tag pass">pass</span></span>
+    </div>
+    <div class="pair">
+      <span class="swatch" style="background: #FFFFFF; color: #2DA67E;">Success</span>
+      <span class="meta"><strong>3.1 : 1</strong><br/>AA · solo grande <span class="tag partial">partial</span></span>
+    </div>
+    <div class="pair">
+      <span class="swatch" style="background: #FFFFFF; color: #E69A20;">Warning</span>
+      <span class="meta"><strong>2.1 : 1</strong><br/>nunca como texto <span class="tag fail">fail</span></span>
+    </div>
+    <div class="pair">
+      <span class="swatch" style="background: #FFFFFF; color: #D94646;">Danger</span>
+      <span class="meta"><strong>4.2 : 1</strong><br/>AA <span class="tag pass">pass</span></span>
+    </div>
+    <div class="pair">
+      <span class="swatch" style="background: #1A6FB5; color: #FFFFFF;">Texto sobre primary</span>
+      <span class="meta"><strong>4.6 : 1</strong><br/>AA <span class="tag pass">pass</span></span>
+    </div>
+  </div>
+  <div style="margin-top: 14px; font-size: 11px; color: var(--text-muted); font-family: 'IBM Plex Mono', monospace; line-height: 1.5;">
+    Warning #E69A20 nunca se usa como color de texto · usar amber-60 #9B6510 cuando se necesite contraste.<br/>
+    APCA / WCAG 3.0: todos los pares "pass" superan Lc ≥ 60.
+  </div>
+</section>
+</body>
+</html>

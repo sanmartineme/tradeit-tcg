@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Hit targets · 44×44</title>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .card { padding: 22px 28px; }
+  .lbl { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; color: var(--text-secondary); margin-bottom: 14px;}
+  .row { display: flex; gap: 14px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 16px;}
+  .item { display: flex; flex-direction: column; align-items: center; gap: 6px;}
+  .name { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--text-muted); text-align: center; max-width: 90px;}
+  .hit {
+    position: relative; display: inline-flex; align-items: center; justify-content: center;
+    /* The dashed outline marks the 44×44 minimum hit area */
+    outline: 2px dashed rgba(26,111,181,0.35); outline-offset: 0; border-radius: 4px;
+  }
+  .hit.target { width: 44px; height: 44px;}
+  .hit.target-big { width: 88px; height: 56px;}
+  .visual {
+    /* The actual visual control inside */
+    position: absolute; pointer-events: none;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .btn-circle { width: 28px; height: 28px; border-radius: 50%; background: #1A6FB5; color: #fff; font-size: 14px;}
+  .icon-btn { width: 24px; height: 24px; color: #131210; font-family: 'IBM Plex Mono', monospace; font-size: 18px;}
+  .chip-tap { height: 28px; padding: 0 12px; border-radius: 14px; background: #1A6FB5; color: #fff; font-size: 12px; font-weight: 500;}
+  .bottom-nav-cell {
+    height: 56px; padding: 6px 4px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+    color: #1A6FB5; font-family: 'IBM Plex Sans', sans-serif;
+  }
+  .bottom-nav-cell i { font-size: 22px;}
+  .bottom-nav-cell span { font-size: 10px;}
+  .meta { font-size: 11px; color: var(--text-muted); font-family: 'IBM Plex Mono', monospace; line-height: 1.5; margin-top: 6px;}
+  .scale { display: flex; gap: 10px; align-items: center; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text-muted);}
+  .ruler { width: 44px; height: 6px; background: #1A6FB5;}
+</style>
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css"/>
+</head>
+<body>
+<section class="card">
+  <div class="lbl">Hit targets · mínimo 44×44 (WCAG 2.5.5)</div>
+
+  <div class="row">
+    <div class="item">
+      <div class="hit target"><span class="visual btn-circle">+</span></div>
+      <span class="name">FAB pequeño · visual 28px / hit 44px</span>
+    </div>
+    <div class="item">
+      <div class="hit target"><span class="visual icon-btn"><i class="ph ph-heart"></i></span></div>
+      <span class="name">Icon-only button · ícono 24px</span>
+    </div>
+    <div class="item">
+      <div class="hit target-big"><span class="visual chip-tap">Single</span></div>
+      <span class="name">Chip · visual 28h / hit 88×56</span>
+    </div>
+    <div class="item">
+      <div class="hit" style="height: 56px; min-width: 80px;">
+        <span class="visual bottom-nav-cell"><i class="ph ph-house"></i><span>Inicio</span></span>
+      </div>
+      <span class="name">Bottom-nav tab · celda completa ≥ 64×56</span>
+    </div>
+  </div>
+
+  <div class="scale">
+    <span>Regla mínima:</span>
+    <div class="ruler"></div>
+    <span>44px · 11.6mm @ 96dpi</span>
+  </div>
+
+  <div class="meta" style="margin-top: 16px;">
+    Las áreas punteadas marcan el hit slop · siempre ≥ 44×44 con ≥ 8px de gap entre targets.<br/>
+    Apple HIG &amp; Material 3 alinean en este floor · supera el mínimo WCAG 2.2 AA de 24×24.
+  </div>
+</section>
+</body>
+</html>

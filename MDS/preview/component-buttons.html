@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Buttons</title>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .card { padding: 26px 30px; }
+  .group { display: flex; flex-direction: column; gap: 14px; }
+  .row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap;}
+  .label-row { font-family: var(--font-mono); font-size: 10.5px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; min-width: 78px;}
+
+  .btn {
+    height: 40px; padding: 0 16px;
+    border-radius: 8px; border: 1px solid transparent;
+    font-family: var(--font-sans); font-size: 14px; font-weight: 500;
+    cursor: pointer; transition: background 100ms ease-out, transform 100ms ease-out, border-color 100ms ease-out;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-sm { height: 32px; padding: 0 12px; font-size: 13px;}
+  .btn-lg { height: 48px; padding: 0 20px; font-size: 15px;}
+
+  .btn-primary   { background: #1A6FB5; color: #fff;}
+  .btn-secondary { background: transparent; color: #131210; border-color: #D6D4CE;}
+  .btn-ghost     { background: transparent; color: #1A6FB5;}
+  .btn-danger    { background: #D94646; color: #fff;}
+  .btn-disabled  { background: #1A6FB5; color: #fff; opacity: 0.4; cursor: not-allowed;}
+</style>
+</head>
+<body>
+<section class="card">
+  <div class="group">
+    <div class="row"><span class="label-row">Variantes</span>
+      <button class="btn btn-primary">Agregar a watchlist</button>
+      <button class="btn btn-secondary">Compartir</button>
+      <button class="btn btn-ghost">Cancelar</button>
+      <button class="btn btn-danger">Eliminar</button>
+      <button class="btn btn-disabled" disabled>Publicar</button>
+    </div>
+    <div class="row"><span class="label-row">Tamaños</span>
+      <button class="btn btn-primary btn-sm">Crear alerta</button>
+      <button class="btn btn-primary">Crear alerta</button>
+      <button class="btn btn-primary btn-lg">Crear alerta</button>
+    </div>
+    <div class="row"><span class="label-row">Estados</span>
+      <button class="btn btn-primary">Default</button>
+      <button class="btn btn-primary" style="background:#0D4A80">Hover</button>
+      <button class="btn btn-primary" style="background:#0D4A80; transform: scale(0.97);">Pressed</button>
+      <button class="btn btn-primary" style="box-shadow: 0 0 0 2px rgba(26,111,181,.3);">Focus</button>
+    </div>
+  </div>
+</section>
+</body>
+</html>

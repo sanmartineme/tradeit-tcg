@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Bottom Sheet</title>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .card { padding: 0; background: rgba(0,0,0,0.4); min-height: 100%; position: relative;}
+  .label { position: absolute; top: 14px; left: 20px; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: rgba(255,255,255,.7); text-transform: uppercase; letter-spacing: .08em;}
+  .sheet {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    background: #FFFFFF;
+    border-radius: 16px 16px 0 0;
+    border-top: 1px solid #D6D4CE;
+    box-shadow: 0 -4px 24px rgba(0,0,0,.16);
+    padding: 8px 0 18px;
+    font-family: 'IBM Plex Sans', sans-serif;
+  }
+  .handle {
+    width: 36px; height: 4px; border-radius: 2px;
+    background: #D6D4CE; margin: 8px auto 14px;
+  }
+  .sheet-head {
+    padding: 0 22px 12px; display: flex; align-items: baseline; justify-content: space-between;
+    border-bottom: 1px solid #F0EFEC;
+  }
+  .sheet-head h { font-size: 16px; font-weight: 500; color: #131210;}
+  .clear { background: transparent; border: none; color: #1A6FB5; font-weight: 500; font-size: 13px; cursor: pointer;}
+  .group { padding: 14px 22px 4px;}
+  .group-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; color: #5C5A56;}
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px;}
+  .chip { height: 28px; padding: 0 12px; border-radius: 14px; border: 1px solid #D6D4CE; color: #5C5A56; background: transparent; font-size: 12px; font-weight: 500; cursor: pointer;}
+  .chip.active { background: #1A6FB5; color: #fff; border-color: #1A6FB5;}
+  .opts { display: flex; flex-direction: column; margin-top: 8px;}
+  .opt { display: flex; align-items: center; justify-content: space-between; padding: 12px 22px; border-bottom: 1px solid #F0EFEC; font-size: 14px; color: #131210; cursor: pointer;}
+  .check { width: 18px; height: 18px; border: 1.5px solid #D6D4CE; border-radius: 4px; display: inline-block;}
+  .check.on { background: #1A6FB5; border-color: #1A6FB5; position: relative;}
+  .check.on::after { content: ''; position: absolute; left: 4px; top: 1px; width: 4px; height: 9px; border-right: 2px solid #fff; border-bottom: 2px solid #fff; transform: rotate(45deg);}
+  .actions { padding: 14px 22px 0; display: flex; gap: 8px;}
+  .btn { flex: 1; height: 40px; border-radius: 8px; font-size: 14px; font-weight: 500; border: 1px solid transparent; cursor: pointer; font-family: inherit;}
+  .btn-sec { background: transparent; color: #131210; border-color: #D6D4CE;}
+  .btn-pri { background: #1A6FB5; color: #fff;}
+</style>
+</head>
+<body>
+<section class="card">
+  <span class="label">Drag-to-dismiss · 90vh max · safe area iOS</span>
+  <div style="height: 120px"></div>
+  <div class="sheet">
+    <div class="handle"></div>
+    <div class="sheet-head">
+      <h>Filtros</h>
+      <button class="clear">Limpiar todo</button>
+    </div>
+
+    <div class="group">
+      <span class="group-label">Tipo de producto</span>
+      <div class="chips">
+        <span class="chip active">Single</span>
+        <span class="chip">Sealed</span>
+        <span class="chip">Graded</span>
+      </div>
+    </div>
+
+    <div class="group">
+      <span class="group-label">Tendencia · 30d</span>
+      <div class="chips">
+        <span class="chip active">Sube</span>
+        <span class="chip">Estable</span>
+        <span class="chip">Baja</span>
+      </div>
+    </div>
+
+    <div class="group" style="padding-bottom: 0;">
+      <span class="group-label">Edición</span>
+    </div>
+    <div class="opts">
+      <div class="opt">Scarlet &amp; Violet 151 <span class="check on"></span></div>
+      <div class="opt">Paldea Evolved <span class="check"></span></div>
+      <div class="opt">Obsidian Flames <span class="check"></span></div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-sec">Cancelar</button>
+      <button class="btn btn-pri">Aplicar filtros (3)</button>
+    </div>
+  </div>
+</section>
+</body>
+</html>

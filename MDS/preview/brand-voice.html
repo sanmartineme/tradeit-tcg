@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Voice & content rules</title>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .card { padding: 24px 28px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px;}
+  .col h { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-secondary); display: block; margin-bottom: 10px;}
+  .item { font-size: 12.5px; line-height: 1.5; padding: 6px 0; border-bottom: 1px dashed #D6D4CE; }
+  .item:last-child { border: none;}
+  .tick { color: #2DA67E; font-weight: 500;}
+  .cross { color: #D94646; font-weight: 500;}
+  .ex { font-family: 'IBM Plex Sans', sans-serif; color: #131210;}
+  .reason { font-size: 11px; color: #5C5A56; display: block; margin-top: 2px;}
+</style>
+</head>
+<body>
+<section class="card">
+  <div class="col">
+    <h>Sí · cómo escribimos</h>
+    <div class="item"><span class="tick">✓</span> <span class="ex">"Agregar a watchlist"</span><span class="reason">verbo en infinitivo, sentence case, sin punto</span></div>
+    <div class="item"><span class="tick">✓</span> <span class="ex">"No pudimos cargar el precio. Reintentar."</span><span class="reason">qué pasó + cómo resolver</span></div>
+    <div class="item"><span class="tick">✓</span> <span class="ex">"USD 412,50 · hace 12 min · Fuente: TCGPlayer"</span><span class="reason">datos sobrios con timestamp y fuente</span></div>
+    <div class="item"><span class="tick">✓</span> <span class="ex">"Charizard ex sube 8,2%"</span><span class="reason">push informativo sin alarmismo</span></div>
+  </div>
+  <div class="col">
+    <h>No · anti-patrones</h>
+    <div class="item"><span class="cross">✗</span> <span class="ex">"¡Comprá AHORA antes de que suba!"</span><span class="reason">lenguaje especulativo, riesgo regulatorio</span></div>
+    <div class="item"><span class="cross">✗</span> <span class="ex">"Oops! Algo salió mal 😅"</span><span class="reason">paternalista + emoji en UI core</span></div>
+    <div class="item"><span class="cross">✗</span> <span class="ex">"$48500"</span><span class="reason">falta separador y código ISO de moneda</span></div>
+    <div class="item"><span class="cross">✗</span> <span class="ex">"Click aquí"</span><span class="reason">label sin contexto del verbo + objeto</span></div>
+  </div>
+</section>
+</body>
+</html>

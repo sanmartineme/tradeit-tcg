@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Loaders & progress</title>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .card { padding: 24px 28px; background: #F8F8F6;}
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px;}
+  .panel { background: #fff; border: 1px solid #D6D4CE; border-radius: 12px; padding: 18px;}
+  .lbl { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; color: #5C5A56;}
+  .meta { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #9B9892; margin-top: 8px;}
+  .center { display: flex; align-items: center; justify-content: center; gap: 14px; min-height: 96px; padding-top: 8px;}
+
+  /* Spinner — Carbon style ring */
+  .spinner {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 3px solid #F0EFEC; border-top-color: #1A6FB5;
+    animation: spin 800ms linear infinite;
+  }
+  .spinner.dark { border-color: #2E2D2A; border-top-color: #6AAAD8;}
+  .spinner.lg { width: 56px; height: 56px; border-width: 4px;}
+  @keyframes spin { to { transform: rotate(360deg);} }
+
+  /* Inline loader (dot pulse) */
+  .dots { display: inline-flex; gap: 5px; }
+  .dot {
+    width: 7px; height: 7px; border-radius: 50%; background: #5C5A56;
+    animation: dotPulse 1s ease-in-out infinite;
+  }
+  .dot:nth-child(2) { animation-delay: .15s;}
+  .dot:nth-child(3) { animation-delay: .3s;}
+  @keyframes dotPulse { 0%, 100% { opacity: .3; transform: scale(.85);} 50% { opacity: 1; transform: scale(1);} }
+
+  /* Progress bar */
+  .progress {
+    width: 100%; height: 4px; background: #F0EFEC; border-radius: 2px; overflow: hidden;
+  }
+  .progress .fill {
+    height: 100%; background: #1A6FB5; border-radius: 2px;
+    transition: width 300ms ease;
+  }
+  .progress.success .fill { background: #2DA67E;}
+  .progress.warning .fill { background: #E69A20;}
+  .progress-row { display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: center; margin-top: 12px;}
+  .progress-row > span { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #131210;}
+
+  /* Indeterminate bar */
+  .progress.ind .fill {
+    width: 40%; animation: indet 1.6s ease-in-out infinite;
+  }
+  @keyframes indet {
+    0%   { transform: translateX(-110%);}
+    50%  { transform: translateX( 80%);}
+    100% { transform: translateX(250%);}
+  }
+</style>
+</head>
+<body>
+<section class="card">
+  <div class="grid">
+    <div class="panel">
+      <div class="lbl">Spinner · ring</div>
+      <div class="center">
+        <div class="spinner"></div>
+        <div class="spinner lg"></div>
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <span style="font-size: 13px; color: #131210; font-weight: 500;">Sincronizando precios…</span>
+          <span class="meta" style="margin-top: 0;">TCGPlayer · PriceCharting · 12 sets</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="lbl">Inline · dot pulse</div>
+      <div class="center">
+        <span style="font-size: 13px; color: #5C5A56;">Calculando promedio 30d</span>
+        <span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
+      </div>
+      <div class="meta">Para sub-acciones dentro de UI cargada · no bloquea la pantalla.</div>
+    </div>
+
+    <div class="panel" style="grid-column: 1 / -1;">
+      <div class="lbl">Progress bar · cuantificable + indeterminado</div>
+      <div class="progress-row">
+        <div class="progress"><div class="fill" style="width: 38%;"></div></div>
+        <span>3 / 8 cartas</span>
+      </div>
+      <div class="progress-row">
+        <div class="progress success"><div class="fill" style="width: 100%;"></div></div>
+        <span style="color: #0F6E56;">Sincronización completa</span>
+      </div>
+      <div class="progress-row">
+        <div class="progress ind"><div class="fill"></div></div>
+        <span style="color: #9B9892;">Procesando…</span>
+      </div>
+    </div>
+  </div>
+</section>
+</body>
+</html>

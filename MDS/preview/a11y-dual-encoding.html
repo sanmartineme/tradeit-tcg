@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Dual encoding</title>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .card { padding: 24px 28px; }
+  .lbl { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; color: var(--text-secondary); margin-bottom: 12px;}
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .case { border: 1px solid var(--border); border-radius: 8px; padding: 14px;}
+  .case h { font-size: 13px; font-weight: 500; color: var(--text-primary); margin-bottom: 10px; display: block;}
+  .case .body { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--text-secondary); line-height: 1.6;}
+  .case .body span { color: var(--text-primary);}
+  .up { color: #2DA67E !important;}
+  .dn { color: #D94646 !important;}
+  .ic { font-family: 'IBM Plex Mono', monospace;}
+  .note { font-size: 10.5px; color: var(--text-muted); margin-top: 8px; line-height: 1.5;}
+  .anti {
+    background: #FCEAEA; padding: 8px 10px; border-radius: 6px; border-left: 3px solid #D94646;
+    font-size: 12px; color: #A02C2C; margin-top: 8px;
+  }
+  .anti strong { font-weight: 500;}
+</style>
+</head>
+<body>
+<section class="card">
+  <div class="lbl">Dual encoding · WCAG 1.4.1 · nunca color solo</div>
+  <div class="grid">
+    <div class="case">
+      <h>Tendencia de precio</h>
+      <div class="body">
+        <span class="ic up">↑</span> <span>+3,8%</span> · 30d<br/>
+        <span class="ic dn">↓</span> <span>−1,2%</span> · 7d<br/>
+        <span class="ic" style="color: #9B9892;">—</span> <span>0,0%</span> · estable
+      </div>
+      <div class="note">Color + flecha + signo + período · 4 señales redundantes.</div>
+    </div>
+
+    <div class="case">
+      <h>Validación de input</h>
+      <div class="body">
+        <span style="color: #0F6E56;">✓</span> <span>Número verificado</span><br/>
+        <span style="color: #A02C2C;">✕</span> <span>Precio mínimo: USD 5,00</span>
+      </div>
+      <div class="note">Color de borde + ícono + helper text + aria-describedby.</div>
+    </div>
+
+    <div class="case">
+      <h>Estado de listing</h>
+      <div class="body">
+        <span style="background: #E0F4EF; color: #0F6E56; padding: 2px 6px; border-radius: 999px; font-size: 10px;">● Activo</span> &nbsp;
+        <span style="background: #F0EFEC; color: #5C5A56; padding: 2px 6px; border-radius: 999px; font-size: 10px;">● Pausado</span>
+      </div>
+      <div class="note">Color + texto del badge · el círculo es decoración, el texto es la verdad.</div>
+    </div>
+
+    <div class="case">
+      <h>Watchlist follow / unfollow</h>
+      <div class="body">
+        ♡ <span>Watchlist</span><br/>
+        ♥ <span style="color: #A02C2C;">Siguiendo</span>
+      </div>
+      <div class="note">Color + ícono lleno/vacío + label cambia entre estados.</div>
+    </div>
+  </div>
+
+  <div class="anti">
+    <strong>Anti-patrón:</strong> el badge verde "significa disponible" sin texto. Refuse. Agregá la palabra.
+  </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Mobile sizing · viewports</title>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .card { padding: 18px 22px; background: #F0EFEC;}
+  .lbl { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; color: var(--text-secondary); margin-bottom: 14px;}
+  .row {
+    display: flex; gap: 10px; align-items: flex-end;
+    overflow-x: auto; padding-bottom: 4px;
+  }
+  .device {
+    flex-shrink: 0; display: flex; flex-direction: column; align-items: center;
+  }
+  .screen {
+    background: #FFFFFF; border: 1px solid #D6D4CE;
+    border-radius: 14px 14px 4px 4px;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .top {
+    height: 28px; background: #F0EFEC; border-bottom: 1px solid #D6D4CE;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 8px; font-size: 9px; color: #5C5A56; font-family: 'IBM Plex Mono', monospace;
+  }
+  .content {
+    flex: 1; padding: 8px; display: flex; flex-direction: column; gap: 6px;
+  }
+  .h { font-size: 9px; font-weight: 500; color: #131210; line-height: 1.2;}
+  .body { font-size: 8px; color: #5C5A56; line-height: 1.4;}
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 4px;}
+  .mini-card {
+    background: linear-gradient(135deg, #EBF2FB 0%, #C5DAEF 100%);
+    height: 36px; border-radius: 4px;
+  }
+  .nav {
+    height: 24px; background: #FFFFFF; border-top: 1px solid #D6D4CE;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+  }
+  .nav span {
+    background: #F0EFEC; display: flex; align-items: center; justify-content: center; font-size: 8px; color: #5C5A56;
+  }
+  .nav span:first-child { color: #1A6FB5; font-weight: 500;}
+  .label { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--text-primary); margin-top: 8px;}
+  .sub { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; color: var(--text-muted);}
+</style>
+</head>
+<body>
+<section class="card">
+  <div class="lbl">Validación de viewport · escalas reales</div>
+
+  <div class="row">
+    <!-- 320 -->
+    <div class="device">
+      <div class="screen" style="width: 96px; height: 180px;">
+        <div class="top"><span>9:41</span><span>📶</span></div>
+        <div class="content">
+          <div class="h">Hola, Carlos.</div>
+          <div class="body" style="font-size: 7px;">Los datos que tu colección merece.</div>
+          <div class="grid2">
+            <div class="mini-card"></div>
+            <div class="mini-card" style="background: linear-gradient(135deg, #FAF0D8 0%, #F5D68C 100%);"></div>
+          </div>
+        </div>
+        <div class="nav"><span>I</span><span>B</span><span>O</span><span>P</span></div>
+      </div>
+      <span class="label">iPhone SE</span>
+      <span class="sub">320 × 568</span>
+    </div>
+
+    <!-- 360 -->
+    <div class="device">
+      <div class="screen" style="width: 108px; height: 200px;">
+        <div class="top"><span>9:41</span><span>📶</span></div>
+        <div class="content">
+          <div class="h">Hola, Carlos.</div>
+          <div class="body">Los datos que tu colección merece.</div>
+          <div class="grid2">
+            <div class="mini-card"></div>
+            <div class="mini-card" style="background: linear-gradient(135deg, #FAF0D8 0%, #F5D68C 100%);"></div>
+          </div>
+        </div>
+        <div class="nav"><span>I</span><span>B</span><span>O</span><span>P</span></div>
+      </div>
+      <span class="label">Galaxy A series</span>
+      <span class="sub">360 × 800</span>
+    </div>
+
+    <!-- 390 (baseline) -->
+    <div class="device">
+      <div class="screen" style="width: 117px; height: 216px; border-color: #1A6FB5; border-width: 2px;">
+        <div class="top"><span>9:41</span><span>📶</span></div>
+        <div class="content">
+          <div class="h">Hola, Carlos.</div>
+          <div class="body">Los datos que tu colección merece.</div>
+          <div class="grid2">
+            <div class="mini-card"></div>
+            <div class="mini-card" style="background: linear-gradient(135deg, #FAF0D8 0%, #F5D68C 100%);"></div>
+          </div>
+        </div>
+        <div class="nav"><span>I</span><span>B</span><span>O</span><span>P</span></div>
+      </div>
+      <span class="label" style="color: #1A6FB5;">iPhone 13/14 ★</span>
+      <span class="sub">390 × 844 · baseline</span>
+    </div>
+
+    <!-- 412 -->
+    <div class="device">
+      <div class="screen" style="width: 124px; height: 224px;">
+        <div class="top"><span>9:41</span><span>📶</span></div>
+        <div class="content">
+          <div class="h">Hola, Carlos.</div>
+          <div class="body">Los datos que tu colección merece.</div>
+          <div class="grid2">
+            <div class="mini-card"></div>
+            <div class="mini-card" style="background: linear-gradient(135deg, #FAF0D8 0%, #F5D68C 100%);"></div>
+          </div>
+        </div>
+        <div class="nav"><span>I</span><span>B</span><span>O</span><span>P</span></div>
+      </div>
+      <span class="label">Pixel 7/8</span>
+      <span class="sub">412 × 915</span>
+    </div>
+
+    <!-- 430 -->
+    <div class="device">
+      <div class="screen" style="width: 130px; height: 230px;">
+        <div class="top"><span>9:41</span><span>📶</span></div>
+        <div class="content">
+          <div class="h">Hola, Carlos.</div>
+          <div class="body">Los datos que tu colección merece.</div>
+          <div class="grid2">
+            <div class="mini-card"></div>
+            <div class="mini-card" style="background: linear-gradient(135deg, #FAF0D8 0%, #F5D68C 100%);"></div>
+          </div>
+        </div>
+        <div class="nav"><span>I</span><span>B</span><span>O</span><span>P</span></div>
+      </div>
+      <span class="label">14/15 Pro Max</span>
+      <span class="sub">430 × 932</span>
+    </div>
+  </div>
+
+  <div style="margin-top: 16px; padding: 12px 14px; background: #FFFFFF; border: 1px solid #D6D4CE; border-radius: 8px; font-size: 11.5px; color: #5C5A56; line-height: 1.6; font-family: 'IBM Plex Sans', sans-serif;">
+    Mulligan se valida a <strong style="color: #131210; font-weight: 500;">320 / 360 / 390 / 412 / 430</strong> CSS px. La línea de base de diseño es <span style="color: #1A6FB5; font-weight: 500;">390 px (iPhone 13/14)</span>, el dispositivo más representativo del mercado iOS 2026. Bottom-nav 4 tabs cabe holgado desde 320. Grids de 2 columnas + chips horizontales sobreviven scroll-x desde 320.
+  </div>
+</section>
+</body>
+</html>

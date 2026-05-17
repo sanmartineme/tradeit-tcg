@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Focus rings</title>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .card { padding: 24px 28px; }
+  .lbl { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; color: var(--text-secondary); margin-bottom: 12px;}
+  .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border); }
+  .row:last-child { border-bottom: none;}
+  .meta { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text-muted); flex: 1; min-width: 200px;}
+  .btn { height: 40px; padding: 0 16px; border-radius: 8px; font-size: 14px; font-weight: 500; border: 1px solid transparent; cursor: pointer; font-family: 'IBM Plex Sans', sans-serif;}
+  .btn-pri { background: #1A6FB5; color: #fff;}
+  .btn-sec { background: transparent; color: #131210; border-color: #D6D4CE;}
+  .focused.btn-pri { box-shadow: 0 0 0 3px rgba(26,111,181,.35);}
+  .focused.btn-sec { box-shadow: 0 0 0 2px rgba(26,111,181,.30);}
+  .input { height: 40px; padding: 0 16px; border: 1px solid #D6D4CE; border-radius: 4px; background: #FFFFFF; font-size: 14px; font-family: 'IBM Plex Sans', sans-serif; width: 180px;}
+  .input.focused { border-color: #1A6FB5; box-shadow: 0 0 0 2px rgba(26,111,181,.15);}
+  .link { color: #1A6FB5; text-decoration: none; padding: 4px 8px; border-radius: 4px;}
+  .link.focused { box-shadow: 0 0 0 2px rgba(26,111,181,.30); outline-offset: 2px;}
+</style>
+</head>
+<body>
+<section class="card">
+  <div class="lbl">Focus visible · :focus-visible · WCAG 2.2 §2.4.7</div>
+  <div class="row">
+    <button class="btn btn-pri">Default</button>
+    <button class="btn btn-pri focused">Focused</button>
+    <span class="meta">Botón primary · ring 3px @ alpha 0.35</span>
+  </div>
+  <div class="row">
+    <button class="btn btn-sec">Default</button>
+    <button class="btn btn-sec focused">Focused</button>
+    <span class="meta">Botón secondary · ring 2px @ alpha 0.30</span>
+  </div>
+  <div class="row">
+    <input class="input" value="campo de búsqueda"/>
+    <input class="input focused" value="campo de búsqueda"/>
+    <span class="meta">Input · border passa a interactive + ring 2px @ alpha 0.15</span>
+  </div>
+  <div class="row">
+    <a class="link">enlace inline</a>
+    <a class="link focused">enlace inline</a>
+    <span class="meta">Link · ring 2px @ alpha 0.30 (mismo que ghost)</span>
+  </div>
+  <div style="margin-top: 8px; font-size: 11px; color: var(--text-muted); font-family: 'IBM Plex Mono', monospace; line-height: 1.5;">
+    Nunca <code>outline: none</code> sin reemplazo · ring funciona sobre bg-primary y bg-secondary · semitransparente para compatibilidad con dark mode.
+  </div>
+</section>
+</body>
+</html>

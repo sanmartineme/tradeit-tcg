@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Elevation</title>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .card { padding: 32px 32px 40px; background: #F8F8F6;}
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;}
+  .surface {
+    height: 110px; background: #FFFFFF; border-radius: 12px; border: 1px solid #D6D4CE;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 12px;
+  }
+  .e0 { }
+  .e1 { box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+  .e2 { box-shadow: 0 4px 16px rgba(0,0,0,.08); }
+  .e3 { box-shadow: 0 8px 32px rgba(0,0,0,.12); }
+  .lvl { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #131210; font-weight: 500;}
+  .use { font-size: 10.5px; color: #5C5A56; line-height: 1.4; margin-top: 2px;}
+</style>
+</head>
+<body>
+<section class="card">
+  <div class="card-label">Elevation · 4 niveles · sombras negras semitransparentes</div>
+  <div class="grid">
+    <div class="surface e0"><span class="lvl">Elevation 0</span><span class="use">Border solo · cards planas, inputs</span></div>
+    <div class="surface e1"><span class="lvl">Elevation 1</span><span class="use">+ 1px 4px /.06 · cards en grid</span></div>
+    <div class="surface e2"><span class="lvl">Elevation 2</span><span class="use">+ 4px 16px /.08 · dropdowns, popovers</span></div>
+    <div class="surface e3"><span class="lvl">Elevation 3</span><span class="use">+ 8px 32px /.12 · modales, drawers</span></div>
+  </div>
+  <div style="margin-top:18px; font-size:11px; color:#5C5A56; font-family:'IBM Plex Mono', monospace;">
+    Dark mode → reducir opacidad de sombras al 50%. Elevación se refuerza con fondos progresivamente más claros.
+  </div>
+</section>
+</body>
+</html>

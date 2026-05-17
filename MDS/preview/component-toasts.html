@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Toasts</title>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .card { padding: 24px 28px; background: #F8F8F6;}
+  .stack { display: flex; flex-direction: column; gap: 10px;}
+  .toast {
+    display: grid; grid-template-columns: 18px 1fr auto;
+    gap: 10px; padding: 12px 14px; border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0,0,0,.08);
+    font-size: 13px;
+    align-items: center;
+  }
+  .toast i { font-size: 18px; line-height: 1;}
+  .toast .body { line-height: 1.4;}
+  .toast .body strong { font-weight: 500;}
+  .undo {
+    background: transparent; border: none; color: inherit; opacity: .8;
+    font-size: 12px; font-weight: 500; cursor: pointer;
+  }
+  .neutral { background: #131210; color: #F0EFEC;}
+  .neutral i { color: #6AAAD8;}
+  .success { background: #FFFFFF; color: #131210; border: 1px solid #D6D4CE; border-left: 3px solid #2DA67E;}
+  .success i { color: #2DA67E;}
+  .warning { background: #FFFFFF; color: #131210; border: 1px solid #D6D4CE; border-left: 3px solid #E69A20;}
+  .warning i { color: #E69A20;}
+  .error   { background: #FFFFFF; color: #131210; border: 1px solid #D6D4CE; border-left: 3px solid #D94646;}
+  .error i { color: #D94646;}
+</style>
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css"/>
+</head>
+<body>
+<section class="card">
+  <div class="stack">
+    <div class="toast neutral">
+      <i class="ph ph-heart"></i>
+      <div class="body">Carta agregada a tu watchlist.</div>
+      <button class="undo">Deshacer</button>
+    </div>
+    <div class="toast success">
+      <i class="ph ph-check-circle"></i>
+      <div class="body"><strong>Alerta creada.</strong> Te avisamos cuando el precio cruce USD 400.</div>
+    </div>
+    <div class="toast warning">
+      <i class="ph ph-warning"></i>
+      <div class="body">Tu precio está <strong>62% sobre el promedio</strong> del mercado.</div>
+      <button class="undo">Revisar</button>
+    </div>
+    <div class="toast error">
+      <i class="ph ph-warning-octagon"></i>
+      <div class="body"><strong>No pudimos cargar el precio.</strong> Revisá tu conexión.</div>
+      <button class="undo">Reintentar</button>
+    </div>
+  </div>
+  <div style="margin-top: 16px; font-size: 11px; color: #9B9892; font-family: 'IBM Plex Mono', monospace;">
+    Anclados al bottom · z-toast 500 · animación toastIn 200ms · auto-dismiss 2400ms (neutral) o manual.
+  </div>
+</section>
+</body>
+</html>

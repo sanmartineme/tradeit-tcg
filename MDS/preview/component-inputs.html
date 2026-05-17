@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Form fields</title>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .card { padding: 26px 30px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 24px;}
+  .field { display: flex; flex-direction: column; gap: 6px;}
+  .lbl { font-size: 12px; font-weight: 500; color: var(--text-secondary);}
+  .ipt {
+    height: 40px; padding: 0 16px; font-size: 14px; line-height: 40px;
+    background: #fff; border: 1px solid #D6D4CE; border-radius: 4px;
+    color: #131210;
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  }
+  .ipt::placeholder { color: #9B9892; }
+  .helper { font-size: 11px; color: var(--text-muted);}
+  .helper.error { color: #A02C2C;}
+  .helper.success { color: #0F6E56;}
+  .focused { border-color: #1A6FB5; box-shadow: 0 0 0 2px rgba(26,111,181,.15);}
+  .err     { border-color: #D94646;}
+  .ok      { border-color: #2DA67E;}
+  .dis     { opacity: 0.4; cursor: not-allowed;}
+</style>
+</head>
+<body>
+<section class="card">
+  <div class="grid">
+    <div class="field">
+      <span class="lbl">Email</span>
+      <input class="ipt" placeholder="tucorreo@ejemplo.com" />
+      <span class="helper">Usamos tu email para enviarte alertas.</span>
+    </div>
+    <div class="field">
+      <span class="lbl">Buscar carta</span>
+      <input class="ipt focused" value="Charizard ex" />
+      <span class="helper">23 sugerencias</span>
+    </div>
+    <div class="field">
+      <span class="lbl">Precio (USD)</span>
+      <input class="ipt err" value="0,50" />
+      <span class="helper error">Precio mínimo: USD 5,00.</span>
+    </div>
+    <div class="field">
+      <span class="lbl">Teléfono verificado</span>
+      <input class="ipt ok" value="+56 9 5432 1098" />
+      <span class="helper success">Número verificado.</span>
+    </div>
+    <div class="field">
+      <span class="lbl">Idioma</span>
+      <input class="ipt dis" value="Inglés" disabled />
+      <span class="helper">Cambia el idioma en Configuración.</span>
+    </div>
+    <div class="field">
+      <span class="lbl">Contraseña</span>
+      <input class="ipt" type="password" value="••••••••" />
+      <span class="helper">Mínimo 8 caracteres, una mayúscula y un número.</span>
+    </div>
+  </div>
+</section>
+</body>
+</html>

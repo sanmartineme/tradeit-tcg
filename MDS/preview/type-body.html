@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Type — Body, Label, Caption</title>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .card { padding: 28px 32px; }
+  .row { display: grid; grid-template-columns: 100px 1fr 130px; gap: 18px; align-items: baseline; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .row:last-child { border-bottom: none; }
+  .meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); }
+  .spec { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); text-align: right; line-height: 1.4; }
+</style>
+</head>
+<body>
+<section class="card">
+  <div class="row">
+    <span class="meta">Body</span>
+    <span style="font-size:16px; font-weight:400; line-height:1.6;">Los datos que tu colección merece. Mostramos el precio de mercado consolidando fuentes oficiales con timestamp visible.</span>
+    <span class="spec">16 / 400 / 1.6</span>
+  </div>
+  <div class="row">
+    <span class="meta">Body small</span>
+    <span style="font-size:14px; font-weight:400; line-height:1.6;">Promedio de precios de venta durante los últimos 30 días, consolidado desde TCGPlayer.</span>
+    <span class="spec">14 / 400 / 1.6</span>
+  </div>
+  <div class="row">
+    <span class="meta">Label</span>
+    <span style="font-size:12px; font-weight:500; text-transform:uppercase; letter-spacing:0.08em;">Precio actual · 30d</span>
+    <span class="spec">12 / 500 / 0.08em</span>
+  </div>
+  <div class="row">
+    <span class="meta">Caption</span>
+    <span style="font-size:11px; font-weight:400; line-height:1.4; color: var(--text-muted);">Actualizado hace 12 min · Fuente: TCGPlayer</span>
+    <span class="spec">11 / 400 / muted</span>
+  </div>
+  <div style="margin-top:18px; font-size:11px; color: var(--text-muted); font-family: var(--font-mono);">
+    Regla: peso máximo 500. La jerarquía emerge de tamaño y color, nunca con weight 600/700.
+  </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>amber ramp</title>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .card { padding: 24px 28px; }
+  .title { font-size: 13px; color: var(--text-secondary); margin-bottom: 14px; display:flex; justify-content:space-between; align-items:baseline;}
+  .title b { color: var(--text-primary); font-weight: 500; }
+  .ramp { display: grid; grid-template-columns: repeat(5, 1fr) minmax(0, 1fr); column-gap: 6px; row-gap: 8px; align-items: stretch;}
+  .ramp { grid-template-columns: repeat(5, 1fr); }
+  .swatch {
+    height: 88px; padding: 10px 12px; border-radius: 8px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 11px; line-height: 1.2;
+  }
+  .step { font-size: 12px; font-weight: 500; }
+  .hex { opacity: .9; letter-spacing: 0.02em; }
+  .usage {
+    font-size: 10.5px; color: var(--text-secondary); line-height: 1.35;
+    padding: 0 2px;
+    font-family: var(--font-sans);
+  }
+</style>
+</head>
+<body>
+<section class="card">
+  <div class="title"><b>Amber — advertencia / highlight</b><span>token namespace: <span class="mono">amber-*</span></span></div>
+  <div class="ramp">
+      <div class="swatch" style="background:#FAF0D8; color:#131210;">
+        <span class="step">10</span>
+        <span class="hex">#FAF0D8</span>
+      </div>
+      <div class="usage">Warning badge bg</div>
+    
+      <div class="swatch" style="background:#F5D68C; color:#131210;">
+        <span class="step">20</span>
+        <span class="hex">#F5D68C</span>
+      </div>
+      <div class="usage">Warning border</div>
+    
+      <div class="swatch" style="background:#E69A20; color:#131210;">
+        <span class="step">40</span>
+        <span class="hex">#E69A20</span>
+      </div>
+      <div class="usage">Highlight precio · rating</div>
+    
+      <div class="swatch" style="background:#9B6510; color:#FFFFFF;">
+        <span class="step">60</span>
+        <span class="hex">#9B6510</span>
+      </div>
+      <div class="usage">Texto warning</div>
+    
+      <div class="swatch" style="background:#5E3B06; color:#FFFFFF;">
+        <span class="step">80</span>
+        <span class="hex">#5E3B06</span>
+      </div>
+      <div class="usage">Hover warning</div>
+    </div>
+</section>
+</body>
+</html>

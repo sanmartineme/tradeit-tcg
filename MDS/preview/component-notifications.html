@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Inline notifications</title>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .card { padding: 26px 30px; }
+  .stack { display: flex; flex-direction: column; gap: 10px;}
+  .alert {
+    border-left: 3px solid; padding: 12px 14px; border-radius: 0 6px 6px 0;
+    display: grid; grid-template-columns: 1fr auto; column-gap: 16px;
+  }
+  .alert .title { font-weight: 500; font-size: 13px; margin-bottom: 2px;}
+  .alert .body { font-size: 12.5px; color: var(--text-secondary); line-height: 1.5;}
+  .alert .dismiss { font-size: 11px; color: var(--text-muted); cursor: pointer; align-self: start;}
+  .info    { background: #EBF2FB; border-color: #1A6FB5;}
+  .info .title    { color: #0D4A80;}
+  .success { background: #E0F4EF; border-color: #2DA67E;}
+  .success .title { color: #0F6E56;}
+  .warning { background: #FAF0D8; border-color: #E69A20;}
+  .warning .title { color: #9B6510;}
+  .error   { background: #FCEAEA; border-color: #D94646;}
+  .error .title   { color: #A02C2C;}
+</style>
+</head>
+<body>
+<section class="card">
+  <div class="stack">
+    <div class="alert info">
+      <div><div class="title">Datos no actualizados</div><div class="body">No pudimos sincronizar TCGPlayer. Mostramos el último dato disponible (hace 14 min).</div></div>
+      <span class="dismiss">×</span>
+    </div>
+    <div class="alert success">
+      <div><div class="title">Alerta creada</div><div class="body">Te avisamos cuando Charizard ex cruce USD 400.</div></div>
+      <span class="dismiss">×</span>
+    </div>
+    <div class="alert warning">
+      <div><div class="title">Precio fuera del rango sugerido</div><div class="body">Tu precio está 62% sobre el promedio del mercado. Revisá antes de publicar.</div></div>
+      <span class="dismiss">×</span>
+    </div>
+    <div class="alert error">
+      <div><div class="title">No pudimos cargar el precio</div><div class="body">Revisá tu conexión y volvé a intentar. Reintentar.</div></div>
+      <span class="dismiss">×</span>
+    </div>
+  </div>
+</section>
+</body>
+</html>

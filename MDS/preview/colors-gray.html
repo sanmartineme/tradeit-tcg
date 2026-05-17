@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>gray ramp</title>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .card { padding: 24px 28px; }
+  .title { font-size: 13px; color: var(--text-secondary); margin-bottom: 14px; display:flex; justify-content:space-between; align-items:baseline;}
+  .title b { color: var(--text-primary); font-weight: 500; }
+  .ramp { display: grid; grid-template-columns: repeat(8, 1fr) minmax(0, 1fr); column-gap: 6px; row-gap: 8px; align-items: stretch;}
+  .ramp { grid-template-columns: repeat(8, 1fr); }
+  .swatch {
+    height: 88px; padding: 10px 12px; border-radius: 8px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 11px; line-height: 1.2;
+  }
+  .step { font-size: 12px; font-weight: 500; }
+  .hex { opacity: .9; letter-spacing: 0.02em; }
+  .usage {
+    font-size: 10.5px; color: var(--text-secondary); line-height: 1.35;
+    padding: 0 2px;
+    font-family: var(--font-sans);
+  }
+</style>
+</head>
+<body>
+<section class="card">
+  <div class="title"><b>Gray — neutro estructural</b><span>token namespace: <span class="mono">gray-*</span></span></div>
+  <div class="ramp">
+      <div class="swatch" style="background:#F8F8F6; color:#131210;">
+        <span class="step">0</span>
+        <span class="hex">#F8F8F6</span>
+      </div>
+      <div class="usage">Page bg (light)</div>
+    
+      <div class="swatch" style="background:#F0EFEC; color:#131210;">
+        <span class="step">10</span>
+        <span class="hex">#F0EFEC</span>
+      </div>
+      <div class="usage">Secondary bg</div>
+    
+      <div class="swatch" style="background:#D6D4CE; color:#131210;">
+        <span class="step">20</span>
+        <span class="hex">#D6D4CE</span>
+      </div>
+      <div class="usage">Default border</div>
+    
+      <div class="swatch" style="background:#B2B0AB; color:#131210;">
+        <span class="step">30</span>
+        <span class="hex">#B2B0AB</span>
+      </div>
+      <div class="usage">Border énfasis</div>
+    
+      <div class="swatch" style="background:#9B9892; color:#131210;">
+        <span class="step">40</span>
+        <span class="hex">#9B9892</span>
+      </div>
+      <div class="usage">Texto deshabilitado</div>
+    
+      <div class="swatch" style="background:#5C5A56; color:#FFFFFF;">
+        <span class="step">60</span>
+        <span class="hex">#5C5A56</span>
+      </div>
+      <div class="usage">Texto secundario</div>
+    
+      <div class="swatch" style="background:#2E2D2A; color:#FFFFFF;">
+        <span class="step">80</span>
+        <span class="hex">#2E2D2A</span>
+      </div>
+      <div class="usage">Border dark</div>
+    
+      <div class="swatch" style="background:#131210; color:#FFFFFF;">
+        <span class="step">100</span>
+        <span class="hex">#131210</span>
+      </div>
+      <div class="usage">Page bg (dark) · texto primary</div>
+    </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Badges</title>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .card { padding: 26px 30px; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; align-items: center;}
+  .row-label { font-family: var(--font-mono); font-size: 10.5px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; min-width: 90px;}
+  .badge {
+    height: 20px; padding: 0 8px; border-radius: 999px;
+    font-size: 11px; font-weight: 500; line-height: 20px;
+    display: inline-flex; align-items: center;
+  }
+  .info { background: #EBF2FB; color: #042D55; }
+  .success { background: #E0F4EF; color: #0F6E56; }
+  .warning { background: #FAF0D8; color: #9B6510; }
+  .danger { background: #FCEAEA; color: #A02C2C; }
+  .neutral { background: #F0EFEC; color: #5C5A56; }
+  .grading { background: #131210; color: #F0EFEC; padding: 0 10px; height: 22px; line-height: 22px; border-radius: 4px; font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.04em;}
+</style>
+</head>
+<body>
+<section class="card">
+  <div class="row"><span class="row-label">Info</span>
+    <span class="badge info">Activo</span>
+    <span class="badge info">NM</span>
+    <span class="badge info">Verificada</span>
+  </div>
+  <div class="row"><span class="row-label">Success</span>
+    <span class="badge success">Entregado</span>
+    <span class="badge success">M (Mint)</span>
+  </div>
+  <div class="row"><span class="row-label">Warning</span>
+    <span class="badge warning">LP</span>
+    <span class="badge warning">En camino</span>
+    <span class="badge warning">Reprint reciente</span>
+  </div>
+  <div class="row"><span class="row-label">Danger</span>
+    <span class="badge danger">HP</span>
+    <span class="badge danger">En disputa</span>
+    <span class="badge danger">Suspendida</span>
+  </div>
+  <div class="row"><span class="row-label">Neutral</span>
+    <span class="badge neutral">Pausado</span>
+    <span class="badge neutral">Borrador</span>
+  </div>
+  <div class="row"><span class="row-label">Grading</span>
+    <span class="badge grading">PSA 10</span>
+    <span class="badge grading">BGS 9.5</span>
+    <span class="badge grading">CGC 10</span>
+    <span style="font-size:11px; color:#5C5A56;">Sólido oscuro · exclusivo para grading certificado</span>
+  </div>
+</section>
+</body>
+</html>

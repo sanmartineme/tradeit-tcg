@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Card de carta</title>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .card { padding: 26px 30px; background: #F8F8F6;}
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .tcg-card {
+    background: #fff;
+    border: 1px solid #D6D4CE;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    display: flex; flex-direction: column;
+  }
+  .image-shell {
+    height: 110px; position: relative;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .image-shell.single { background: linear-gradient(135deg, #EBF2FB 0%, #C5DAEF 100%);}
+  .image-shell.graded { background: linear-gradient(135deg, #FAF0D8 0%, #F5D68C 100%);}
+  .image-shell.sealed { background: linear-gradient(135deg, #F0EFEC 0%, #D6D4CE 100%);}
+  .art {
+    width: 68px; height: 96px; border-radius: 6px;
+    background: #1A6FB5;
+    box-shadow: 0 4px 12px rgba(0,0,0,.18);
+    display: flex; align-items: center; justify-content: center; color: #fff; font-size: 9px; opacity: 0.65;
+  }
+  .rarity {
+    position: absolute; top: 8px; right: 8px;
+    height: 18px; padding: 0 6px; border-radius: 999px;
+    font-size: 9.5px; font-weight: 500; line-height: 18px;
+    background: rgba(255,255,255,.85); color: #131210; backdrop-filter: blur(6px);
+  }
+  .grading-badge {
+    position: absolute; top: 8px; right: 8px;
+    background: #131210; color: #F0EFEC;
+    height: 18px; padding: 0 6px; line-height: 18px;
+    border-radius: 4px; font-size: 9.5px; font-family: 'IBM Plex Mono', monospace; font-weight: 500;
+  }
+  .body { padding: 10px;}
+  .name { font-size: 13px; font-weight: 500; color: #131210; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+  .set  { font-size: 11px; color: #9B9892; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+  .meta { display: flex; align-items: center; justify-content: space-between; margin-top: 8px;}
+  .cond { font-size: 10px; font-weight: 500; padding: 1px 6px; border-radius: 999px; background: #EBF2FB; color: #042D55; }
+  .cond.lp { background: #FAF0D8; color: #9B6510;}
+  .cond.hp { background: #FCEAEA; color: #A02C2C;}
+  .price { font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 500; color: #131210; font-variant-numeric: tabular-nums;}
+  .delta { font-family: 'IBM Plex Mono', monospace; font-size: 11px; }
+  .delta.up { color: #2DA67E;}
+  .delta.dn { color: #D94646;}
+</style>
+</head>
+<body>
+<section class="card">
+  <div class="grid">
+    <div class="tcg-card">
+      <div class="image-shell single"><div class="art">art</div><span class="rarity">SIR</span></div>
+      <div class="body">
+        <div class="name">Charizard ex</div>
+        <div class="set">199/197 · S&amp;V 151</div>
+        <div class="meta"><span class="cond">NM</span><span class="price">USD 412,50</span></div>
+        <div class="meta" style="margin-top:4px"><span style="font-size:10px; color:#9B9892;">30d</span><span class="delta up">↑ 3,8%</span></div>
+      </div>
+    </div>
+    <div class="tcg-card">
+      <div class="image-shell graded"><div class="art" style="background:#9B6510;">art</div><span class="grading-badge">PSA 10</span></div>
+      <div class="body">
+        <div class="name">Pikachu Illustrator</div>
+        <div class="set">1998 · Promo</div>
+        <div class="meta"><span class="cond" style="background:#131210; color:#F0EFEC;">Graded</span><span class="price">USD 5.450</span></div>
+        <div class="meta" style="margin-top:4px"><span style="font-size:10px; color:#9B9892;">90d</span><span class="delta up">↑ 18,4%</span></div>
+      </div>
+    </div>
+    <div class="tcg-card">
+      <div class="image-shell sealed"><div class="art" style="background:#5C5A56; width: 84px; height: 80px;">ETB</div><span class="rarity">ETB</span></div>
+      <div class="body">
+        <div class="name">Scarlet &amp; Violet 151</div>
+        <div class="set">ETB sellado · EN</div>
+        <div class="meta"><span class="cond" style="background:#F0EFEC; color:#5C5A56;">Sealed</span><span class="price">USD 78,00</span></div>
+        <div class="meta" style="margin-top:4px"><span style="font-size:10px; color:#9B9892;">30d</span><span class="delta dn">↓ 1,2%</span></div>
+      </div>
+    </div>
+    <div class="tcg-card">
+      <div class="image-shell single"><div class="art" style="background:#D94646;">art</div><span class="rarity">Holo</span></div>
+      <div class="body">
+        <div class="name">Mewtwo VMAX</div>
+        <div class="set">086/072 · Shining Fates</div>
+        <div class="meta"><span class="cond lp">LP</span><span class="price">USD 145,30</span></div>
+        <div class="meta" style="margin-top:4px"><span style="font-size:10px; color:#9B9892;">7d</span><span class="delta up">↑ 2,1%</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+</body>
+</html>

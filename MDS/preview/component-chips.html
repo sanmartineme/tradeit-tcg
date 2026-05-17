@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Chips & Filters</title>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .card { padding: 26px 30px; }
+  .stack { display: flex; flex-direction: column; gap: 18px;}
+  .label-up { font-size:11px; font-weight:500; text-transform:uppercase; letter-spacing:0.08em; color: var(--text-secondary);}
+  .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px;}
+  .chip {
+    height: 28px; padding: 0 12px; border-radius: 14px;
+    font-size: 12px; font-weight: 500;
+    border: 1px solid #D6D4CE; color: #5C5A56; background: transparent;
+    display: inline-flex; align-items: center; gap: 6px;
+    cursor: pointer;
+  }
+  .chip.active { background: #1A6FB5; color: #fff; border-color: #1A6FB5;}
+  .chip i { font-size: 12px;}
+</style>
+</head>
+<body>
+<section class="card">
+  <div class="stack">
+    <div>
+      <span class="label-up">Tipo de producto · mutuamente excluyentes</span>
+      <div class="row">
+        <span class="chip active">Single Card</span>
+        <span class="chip">Sealed</span>
+        <span class="chip">Graded</span>
+      </div>
+    </div>
+    <div>
+      <span class="label-up">Tendencia · filtros aplicados (con dismiss)</span>
+      <div class="row">
+        <span class="chip active">Sube · 30d &nbsp;×</span>
+        <span class="chip">Estable</span>
+        <span class="chip">Baja</span>
+      </div>
+    </div>
+    <div>
+      <span class="label-up">Idioma</span>
+      <div class="row">
+        <span class="chip active">Inglés</span>
+        <span class="chip">Japonés</span>
+        <span class="chip">Español</span>
+      </div>
+    </div>
+  </div>
+</section>
+</body>
+</html>

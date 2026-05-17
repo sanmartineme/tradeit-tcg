@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Skeleton loaders</title>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .card { padding: 24px 28px; background: #F8F8F6;}
+  .lbl { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; color: #5C5A56; margin-bottom: 10px;}
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px;}
+
+  /* Skeleton primitives */
+  .sk {
+    background: linear-gradient(90deg, #F0EFEC 25%, #F8F8F6 50%, #F0EFEC 75%);
+    background-size: 1200px;
+    animation: shimmer 1.4s ease-in-out infinite;
+    border-radius: 4px;
+  }
+  @keyframes shimmer {
+    0%   { background-position: -600px 0; }
+    100% { background-position:  600px 0; }
+  }
+
+  /* Skeleton card de carta */
+  .sk-card {
+    background: #fff; border: 1px solid #D6D4CE; border-radius: 12px; overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  }
+  .sk-img { height: 110px;}
+  .sk-img.tonal { background: linear-gradient(135deg, #EBF2FB 0%, #C5DAEF 100%);}
+  .sk-body { padding: 10px; display: flex; flex-direction: column; gap: 6px;}
+  .sk-line { height: 12px;}
+
+  /* Skeleton row (listing) */
+  .sk-row {
+    display: grid; grid-template-columns: 32px 1fr auto; gap: 12px;
+    padding: 12px 14px; background: #fff; border: 1px solid #D6D4CE; border-radius: 8px;
+    align-items: center;
+  }
+  .sk-av { width: 32px; height: 32px; border-radius: 50%;}
+  .sk-price { width: 78px; height: 14px;}
+</style>
+</head>
+<body>
+<section class="card">
+  <div class="row">
+    <div>
+      <div class="lbl">Card de carta · skeleton</div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <div class="sk-card">
+          <div class="sk-img tonal"></div>
+          <div class="sk-body">
+            <div class="sk sk-line" style="width: 70%"></div>
+            <div class="sk sk-line" style="width: 90%; height: 10px;"></div>
+            <div class="sk sk-line" style="width: 50%; height: 14px; margin-top: 4px;"></div>
+          </div>
+        </div>
+        <div class="sk-card">
+          <div class="sk-img tonal" style="background: linear-gradient(135deg, #FAF0D8 0%, #F5D68C 100%);"></div>
+          <div class="sk-body">
+            <div class="sk sk-line" style="width: 80%"></div>
+            <div class="sk sk-line" style="width: 60%; height: 10px;"></div>
+            <div class="sk sk-line" style="width: 65%; height: 14px; margin-top: 4px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="lbl">Listings · skeleton row</div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div class="sk-row">
+          <div class="sk sk-av"></div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div class="sk" style="width: 100px; height: 12px;"></div>
+            <div class="sk" style="width: 140px; height: 10px;"></div>
+          </div>
+          <div class="sk sk-price"></div>
+        </div>
+        <div class="sk-row">
+          <div class="sk sk-av"></div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div class="sk" style="width: 110px; height: 12px;"></div>
+            <div class="sk" style="width: 160px; height: 10px;"></div>
+          </div>
+          <div class="sk sk-price"></div>
+        </div>
+        <div class="sk-row">
+          <div class="sk sk-av"></div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div class="sk" style="width: 90px; height: 12px;"></div>
+            <div class="sk" style="width: 130px; height: 10px;"></div>
+          </div>
+          <div class="sk sk-price"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 18px; font-size: 11px; color: #9B9892; font-family: 'IBM Plex Mono', monospace; line-height: 1.5;">
+    Preservar exactamente las dimensiones del contenido real para evitar layout shift · No mostrar &gt;3s sin pasar a estado de error con CTA de reintento.
+  </div>
+</section>
+</body>
+</html>

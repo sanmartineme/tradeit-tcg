@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Avatar & Empty state</title>
+<link rel="stylesheet" href="_card.css"/>
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css"/>
+<style>
+  .card { padding: 26px 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: start;}
+  .label-up { font-size:11px; font-weight:500; text-transform:uppercase; letter-spacing:0.08em; color: var(--text-secondary); margin-bottom: 12px;}
+  .row { display: flex; gap: 10px; align-items: center;}
+
+  .av {
+    border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+    font-family: 'IBM Plex Sans', sans-serif; font-weight: 500; color: #fff;
+  }
+  .av.sm { width: 28px; height: 28px; font-size: 10px;}
+  .av.md { width: 40px; height: 40px; font-size: 14px;}
+  .av.lg { width: 56px; height: 56px; font-size: 18px;}
+
+  .empty {
+    border: 1px solid #D6D4CE; border-radius: 12px; padding: 24px 18px; background: #fff;
+    display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px;
+  }
+  .empty i { font-size: 36px; color: #9B9892;}
+  .empty .title { font-size: 14px; font-weight: 500; color: #131210;}
+  .empty .desc { font-size: 12px; color: #5C5A56; line-height: 1.5; max-width: 260px;}
+  .empty .cta {
+    margin-top: 6px;
+    height: 32px; padding: 0 14px; border-radius: 8px;
+    background: #1A6FB5; color: #fff; font-size: 13px; font-weight: 500; border: none;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+<section class="card">
+  <div>
+    <div class="label-up">Avatares · color determinista por username</div>
+    <div class="row" style="margin-bottom:14px;">
+      <span class="av sm" style="background:#1A6FB5;">CA</span>
+      <span class="av sm" style="background:#2DA67E;">DI</span>
+      <span class="av sm" style="background:#E69A20;">MA</span>
+      <span class="av sm" style="background:#D94646;">LU</span>
+      <span style="font-size:11px; color:#5C5A56; margin-left: 4px;">Sm 28px · listas</span>
+    </div>
+    <div class="row" style="margin-bottom:14px;">
+      <span class="av md" style="background:#0D4A80;">CA</span>
+      <span class="av md" style="background:#0F6E56;">DI</span>
+      <span class="av md" style="background:#9B6510;">MA</span>
+      <span style="font-size:11px; color:#5C5A56; margin-left: 4px;">Md 40px · paneles</span>
+    </div>
+    <div class="row">
+      <span class="av lg" style="background:#042D55;">CA</span>
+      <span class="av lg" style="background:#054538;">DI</span>
+      <span style="font-size:11px; color:#5C5A56; margin-left: 4px;">Lg 56px · perfil</span>
+    </div>
+  </div>
+
+  <div>
+    <div class="label-up">Empty state · siempre con CTA resolutivo</div>
+    <div class="empty">
+      <i class="ph ph-heart"></i>
+      <div class="title">Aún no sigues ninguna carta</div>
+      <div class="desc">Agrega cartas a tu watchlist para ver su precio y recibir alertas cuando se mueva.</div>
+      <button class="cta">Buscar una carta</button>
+    </div>
+  </div>
+</section>
+</body>
+</html>

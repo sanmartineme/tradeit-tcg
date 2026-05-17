@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>red ramp</title>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .card { padding: 24px 28px; }
+  .title { font-size: 13px; color: var(--text-secondary); margin-bottom: 14px; display:flex; justify-content:space-between; align-items:baseline;}
+  .title b { color: var(--text-primary); font-weight: 500; }
+  .ramp { display: grid; grid-template-columns: repeat(5, 1fr) minmax(0, 1fr); column-gap: 6px; row-gap: 8px; align-items: stretch;}
+  .ramp { grid-template-columns: repeat(5, 1fr); }
+  .swatch {
+    height: 88px; padding: 10px 12px; border-radius: 8px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 11px; line-height: 1.2;
+  }
+  .step { font-size: 12px; font-weight: 500; }
+  .hex { opacity: .9; letter-spacing: 0.02em; }
+  .usage {
+    font-size: 10.5px; color: var(--text-secondary); line-height: 1.35;
+    padding: 0 2px;
+    font-family: var(--font-sans);
+  }
+</style>
+</head>
+<body>
+<section class="card">
+  <div class="title"><b>Red — error / negativo</b><span>token namespace: <span class="mono">red-*</span></span></div>
+  <div class="ramp">
+      <div class="swatch" style="background:#FCEAEA; color:#131210;">
+        <span class="step">10</span>
+        <span class="hex">#FCEAEA</span>
+      </div>
+      <div class="usage">Error badge bg</div>
+    
+      <div class="swatch" style="background:#F5B8B8; color:#131210;">
+        <span class="step">20</span>
+        <span class="hex">#F5B8B8</span>
+      </div>
+      <div class="usage">Error border</div>
+    
+      <div class="swatch" style="background:#D94646; color:#131210;">
+        <span class="step">40</span>
+        <span class="hex">#D94646</span>
+      </div>
+      <div class="usage">Precio negativo · danger</div>
+    
+      <div class="swatch" style="background:#A02C2C; color:#FFFFFF;">
+        <span class="step">60</span>
+        <span class="hex">#A02C2C</span>
+      </div>
+      <div class="usage">Texto error</div>
+    
+      <div class="swatch" style="background:#661B1B; color:#FFFFFF;">
+        <span class="step">80</span>
+        <span class="hex">#661B1B</span>
+      </div>
+      <div class="usage">Hover danger</div>
+    </div>
+</section>
+</body>
+</html>

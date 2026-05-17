@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Scan viewfinder</title>
+<link rel="stylesheet" href="_card.css"/>
+<style>
+  .card { padding: 0; min-height: 100%;}
+  .vp {
+    height: 280px; background: radial-gradient(ellipse at center, #252421 0%, #131210 60%, #050504 100%);
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .frame {
+    width: 200px; height: 280px; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  }
+  .corner { position: absolute; width: 22px; height: 22px; border-color: #6AAAD8; border-style: solid; border-width: 0;}
+  .tl { top: 0; left: 0; border-top-width: 3px; border-left-width: 3px; border-radius: 6px 0 0 0;}
+  .tr { top: 0; right: 0; border-top-width: 3px; border-right-width: 3px; border-radius: 0 6px 0 0;}
+  .bl { bottom: 0; left: 0; border-bottom-width: 3px; border-left-width: 3px; border-radius: 0 0 0 6px;}
+  .br { bottom: 0; right: 0; border-bottom-width: 3px; border-right-width: 3px; border-radius: 0 0 6px 0;}
+  .line {
+    position: absolute; left: 0; right: 0; height: 2px; background: #6AAAD8;
+    box-shadow: 0 0 12px #6AAAD8;
+    animation: scanLine 2s ease-in-out infinite;
+  }
+  @keyframes scanLine {
+    0%   { top: 12px;  opacity: 1; }
+    50%  { top: calc(100% - 14px); opacity: 1; }
+    100% { top: 12px;  opacity: 1; }
+  }
+  .hud-top {
+    position: absolute; top: 14px; left: 14px; right: 14px;
+    display: flex; justify-content: space-between; align-items: center; z-index: 2;
+  }
+  .iconbtn {
+    width: 36px; height: 36px; border-radius: 18px;
+    background: rgba(0,0,0,.4); border: 1px solid rgba(255,255,255,.15);
+    color: #F0EFEC; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+  .hud-bottom {
+    position: absolute; bottom: 18px; left: 0; right: 0; text-align: center; color: #F0EFEC;
+    font-family: 'IBM Plex Sans', sans-serif;
+  }
+  .hud-bottom h { font-size: 13px; font-weight: 500;}
+  .hud-bottom p { font-size: 11.5px; color: #9B9892; margin-top: 2px;}
+
+  .label-bar {
+    background: #1E1D1A; color: #F0EFEC;
+    padding: 14px 18px; border-top: 1px solid #2E2D2A;
+    font-family: 'IBM Plex Sans', sans-serif;
+    display: flex; gap: 10px; align-items: center;
+  }
+  .conf {
+    height: 4px; background: #2E2D2A; border-radius: 2px; flex: 1;
+    overflow: hidden;
+  }
+  .conf-fill {
+    height: 100%; width: 97%; background: #2DA67E; border-radius: 2px;
+  }
+  .meta { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: #9B9892;}
+</style>
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css"/>
+</head>
+<body>
+<section class="card">
+  <div class="vp">
+    <div class="hud-top">
+      <button class="iconbtn"><i class="ph ph-x" style="font-size: 18px;"></i></button>
+      <span class="meta" style="color: #F0EFEC; background: rgba(0,0,0,.4); padding: 6px 10px; border-radius: 999px; border: 1px solid rgba(255,255,255,.15);">Modo batch · 0 cartas</span>
+      <button class="iconbtn"><i class="ph ph-lightning" style="font-size: 18px;"></i></button>
+    </div>
+    <div class="frame">
+      <span class="corner tl"></span><span class="corner tr"></span>
+      <span class="corner bl"></span><span class="corner br"></span>
+      <span class="line"></span>
+    </div>
+    <div class="hud-bottom">
+      <h>Enmarca la carta</h>
+      <p>Reconocimiento automático en curso…</p>
+    </div>
+  </div>
+  <div class="label-bar">
+    <span style="font-size: 12px;">Confianza</span>
+    <div class="conf"><div class="conf-fill"></div></div>
+    <span class="meta">97% · OCR + image matching</span>
+  </div>
+</section>
+</body>
+</html>

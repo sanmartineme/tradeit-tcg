@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Iconography</title>
+<link rel="stylesheet" href="_card.css"/>
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css"/>
+<style>
+  .card { padding: 24px 28px; }
+  .head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px;}
+  .head b { font-size: 13px; color: var(--text-primary); font-weight: 500;}
+  .head span { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--text-muted);}
+  .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px;}
+  .it { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 4px; border: 1px solid #D6D4CE; border-radius: 8px; background: #fff;}
+  .it i { font-size: 22px; color: #131210;}
+  .it span { font-size: 10px; color: #5C5A56; text-align: center; font-family: 'IBM Plex Mono', monospace;}
+
+  .sizes { display: flex; gap: 24px; align-items: end; margin-top: 16px; padding-top: 14px; border-top: 1px solid #D6D4CE;}
+  .sz { display: flex; flex-direction: column; align-items: center; gap: 4px;}
+  .sz i { color: #1A6FB5;}
+  .sz span { font-size: 10.5px; color: #5C5A56; font-family: 'IBM Plex Mono', monospace;}
+</style>
+</head>
+<body>
+<section class="card">
+  <div class="head"><b>Phosphor Icons · regular · trazo 1.8px</b><span>color: currentColor</span></div>
+  <div class="grid">
+    <div class="it"><i class="ph ph-magnifying-glass"></i><span>Search</span></div>
+    <div class="it"><i class="ph ph-funnel"></i><span>Filter</span></div>
+    <div class="it"><i class="ph ph-shopping-cart"></i><span>Cart</span></div>
+    <div class="it"><i class="ph ph-tag"></i><span>Listing</span></div>
+    <div class="it"><i class="ph ph-heart"></i><span>Watchlist</span></div>
+    <div class="it"><i class="ph ph-bell"></i><span>Alerta</span></div>
+    <div class="it"><i class="ph ph-user"></i><span>Perfil</span></div>
+    <div class="it"><i class="ph ph-seal-check"></i><span>Verified</span></div>
+    <div class="it"><i class="ph ph-trend-up"></i><span>Sube</span></div>
+    <div class="it"><i class="ph ph-trend-down"></i><span>Baja</span></div>
+    <div class="it"><i class="ph ph-package"></i><span>Envío</span></div>
+    <div class="it"><i class="ph ph-certificate"></i><span>Grading</span></div>
+    <div class="it"><i class="ph ph-camera"></i><span>Scan</span></div>
+    <div class="it"><i class="ph ph-gear-six"></i><span>Config</span></div>
+  </div>
+  <div class="sizes">
+    <div class="sz"><i class="ph ph-bell" style="font-size:16px;"></i><span>16</span></div>
+    <div class="sz"><i class="ph ph-bell" style="font-size:20px;"></i><span>20</span></div>
+    <div class="sz"><i class="ph ph-bell" style="font-size:24px;"></i><span>24</span></div>
+    <div class="sz"><i class="ph ph-bell" style="font-size:32px;"></i><span>32</span></div>
+    <span style="font-size:11px; color:#5C5A56; margin-left:auto;">px standard: 16 inline · 20 controles · 24 botones / nav · 32 ilustrativo</span>
+  </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,253 @@
+/* ============================================================
+   Mulligan Design System — Colors & Type
+   v1.0 · Tradeit TCG · Carbon-inspired, IBM Plex
+   ============================================================ */
+
+/* ── Webfonts ──────────────────────────────────────────────── */
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap");
+
+/* ============================================================
+   1. PRIMITIVE COLOR TOKENS
+   ============================================================ */
+:root {
+  /* Blue — primario interactivo */
+  --blue-10:  #EBF2FB;
+  --blue-20:  #C5DAEF;
+  --blue-40:  #6AAAD8;
+  --blue-60:  #1A6FB5;
+  --blue-80:  #0D4A80;
+  --blue-100: #042D55;
+
+  /* Gray — neutro estructural (warm) */
+  --gray-0:   #F8F8F6;
+  --gray-10:  #F0EFEC;
+  --gray-20:  #D6D4CE;
+  --gray-30:  #B2B0AB;
+  --gray-40:  #9B9892;
+  --gray-60:  #5C5A56;
+  --gray-80:  #2E2D2A;
+  --gray-100: #131210;
+
+  /* Teal — éxito / precio positivo */
+  --teal-10:  #E0F4EF;
+  --teal-20:  #9FE1CB;
+  --teal-40:  #2DA67E;
+  --teal-60:  #0F6E56;
+  --teal-80:  #054538;
+
+  /* Amber — advertencia / grading / highlight de precio */
+  --amber-10: #FAF0D8;
+  --amber-20: #F5D68C;
+  --amber-40: #E69A20;
+  --amber-60: #9B6510;
+  --amber-80: #5E3B06;
+
+  /* Red — error / peligro / precio negativo */
+  --red-10:   #FCEAEA;
+  --red-20:   #F5B8B8;
+  --red-40:   #D94646;
+  --red-60:   #A02C2C;
+  --red-80:   #661B1B;
+}
+
+/* ============================================================
+   2. SEMANTIC TOKENS — LIGHT (default)
+   ============================================================ */
+:root {
+  --bg-page:        #F8F8F6;
+  --bg-primary:     #FFFFFF;
+  --bg-secondary:   #F0EFEC;
+  --text-primary:   #131210;
+  --text-secondary: #5C5A56;
+  --text-muted:     #9B9892;
+  --border:         #D6D4CE;
+  --border-em:      #B2B0AB;
+  --interactive:    #1A6FB5;   /* blue-60 */
+  --interactive-hover: #0D4A80;
+  --on-interactive:  #FFFFFF;
+  --on-danger:       #FFFFFF;
+  /* Inverse surface — used for "stand out" CTAs (e.g. scan strip).
+     In light mode it's deep dark; in dark mode it's an elevated surface. */
+  --inverse-surface:     #131210;
+  --on-inverse-surface:  #F0EFEC;
+  --success:        #2DA67E;   /* teal-40 */
+  --warning:        #E69A20;   /* amber-40 */
+  --danger:         #D94646;   /* red-40 */
+
+  /* Elevation shadows (light) */
+  --elev-1: 0 1px 4px rgba(0,0,0,.06);
+  --elev-2: 0 4px 16px rgba(0,0,0,.08);
+  --elev-3: 0 8px 32px rgba(0,0,0,.12);
+  --focus-ring: 0 0 0 2px rgba(26,111,181,.30);
+}
+
+/* ── DARK ──────────────────────────────────────────────────── */
+.dark {
+  --bg-page:        #131210;
+  --bg-primary:     #1E1D1A;
+  --bg-secondary:   #252421;
+  --text-primary:   #F0EFEC;
+  --text-secondary: #9B9892;
+  --text-muted:     #5C5A56;
+  --border:         #2E2D2A;
+  --border-em:      #3D3C38;
+  --interactive:    #6AAAD8;
+  --interactive-hover: #C5DAEF;
+  --on-interactive: #131210;    /* dark text on light-blue button in dark mode */
+  --on-danger:      #FFFFFF;
+  --inverse-surface:     #252421;    /* elevated surface above page bg in dark */
+  --on-inverse-surface:  #F0EFEC;
+
+  /* Sombras reducidas al 50% en dark */
+  --elev-1: 0 1px 4px rgba(0,0,0,.30);
+  --elev-2: 0 4px 16px rgba(0,0,0,.40);
+  --elev-3: 0 8px 32px rgba(0,0,0,.60);
+  --focus-ring: 0 0 0 2px rgba(106,170,216,.35);
+}
+
+/* ============================================================
+   3. SPACING · RADIUS · LAYOUT TOKENS
+   ============================================================ */
+:root {
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  --radius-xs:   2px;
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+  --radius-full: 999px;
+
+  --max-width-content: 1280px;
+  --max-width-text:    720px;
+  --max-width-card:    400px;
+  --sidebar-width:     220px;
+  --topbar-height:     48px;
+  --bottomnav-height:  56px;
+}
+
+/* ============================================================
+   4. TYPOGRAPHY — primitives + semantic
+   ============================================================ */
+:root {
+  --font-sans: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --fs-display:    48px;
+  --fs-h1:         32px;
+  --fs-h2:         24px;
+  --fs-h3:         20px;
+  --fs-h4:         16px;
+  --fs-body:       16px;
+  --fs-body-sm:    14px;
+  --fs-label:      12px;
+  --fs-caption:    11px;
+
+  --fw-light:   300;
+  --fw-regular: 400;
+  --fw-medium:  500;
+}
+
+/* Base */
+html, body {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  color: var(--text-primary);
+  background: var(--bg-page);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Semantic type roles */
+.t-display {
+  font-size: var(--fs-display);
+  font-weight: var(--fw-light);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+.t-h1 {
+  font-size: var(--fs-h1);
+  font-weight: var(--fw-light);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+.t-h2 {
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-medium);
+  line-height: 1.3;
+}
+.t-h3 {
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-medium);
+  line-height: 1.4;
+}
+.t-h4 {
+  font-size: var(--fs-h4);
+  font-weight: var(--fw-medium);
+  line-height: 1.5;
+}
+.t-body {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-regular);
+  line-height: 1.6;
+}
+.t-body-sm {
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-regular);
+  line-height: 1.6;
+}
+.t-label {
+  font-size: var(--fs-label);
+  font-weight: var(--fw-medium);
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.t-caption {
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-regular);
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+.t-mono,
+.t-price {
+  font-family: var(--font-mono);
+  font-weight: var(--fw-regular);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Text colors */
+.fg-primary   { color: var(--text-primary); }
+.fg-secondary { color: var(--text-secondary); }
+.fg-muted     { color: var(--text-muted); }
+.fg-interactive { color: var(--interactive); }
+.fg-success   { color: var(--success); }
+.fg-warning   { color: var(--warning); }
+.fg-danger    { color: var(--danger); }
+
+/* ============================================================
+   5. MOTION (reduced-motion respected)
+   ============================================================ */
+@media (prefers-reduced-motion: no-preference) {
+  :root {
+    --motion-micro:  100ms ease-out;
+    --motion-short:  150ms ease-out;
+    --motion-medium: 200ms ease-in-out;
+    --motion-long:   300ms ease-in-out;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-micro: 0ms; --motion-short: 0ms;
+    --motion-medium: 0ms; --motion-long: 0ms;
+  }
+}
