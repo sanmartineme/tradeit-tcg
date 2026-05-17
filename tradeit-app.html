@@ -1,0 +1,1024 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Tradeit TCG · Primer vistazo · Mulligan DS</title>
+
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css"/>
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css"/>
+
+<style>
+/* ============================================================
+   Mulligan Design System — Colors & Type — v1.0
+   ============================================================ */
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap");
+
+:root {
+  --blue-10:#EBF2FB;--blue-20:#C5DAEF;--blue-40:#6AAAD8;--blue-60:#1A6FB5;--blue-80:#0D4A80;--blue-100:#042D55;
+  --gray-0:#F8F8F6;--gray-10:#F0EFEC;--gray-20:#D6D4CE;--gray-30:#B2B0AB;--gray-40:#9B9892;--gray-60:#5C5A56;--gray-80:#2E2D2A;--gray-100:#131210;
+  --teal-10:#E0F4EF;--teal-20:#9FE1CB;--teal-40:#2DA67E;--teal-60:#0F6E56;--teal-80:#054538;
+  --amber-10:#FAF0D8;--amber-20:#F5D68C;--amber-40:#E69A20;--amber-60:#9B6510;--amber-80:#5E3B06;
+  --red-10:#FCEAEA;--red-20:#F5B8B8;--red-40:#D94646;--red-60:#A02C2C;--red-80:#661B1B;
+
+  --bg-page:#F8F8F6;--bg-primary:#FFFFFF;--bg-secondary:#F0EFEC;
+  --text-primary:#131210;--text-secondary:#5C5A56;--text-muted:#9B9892;
+  --border:#D6D4CE;--border-em:#B2B0AB;
+  --interactive:#1A6FB5;--interactive-hover:#0D4A80;--on-interactive:#FFFFFF;--on-danger:#FFFFFF;
+  --inverse-surface:#131210;--on-inverse-surface:#F0EFEC;
+  --success:#2DA67E;--warning:#E69A20;--danger:#D94646;
+  --elev-1:0 1px 4px rgba(0,0,0,.06);--elev-2:0 4px 16px rgba(0,0,0,.08);--elev-3:0 8px 32px rgba(0,0,0,.12);
+  --focus-ring:0 0 0 2px rgba(26,111,181,.30);
+  --font-sans:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --motion-micro:100ms ease-out;--motion-short:150ms ease-out;--motion-medium:200ms ease-in-out;--motion-long:300ms ease-in-out;
+}
+.dark {
+  --bg-page:#131210;--bg-primary:#1E1D1A;--bg-secondary:#252421;
+  --text-primary:#F0EFEC;--text-secondary:#9B9892;--text-muted:#5C5A56;
+  --border:#2E2D2A;--border-em:#3D3C38;
+  --interactive:#6AAAD8;--interactive-hover:#C5DAEF;--on-interactive:#131210;
+  --inverse-surface:#252421;--on-inverse-surface:#F0EFEC;
+  --elev-1:0 1px 4px rgba(0,0,0,.30);--elev-2:0 4px 16px rgba(0,0,0,.40);--elev-3:0 8px 32px rgba(0,0,0,.60);
+  --focus-ring:0 0 0 2px rgba(106,170,216,.35);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100vh; background: #F0EFEC; font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+
+/* Page layout */
+.page-shell {
+  min-height: 100vh;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 28px 24px 40px;
+  gap: 24px;
+  background: #E8E7E3;
+}
+
+/* Toolbar */
+.toolbar {
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  padding: 10px 14px; background: #FFFFFF;
+  border: 1px solid #D6D4CE; border-radius: 999px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  font-family: var(--font-sans);
+  max-width: 900px; width: 100%;
+}
+.toolbar-btn {
+  height: 30px; padding: 0 14px; border-radius: 999px;
+  background: transparent; color: #131210; border: none; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12.5px; font-weight: 500; font-family: var(--font-sans);
+  transition: background 100ms ease-out;
+}
+.toolbar-btn.active { background: #1A6FB5; color: #fff; }
+.toolbar-sep { width: 1px; height: 18px; background: #D6D4CE; margin: 0 4px; }
+.toolbar-label { font-size: 12px; color: #5C5A56; display: inline-flex; align-items: center; gap: 6px; }
+
+/* Stage area — phones side by side */
+.stage {
+  display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap; justify-content: center;
+}
+.phone-label {
+  text-align: center; margin-top: 10px;
+  font-size: 11px; font-weight: 500; color: #9B9892;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  font-family: var(--font-sans);
+}
+
+/* Sidebar tips */
+.tips-row {
+  display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+  max-width: 900px; width: 100%;
+}
+.tip {
+  background: #FFFFFF; border: 1px solid #D6D4CE; border-radius: 12px;
+  padding: 14px 16px; box-shadow: 0 1px 4px rgba(0,0,0,.05);
+  flex: 1 1 180px; max-width: 220px;
+  font-family: var(--font-sans);
+}
+.tip-label { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: #9B9892; }
+.tip-title { font-size: 13px; font-weight: 500; color: #131210; margin-top: 4px; }
+.tip-body { font-size: 12px; color: #5C5A56; margin-top: 4px; line-height: 1.5; }
+
+/* Animations */
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes scanLine {
+  0%   { top: 12px; opacity: 1; }
+  50%  { top: calc(100% - 14px); opacity: 1; }
+  100% { top: 12px; opacity: 1; }
+}
+@keyframes scanReveal { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: scale(1); } }
+@keyframes toastIn { from { opacity: 0; transform: translate(-50%, 8px); } to { opacity: 1; transform: translate(-50%, 0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sheetIn { from { opacity: 0; transform: translateY(60%); } to { opacity: 1; transform: translateY(0); } }
+@keyframes modalIn { from { opacity: 0; transform: scale(.96) translateY(8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+@keyframes shimmer { 0% { background-position: -600px 0; } 100% { background-position: 600px 0; } }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"></script>
+
+<script type="text/babel">
+// ─── DATA ────────────────────────────────────────────────────────────────────
+const CATALOG = [
+  { id:"charizard-ex", name:"Charizard ex", set:"Scarlet & Violet 151", setShort:"S&V 151", number:"199/197", rarity:"SIR", illustrator:"5ban Graphics", condition:"NM", productType:"single", price:412.50, delta:3.8, period:"30d", tendency:"Sube", volatility:"Media",
+    variants:[{label:"Holo regular",price:412.50,delta:3.8},{label:"Full Art",price:580.00,delta:5.1},{label:"Alt Art (SIR)",price:920.00,delta:12.4},{label:"PSA 10",price:1740.00,delta:18.2}],
+    averages:[{label:"30d",value:398.20,delta:3.8},{label:"60d",value:376.10,delta:9.7},{label:"90d",value:354.90,delta:16.2}],
+    listings:[{seller:"Camila R",condition:"NM",price:405.00,location:"Santiago",country:"CL",verified:true},{seller:"Diego P",condition:"LP",price:380.00,location:"CDMX",country:"MX",verified:false},{seller:"Mateo S",condition:"NM",price:410.00,location:"Buenos Aires",country:"AR",verified:true}] },
+  { id:"pikachu-illustrator", name:"Pikachu Illustrator", set:"Promo 1998", setShort:"Promo", number:"—", rarity:"Promo", condition:"Graded", productType:"graded", grading:"PSA 10", price:5450.00, delta:18.4, period:"90d", tendency:"Sube", volatility:"Alta" },
+  { id:"sv151-etb", name:"Scarlet & Violet 151", set:"ETB sellado · EN", setShort:"ETB EN", number:"", rarity:"ETB", productType:"sealed", price:78.00, delta:-1.2, period:"30d", tendency:"Estable", volatility:"Baja" },
+  { id:"mewtwo-vmax", name:"Mewtwo VMAX", set:"Shining Fates", setShort:"S. Fates", number:"086/072", rarity:"Holo", condition:"LP", productType:"single", price:145.30, delta:2.1, period:"7d" },
+  { id:"umbreon-vmax", name:"Umbreon VMAX", set:"Evolving Skies", setShort:"Evolv.", number:"215/203", rarity:"Alt Art", condition:"NM", productType:"single", price:540.00, delta:6.7, period:"30d" },
+  { id:"rayquaza-vmax", name:"Rayquaza VMAX", set:"Evolving Skies", setShort:"Evolv.", number:"218/203", rarity:"Alt Art", condition:"NM", productType:"single", price:285.00, delta:-2.3, period:"30d" },
+  { id:"lugia-v", name:"Lugia V", set:"Silver Tempest", setShort:"S. Tempest", number:"186/195", rarity:"Alt Art", condition:"NM", productType:"single", price:168.00, delta:4.2, period:"30d" },
+  { id:"gengar-vmax", name:"Gengar VMAX", set:"Fusion Strike", setShort:"Fusion", number:"271/264", rarity:"Alt Art", condition:"NM", productType:"single", price:198.00, delta:1.4, period:"30d" },
+  { id:"obsidian-bb", name:"Obsidian Flames", set:"Booster Box · 36p", setShort:"Box", productType:"sealed", price:119.00, delta:0.8, period:"30d" },
+  { id:"espeon-v", name:"Espeon V", set:"Evolving Skies", setShort:"Evolv.", number:"180/203", rarity:"Alt Art", condition:"Graded", productType:"graded", grading:"BGS 9.5", price:690.00, delta:7.9, period:"60d" },
+];
+
+// ─── POKÉMON TCG API ─────────────────────────────────────────────────────────
+const PTCG_KEY = "4a687612-7316-46ee-91c2-52cc9d438740";
+const PTCG_BASE = "https://api.pokemontcg.io/v2";
+
+function getMarketPrice(raw) {
+  const prices = raw?.tcgplayer?.prices;
+  if (!prices) return null;
+  for (const key of ["holofoil","normal","1stEditionHolofoil","reverseHolofoil","unlimitedHolofoil","1stEdition","unlimited"]) {
+    if (prices[key]?.market) return prices[key].market;
+  }
+  return null;
+}
+
+function getPriceVariants(raw) {
+  const prices = raw?.tcgplayer?.prices;
+  if (!prices) return null;
+  const lbl = { holofoil:"Holo", normal:"Normal", "1stEditionHolofoil":"1.ª Ed. Holo", reverseHolofoil:"Rev. Holo", unlimitedHolofoil:"Unlimited Holo", "1stEdition":"1.ª Ed.", unlimited:"Unlimited" };
+  return Object.entries(prices).filter(([,v])=>v?.market).map(([k,v])=>({ label:lbl[k]||k, price:v.market, delta:null }));
+}
+
+function normalizePtcgCard(c) {
+  const price = getMarketPrice(c);
+  return {
+    id: c.id,
+    name: c.name,
+    set: c.set?.name || "",
+    setShort: (c.set?.name||"").slice(0,12),
+    number: c.number ? `${c.number}/${c.set?.printedTotal||c.set?.total||"?"}` : "",
+    rarity: c.rarity || "",
+    condition: "NM",
+    productType: "single",
+    price: price || 0,
+    delta: null,
+    period: "30d",
+    image: c.images?.small || null,
+    imageLarge: c.images?.large || null,
+    _raw: c,
+  };
+}
+
+async function ptcgSearch(query, pageSize=20) {
+  let q = query
+    ? `name:*${query}*`
+    : `(rarity:"Special Illustration Rare" OR rarity:"Illustration Rare" OR rarity:"Hyper Rare")`;
+  const url = `${PTCG_BASE}/cards?q=${encodeURIComponent(q)}&pageSize=${pageSize}&orderBy=-set.releaseDate`;
+  const res = await fetch(url, { headers: { "X-Api-Key": PTCG_KEY } });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const data = await res.json();
+  return { cards: (data.data||[]).map(normalizePtcgCard), total: data.totalCount||0 };
+}
+
+async function ptcgFetchByName(name) {
+  const url = `${PTCG_BASE}/cards?q=${encodeURIComponent(`name:"${name}"`)}&pageSize=20&orderBy=-set.releaseDate`;
+  const res = await fetch(url, { headers: { "X-Api-Key": PTCG_KEY } });
+  if (!res.ok) return null;
+  const data = await res.json();
+  const cards = (data.data||[]).map(normalizePtcgCard);
+  const withPrice = cards.filter(c=>c.price>0);
+  if (withPrice.length) { withPrice.sort((a,b)=>b.price-a.price); return withPrice[0]; }
+  return cards[0]||null;
+}
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+const TCG_SHELLS = {
+  A:{ single:{background:"linear-gradient(135deg,#EBF2FB 0%,#C5DAEF 100%)"}, graded:{background:"linear-gradient(135deg,#FAF0D8 0%,#F5D68C 100%)"}, sealed:{background:"linear-gradient(135deg,#F0EFEC 0%,#D6D4CE 100%)"} },
+  B:{ single:{background:"#F8F8F6",borderLeft:"4px solid #1A6FB5"}, graded:{background:"#F8F8F6",borderLeft:"4px solid #E69A20"}, sealed:{background:"#F8F8F6",borderLeft:"4px solid #5C5A56"} },
+  C:{ single:{background:"linear-gradient(160deg,#C5DAEF 0%,#6AAAD8 100%)"}, graded:{background:"linear-gradient(160deg,#F5D68C 0%,#E69A20 100%)"}, sealed:{background:"linear-gradient(160deg,#D6D4CE 0%,#9B9892 100%)"} },
+  D:{ single:{background:"radial-gradient(ellipse at top,#042D55 0%,#131210 80%)"}, graded:{background:"radial-gradient(ellipse at top,#5E3B06 0%,#131210 80%)"}, sealed:{background:"radial-gradient(ellipse at top,#2E2D2A 0%,#131210 80%)"} },
+  E:{ single:{backgroundColor:"#EBF2FB",backgroundImage:"repeating-linear-gradient(45deg,rgba(0,0,0,.025) 0,rgba(0,0,0,.025) 1px,transparent 1px,transparent 6px)"}, graded:{backgroundColor:"#FAF0D8",backgroundImage:"repeating-linear-gradient(45deg,rgba(0,0,0,.025) 0,rgba(0,0,0,.025) 1px,transparent 1px,transparent 6px)"}, sealed:{backgroundColor:"#F0EFEC",backgroundImage:"repeating-linear-gradient(45deg,rgba(0,0,0,.025) 0,rgba(0,0,0,.025) 1px,transparent 1px,transparent 6px)"} },
+};
+
+function artColorFor(name) {
+  let h = 0; for (let i=0;i<name.length;i++) h=(h*31+name.charCodeAt(i))|0;
+  return ["#D94646","#1A6FB5","#E69A20","#2DA67E","#0D4A80","#9B6510","#5C5A56","#A02C2C"][Math.abs(h)%8];
+}
+function avColor(name) {
+  let h = 0; for (let i=0;i<name.length;i++) h=(h*31+name.charCodeAt(i))|0;
+  return ["#1A6FB5","#0D4A80","#0F6E56","#9B6510","#A02C2C","#2E2D2A","#042D55"][Math.abs(h)%7];
+}
+
+const labelUp = { fontSize:11, fontWeight:500, textTransform:"uppercase", letterSpacing:0.08, color:"var(--text-secondary)" };
+const linkBtn = { background:"transparent", border:"none", color:"var(--interactive)", fontSize:12, fontWeight:500, cursor:"pointer", fontFamily:"'IBM Plex Sans',sans-serif" };
+const iconBtn = () => ({ width:40, height:40, border:"none", background:"transparent", color:"var(--text-primary)", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", borderRadius:8, position:"relative" });
+
+// ─── ATOMS ───────────────────────────────────────────────────────────────────
+function Button({ children, variant="primary", size="md", onClick, icon, style={}, disabled }) {
+  const base = { border:"1px solid transparent", borderRadius:8, fontWeight:500, fontFamily:"'IBM Plex Sans',sans-serif", cursor:disabled?"not-allowed":"pointer", display:"inline-flex", alignItems:"center", justifyContent:"center", gap:8, transition:"background 100ms ease-out,transform 100ms ease-out", opacity:disabled?0.4:1, whiteSpace:"nowrap" };
+  const sizes = { sm:{height:32,padding:"0 12px",fontSize:13}, md:{height:40,padding:"0 16px",fontSize:14}, lg:{height:48,padding:"0 20px",fontSize:15} };
+  const variants = { primary:{background:"var(--interactive)",color:"var(--on-interactive)"}, secondary:{background:"transparent",color:"var(--text-primary)",borderColor:"var(--border)"}, ghost:{background:"transparent",color:"var(--interactive)"}, danger:{background:"var(--danger)",color:"var(--on-danger)"} };
+  return <button style={{...base,...sizes[size],...variants[variant],...style}} onClick={disabled?undefined:onClick} onMouseDown={e=>{if(!disabled)e.currentTarget.style.transform="scale(0.97)"}} onMouseUp={e=>{e.currentTarget.style.transform="scale(1)"}} onMouseLeave={e=>{e.currentTarget.style.transform="scale(1)"}} disabled={disabled}>
+    {icon && <i className={"ph "+icon} style={{fontSize:size==="lg"?20:16}}/>}
+    {children}
+  </button>;
+}
+
+function Badge({ children, variant="info" }) {
+  const styles = { info:{bg:"#EBF2FB",fg:"#042D55"}, success:{bg:"#E0F4EF",fg:"#0F6E56"}, warning:{bg:"#FAF0D8",fg:"#9B6510"}, danger:{bg:"#FCEAEA",fg:"#A02C2C"}, neutral:{bg:"var(--bg-secondary)",fg:"var(--text-secondary)"}, grading:{bg:"var(--text-primary)",fg:"var(--bg-secondary)"} };
+  const s = styles[variant];
+  return <span style={{ height:20, padding:"0 8px", borderRadius:999, background:s.bg, color:s.fg, fontSize:11, fontWeight:500, lineHeight:"20px", display:"inline-flex", alignItems:"center", fontFamily:variant==="grading"?"'IBM Plex Mono',monospace":"inherit" }}>{children}</span>;
+}
+
+function ConditionBadge({ code }) {
+  const map = { M:"success", NM:"info", LP:"warning", MP:"warning", HP:"danger", DMG:"danger" };
+  return <Badge variant={map[code]||"neutral"}>{code}</Badge>;
+}
+
+function Chip({ children, active, onClick }) {
+  return <button onClick={onClick} style={{ height:28, padding:"0 12px", borderRadius:14, background:active?"var(--interactive)":"transparent", border:`1px solid ${active?"var(--interactive)":"var(--border)"}`, color:active?"var(--on-interactive)":"var(--text-secondary)", fontSize:12, fontWeight:500, cursor:"pointer", display:"inline-flex", alignItems:"center", gap:6, fontFamily:"'IBM Plex Sans',sans-serif", flexShrink:0 }}>{children}</button>;
+}
+
+function Avatar({ name="U", size="sm" }) {
+  const sizes = { sm:{d:28,fs:10}, md:{d:40,fs:14}, lg:{d:56,fs:18} };
+  const s = sizes[size];
+  const initials = name.split(/\s+/).map(p=>p[0]).join("").slice(0,2).toUpperCase();
+  return <span style={{ width:s.d, height:s.d, borderRadius:"50%", background:avColor(name), color:"#fff", display:"inline-flex", alignItems:"center", justifyContent:"center", fontFamily:"'IBM Plex Sans',sans-serif", fontWeight:500, fontSize:s.fs, flexShrink:0 }}>{initials}</span>;
+}
+
+function EmptyState({ icon="ph-magnifying-glass", title, desc, cta, onCta }) {
+  return <div style={{ padding:"32px 24px", display:"flex", flexDirection:"column", alignItems:"center", textAlign:"center", gap:10 }}>
+    <i className={"ph "+icon} style={{fontSize:40,color:"var(--text-muted)"}}/>
+    <div style={{fontSize:16,fontWeight:500,color:"var(--text-primary)"}}>{title}</div>
+    <div style={{fontSize:13,color:"var(--text-secondary)",lineHeight:1.6,maxWidth:280}}>{desc}</div>
+    {cta && <Button onClick={onCta} style={{marginTop:6}}>{cta}</Button>}
+  </div>;
+}
+
+function Delta({ value, period="30d", size="sm" }) {
+  if (value==null) return <span style={{color:"var(--text-muted)",fontFamily:"'IBM Plex Mono',monospace",fontSize:12}}>– · {period}</span>;
+  const up = value>=0;
+  const fs = {sm:11,md:13,lg:14}[size];
+  return <span style={{ color:up?"var(--success)":"var(--danger)", fontFamily:"'IBM Plex Mono',monospace", fontSize:fs, fontVariantNumeric:"tabular-nums", display:"inline-flex", alignItems:"baseline", gap:4 }}>
+    <span>{up?"↑":"↓"}</span>
+    <span>{up?"+":"−"}{Math.abs(value).toFixed(1).replace(".",",")}%</span>
+    <span style={{color:"var(--text-muted)",fontSize:fs-1,marginLeft:4}}>· {period}</span>
+  </span>;
+}
+
+function Price({ value, currency="USD", size="md" }) {
+  const sizes = { sm:{fs:13,fw:500}, md:{fs:18,fw:500}, lg:{fs:28,fw:400}, xl:{fs:36,fw:300} };
+  const s = sizes[size];
+  const [intPart,decPart] = value.toFixed(2).split(".");
+  const formatted = intPart.replace(/\B(?=(\d{3})+(?!\d))/g,".")+","+decPart;
+  return <span style={{ fontFamily:"'IBM Plex Mono',monospace", fontVariantNumeric:"tabular-nums", fontSize:s.fs, fontWeight:s.fw, color:"var(--text-primary)", whiteSpace:"nowrap" }}>{currency} {formatted}</span>;
+}
+
+// ─── PHONE FRAME ─────────────────────────────────────────────────────────────
+function PhoneFrame({ children, dark=false, time="9:41" }) {
+  const c = dark?"#F0EFEC":"#131210";
+  return <div className={dark?"dark":""} style={{ width:390, height:820, borderRadius:44, overflow:"hidden", background:"var(--bg-page)", border:"10px solid #2E2D2A", outline:"1px solid #1a1a1a", boxShadow:"0 30px 80px rgba(0,0,0,0.25),0 8px 24px rgba(0,0,0,0.12)", display:"flex", flexDirection:"column", fontFamily:"'IBM Plex Sans',system-ui,sans-serif", color:"var(--text-primary)", position:"relative" }}>
+    {/* Status bar */}
+    <div style={{ height:34, padding:"0 18px 0 22px", display:"flex", alignItems:"center", justifyContent:"space-between", fontSize:13, fontWeight:500, color:c, letterSpacing:0.1, flexShrink:0 }}>
+      <span>{time}</span>
+      <div style={{display:"flex",alignItems:"center",gap:5}}>
+        <svg width="14" height="10" viewBox="0 0 14 10"><rect x="0" y="7" width="2" height="3" rx="0.5" fill={c}/><rect x="3" y="5" width="2" height="5" rx="0.5" fill={c}/><rect x="6" y="3" width="2" height="7" rx="0.5" fill={c}/><rect x="9" y="1" width="2" height="9" rx="0.5" fill={c}/></svg>
+        <svg width="13" height="10" viewBox="0 0 14 10"><path d="M7 9.5L8.8 7.7A2.5 2.5 0 005.2 7.7Z" fill={c}/><path d="M7 6L10.1 2.9A4.4 4.4 0 003.9 2.9Z" fill={c} opacity="0.6"/></svg>
+        <svg width="22" height="10" viewBox="0 0 22 10"><rect x="0.5" y="0.5" width="19" height="9" rx="2" fill="none" stroke={c} strokeOpacity="0.5"/><rect x="2" y="2" width="14" height="6" rx="1" fill={c}/><rect x="20" y="3.5" width="1.5" height="3" rx="0.5" fill={c} opacity="0.5"/></svg>
+      </div>
+    </div>
+    <div style={{flex:1,overflow:"hidden",display:"flex",flexDirection:"column"}}>{children}</div>
+    {/* Gesture pill */}
+    <div style={{height:22,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+      <div style={{width:124,height:4,borderRadius:2,background:dark?"#F0EFEC":"#131210",opacity:0.4}}/>
+    </div>
+  </div>;
+}
+
+// ─── TOP BAR ─────────────────────────────────────────────────────────────────
+function TopBar({ variant="home", title, onBack, right, rightCount }) {
+  return <div style={{ height:52, padding:"0 12px", display:"flex", alignItems:"center", gap:8, borderBottom:"1px solid var(--border)", background:"var(--bg-primary)", color:"var(--text-primary)", flexShrink:0 }}>
+    {variant==="back" ? <button onClick={onBack} style={iconBtn()} aria-label="Volver"><i className="ph ph-arrow-left" style={{fontSize:22}}/></button>
+      : <div style={{display:"flex",alignItems:"center",gap:8,padding:"0 4px"}}>
+          <div style={{width:28,height:28,borderRadius:6,background:"var(--interactive)",display:"flex",alignItems:"center",justifyContent:"center"}}>
+            <svg width="20" height="20" viewBox="0 0 28 28"><path d="M6 22L6 8L11 8L14 13L17 8L22 8L22 22L19 22L19 12L16 17L12 17L9 12L9 22Z" fill="var(--bg-page)"/></svg>
+          </div>
+          <span style={{fontSize:17,fontWeight:500,letterSpacing:-0.01}}>Tradeit</span>
+        </div>}
+    <div style={{flex:1,display:"flex",alignItems:"center"}}>
+      {variant==="back"&&title&&<span style={{fontSize:17,fontWeight:500}}>{title}</span>}
+    </div>
+    {right || <div style={{display:"flex",alignItems:"center",gap:4}}>
+      <button style={iconBtn()} aria-label="Notificaciones">
+        <i className="ph ph-bell" style={{fontSize:22}}/>
+        {rightCount>0&&<span style={{position:"absolute",top:6,right:6,width:8,height:8,borderRadius:"50%",background:"var(--danger)"}}/>}
+      </button>
+    </div>}
+  </div>;
+}
+
+// ─── BOTTOM NAV ──────────────────────────────────────────────────────────────
+function BottomNav({ active="home", onChange }) {
+  const tabs = [{id:"home",label:"Inicio",icon:"ph-house"},{id:"search",label:"Buscar",icon:"ph-magnifying-glass"},{id:"ops",label:"Operaciones",icon:"ph-list-bullets"},{id:"profile",label:"Perfil",icon:"ph-user"}];
+  return <div style={{ height:64, background:"var(--bg-primary)", borderTop:"1px solid var(--border)", display:"grid", gridTemplateColumns:"repeat(4,1fr)", flexShrink:0 }}>
+    {tabs.map(t=>{const isActive=active===t.id; return <button key={t.id} onClick={()=>onChange?.(t.id)} style={{ border:"none", background:"transparent", color:isActive?"var(--interactive)":"var(--text-muted)", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:2, cursor:"pointer", padding:"8px 4px", fontFamily:"'IBM Plex Sans',sans-serif" }}>
+      <i className={"ph "+(isActive?"ph-fill ph-"+t.icon.replace("ph-",""):t.icon)} style={{fontSize:22}}/>
+      <span style={{fontSize:10,fontWeight:isActive?500:400}}>{t.label}</span>
+    </button>;})}
+  </div>;
+}
+
+// ─── TCG CARD ────────────────────────────────────────────────────────────────
+function TcgCard({ card, onClick, shellVariant="A" }) {
+  const { name, set, number, rarity, condition, price, delta, period="30d", productType="single", grading } = card;
+  const shellStyle = (TCG_SHELLS[shellVariant]||TCG_SHELLS.A)[productType];
+  const isDarkShell = shellVariant==="D";
+  const rarityBg = isDarkShell?"rgba(255,255,255,.10)":"rgba(255,255,255,.85)";
+  const rarityFg = isDarkShell?"#F0EFEC":"#131210";
+  return <button onClick={onClick} style={{ background:"var(--bg-primary)", border:"1px solid var(--border)", borderRadius:12, overflow:"hidden", boxShadow:"0 1px 4px rgba(0,0,0,.06)", display:"flex", flexDirection:"column", padding:0, cursor:"pointer", textAlign:"left", fontFamily:"'IBM Plex Sans',sans-serif", transition:"border-color 100ms ease-out", width:"100%" }}
+    onMouseEnter={e=>{e.currentTarget.style.borderColor="var(--border-em)"}}
+    onMouseLeave={e=>{e.currentTarget.style.borderColor="var(--border)"}}>
+    <div style={{ height:130, position:"relative", display:"flex", alignItems:"center", justifyContent:"center", ...shellStyle }}>
+      {card.image
+        ? <img src={card.image} alt={name} style={{ height:productType==="sealed"?90:112, maxWidth:productType==="sealed"?94:78, objectFit:"contain", filter:"drop-shadow(0 4px 12px rgba(0,0,0,.30))" }}/>
+        : <div style={{ width:productType==="sealed"?90:76, height:productType==="sealed"?84:108, borderRadius:productType==="sealed"?8:6, background:artColorFor(name), boxShadow:"0 4px 12px rgba(0,0,0,.18)", display:"flex", alignItems:"center", justifyContent:"center", color:"rgba(255,255,255,.55)", fontSize:10, fontFamily:"'IBM Plex Mono',monospace" }}>{productType==="sealed"?"ETB":"art"}</div>
+      }
+      {productType==="graded"&&grading ? <span style={{ position:"absolute", top:8, right:8, background:"#131210", color:"#F0EFEC", height:20, padding:"0 8px", lineHeight:"20px", borderRadius:4, fontSize:11, fontFamily:"'IBM Plex Mono',monospace", fontWeight:500 }}>{grading}</span>
+        : rarity ? <span style={{ position:"absolute", top:8, right:8, background:rarityBg, color:rarityFg, height:20, padding:"0 8px", lineHeight:"20px", borderRadius:999, fontSize:10.5, fontWeight:500 }}>{rarity}</span> : null}
+    </div>
+    <div style={{padding:10,display:"flex",flexDirection:"column",gap:4}}>
+      <div style={{fontSize:13,fontWeight:500,color:"var(--text-primary)",lineHeight:1.3,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{name}</div>
+      <div style={{fontSize:11,color:"var(--text-muted)",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{number?`${number} · ${set}`:set}</div>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:4}}>
+        {condition ? <ConditionBadge code={condition}/> : <span style={{height:20,display:"inline-flex",alignItems:"center",padding:"0 8px",borderRadius:999,background:"var(--bg-secondary)",color:"var(--text-secondary)",fontSize:11,fontWeight:500}}>{productType==="sealed"?"Sealed":productType==="graded"?"Graded":"—"}</span>}
+        <Price value={price} size="sm"/>
+      </div>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+        <span style={{fontSize:10,color:"var(--text-muted)",fontFamily:"'IBM Plex Mono',monospace"}}>{period}</span>
+        <Delta value={delta} period={period} size="sm"/>
+      </div>
+    </div>
+  </button>;
+}
+
+// ─── PRICE BLOCK ─────────────────────────────────────────────────────────────
+function PriceBlock({ current=412.50, currency="USD", updatedAgo="hace 12 min", source="TCGPlayer", averages, tendency="Sube", volatility="Media" }) {
+  averages = averages||[{label:"30d",value:398.20,delta:3.8},{label:"60d",value:376.10,delta:9.7},{label:"90d",value:354.90,delta:16.2}];
+  return <div style={{background:"var(--bg-primary)",border:"1px solid var(--border)",borderRadius:12,padding:18,display:"flex",flexDirection:"column",gap:14}}>
+    <div>
+      <div style={labelUp}>Precio actual</div>
+      <div style={{marginTop:4}}><Price value={current} currency={currency} size="lg"/></div>
+      <div style={{fontSize:11,color:"var(--text-muted)",marginTop:4,fontFamily:"'IBM Plex Mono',monospace"}}>Actualizado {updatedAgo} · Fuente: {source}</div>
+    </div>
+    <div style={{height:1,background:"var(--border)"}}/>
+    <div>
+      <div style={labelUp}>Promedios</div>
+      <div style={{display:"grid",gridTemplateColumns:"auto 1fr auto",rowGap:6,columnGap:16,marginTop:8,alignItems:"baseline"}}>
+        {averages.map(a=><React.Fragment key={a.label}>
+          <span style={{fontSize:12,color:"var(--text-secondary)",fontFamily:"'IBM Plex Mono',monospace"}}>{a.label}</span>
+          <Price value={a.value} currency={currency} size="sm"/>
+          <Delta value={a.delta} period={a.label} size="sm"/>
+        </React.Fragment>)}
+      </div>
+    </div>
+    <div style={{height:1,background:"var(--border)"}}/>
+    <div style={{display:"flex",gap:24,fontSize:12,color:"var(--text-secondary)"}}>
+      <div><span style={{color:"var(--text-muted)"}}>Tendencia · </span><span style={{color:"var(--text-primary)",fontWeight:500}}>{tendency}</span></div>
+      <div><span style={{color:"var(--text-muted)"}}>Volatilidad · </span><span style={{color:"var(--text-primary)",fontWeight:500}}>{volatility}</span></div>
+    </div>
+  </div>;
+}
+
+// ─── PRICE CHART ─────────────────────────────────────────────────────────────
+function generatePriceSeries() {
+  function gen(n,start,drift,vol,labels){const out=[];let v=start;for(let i=0;i<n;i++){v=v+drift+(Math.sin(i*0.7)*vol*0.6)+((i*91%13-6)/6)*vol*0.4;out.push([labels[Math.floor(i/n*labels.length)]||"",Math.max(v,start*0.6)]);}return out;}
+  return {"1m":gen(30,380,1.1,6,["−30d","−15d","hoy"]),"3m":gen(60,350,1.05,12,["−3m","−2m","−1m","hoy"]),"9m":gen(90,290,1.5,18,["−9m","−6m","−3m","hoy"]),"12m":gen(120,240,1.6,24,["−12m","−9m","−6m","−3m","hoy"])};
+}
+
+function PriceChart({ data, periods=["1m","3m","9m","12m"], active="3m", onPeriod }) {
+  const series = data?.[active]||[];
+  const w=320,h=160,padL=8,padR=8,padT=12,padB=22;
+  const innerW=w-padL-padR,innerH=h-padT-padB;
+  const xs=series.map((_,i)=>padL+(i/Math.max(series.length-1,1))*innerW);
+  const ys_raw=series.map(d=>d[1]);
+  const min=Math.min(...ys_raw),max=Math.max(...ys_raw),range=Math.max(max-min,0.01);
+  const ys=ys_raw.map(v=>padT+innerH-((v-min)/range)*innerH);
+  const path=xs.map((x,i)=>(i===0?"M":"L")+x+","+ys[i]).join(" ");
+  const areaPath=path+` L${xs[xs.length-1]},${padT+innerH} L${xs[0]},${padT+innerH} Z`;
+  const lastX=xs[xs.length-1],lastY=ys[ys.length-1];
+  const trendUp=ys_raw[ys_raw.length-1]>=ys_raw[0];
+  const stroke=trendUp?"var(--success)":"var(--danger)";
+  return <div style={{background:"var(--bg-primary)",border:"1px solid var(--border)",borderRadius:12,padding:16}}>
+    <div style={{display:"flex",alignItems:"baseline",justifyContent:"space-between",marginBottom:10}}>
+      <div>
+        <div style={{fontSize:13,fontWeight:500,color:"var(--text-primary)"}}>Historial de precios</div>
+        <div style={{fontSize:11,color:"var(--text-muted)",fontFamily:"'IBM Plex Mono',monospace"}}>Últimos {active==="1m"?"30 días":active==="3m"?"3 meses":active==="9m"?"9 meses":"12 meses"}</div>
+      </div>
+      <div style={{display:"inline-flex",background:"var(--bg-secondary)",borderRadius:6,padding:2}}>
+        {periods.map(p=>{const isAct=p===active;return <button key={p} onClick={()=>onPeriod?.(p)} style={{padding:"4px 10px",border:isAct?"1px solid var(--border)":"1px solid transparent",background:isAct?"var(--bg-primary)":"transparent",color:isAct?"var(--text-primary)":"var(--text-secondary)",fontFamily:"'IBM Plex Mono',monospace",fontSize:11,fontWeight:500,borderRadius:4,cursor:"pointer",boxShadow:isAct?"0 1px 4px rgba(0,0,0,.06)":"none"}}>{p}</button>;})}
+      </div>
+    </div>
+    <svg viewBox={`0 0 ${w} ${h}`} width="100%" height="160" style={{display:"block"}}>
+      <defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={trendUp?"rgba(45,166,126,.14)":"rgba(217,70,70,.14)"}/><stop offset="100%" stopColor="rgba(0,0,0,0)"/></linearGradient></defs>
+      {[0.25,0.5,0.75].map(p=><line key={p} x1={padL} x2={w-padR} y1={padT+innerH*p} y2={padT+innerH*p} stroke="var(--bg-secondary)" strokeWidth="1"/>)}
+      <path d={areaPath} fill="url(#cg)"/>
+      <path d={path} fill="none" stroke={stroke} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+      <circle cx={lastX} cy={lastY} r="3.5" fill="var(--bg-primary)" stroke={stroke} strokeWidth="2"/>
+      {series.length>2&&[0,Math.floor(series.length/2),series.length-1].map(i=><text key={i} x={xs[i]} y={h-4} fill="var(--text-muted)" fontSize="10" fontFamily="IBM Plex Mono,monospace" textAnchor={i===0?"start":i===series.length-1?"end":"middle"}>{series[i][0]}</text>)}
+    </svg>
+    <div style={{marginTop:8,fontSize:11,color:"var(--text-muted)",fontFamily:"'IBM Plex Mono',monospace",lineHeight:1.4}}>Datos consolidados de TCGPlayer y PriceCharting. Última sincronización: hace 12 min.</div>
+  </div>;
+}
+
+// ─── LISTING ROW ─────────────────────────────────────────────────────────────
+function ListingRow({ listing, marketPrice }) {
+  const { seller, condition, price, location, country="CL", verified } = listing;
+  const delta = marketPrice?((price-marketPrice)/marketPrice)*100:null;
+  return <div style={{display:"grid",gridTemplateColumns:"32px 1fr auto",gap:12,padding:"12px 14px",background:"var(--bg-primary)",border:"1px solid var(--border)",borderRadius:8,alignItems:"center"}}>
+    <Avatar name={seller} size="sm"/>
+    <div style={{minWidth:0}}>
+      <div style={{display:"flex",alignItems:"center",gap:6}}>
+        <span style={{fontSize:13,fontWeight:500,color:"var(--text-primary)"}}>{seller}</span>
+        {verified&&<i className="ph ph-seal-check" style={{fontSize:13,color:"var(--success)"}}/>}
+        <ConditionBadge code={condition}/>
+      </div>
+      <div style={{fontSize:11,color:"var(--text-muted)",marginTop:2}}>{location} · {country}</div>
+    </div>
+    <div style={{textAlign:"right"}}>
+      <Price value={price} size="sm"/>
+      {delta!=null&&<div style={{fontSize:10.5,color:Math.abs(delta)<2?"var(--text-muted)":delta>0?"#A02C2C":"#0F6E56",fontFamily:"'IBM Plex Mono',monospace",marginTop:2}}>
+        {delta>0?"+":delta<0?"−":""}{Math.abs(delta).toFixed(1).replace(".",",")}% vs mercado
+      </div>}
+    </div>
+  </div>;
+}
+
+// ─── OVERLAYS ────────────────────────────────────────────────────────────────
+function Modal({ open, onClose, title, summary, children, primaryLabel, onPrimary, primaryVariant="primary", secondaryLabel="Cancelar" }) {
+  if (!open) return null;
+  return <div onClick={onClose} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.5)",zIndex:40,display:"flex",alignItems:"center",justifyContent:"center",padding:18,animation:"fadeIn 200ms ease-out both"}}>
+    <div onClick={e=>e.stopPropagation()} style={{width:"100%",maxWidth:360,background:"var(--bg-primary)",color:"var(--text-primary)",borderRadius:16,overflow:"hidden",boxShadow:"0 8px 32px rgba(0,0,0,.12)",animation:"modalIn 300ms ease-in-out both"}}>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"18px 20px 6px"}}>
+        <div style={{fontSize:17,fontWeight:500}}>{title}</div>
+        <button onClick={onClose} style={{width:32,height:32,borderRadius:8,border:"none",background:"transparent",color:"var(--text-secondary)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><i className="ph ph-x" style={{fontSize:18}}/></button>
+      </div>
+      <div style={{padding:"4px 20px 14px",fontSize:13.5,color:"var(--text-secondary)",lineHeight:1.55}}>
+        {children}
+        {summary&&<div style={{marginTop:12,padding:"10px 12px",border:"1px solid var(--border)",borderRadius:8,background:"var(--bg-page)",fontSize:12.5,color:"var(--text-primary)"}}>{summary}</div>}
+      </div>
+      <div style={{display:"flex",justifyContent:"flex-end",gap:8,padding:"10px 16px 16px",borderTop:"1px solid var(--bg-secondary)"}}>
+        <Button variant="secondary" onClick={onClose}>{secondaryLabel}</Button>
+        {primaryLabel&&<Button variant={primaryVariant} onClick={onPrimary}>{primaryLabel}</Button>}
+      </div>
+    </div>
+  </div>;
+}
+
+function Toast({ message, visible }) {
+  if (!visible) return null;
+  return <div style={{position:"absolute",bottom:84,left:"50%",transform:"translateX(-50%)",background:"#131210",color:"#F0EFEC",padding:"10px 16px",borderRadius:8,fontSize:13,boxShadow:"0 8px 32px rgba(0,0,0,.20)",maxWidth:"84%",textAlign:"center",zIndex:50,fontFamily:"'IBM Plex Sans',sans-serif",animation:"toastIn 200ms ease-out both"}}>{message}</div>;
+}
+
+// ─── SEARCH BAR ──────────────────────────────────────────────────────────────
+function SearchBar({ value, onChange, onFilter }) {
+  return <div style={{padding:"10px 14px",background:"var(--bg-primary)",borderBottom:"1px solid var(--border)",flexShrink:0,display:"flex",gap:8,alignItems:"center"}}>
+    <label style={{flex:1,display:"flex",alignItems:"center",gap:8,height:40,padding:"0 14px",background:"var(--bg-secondary)",borderRadius:8}}>
+      <i className="ph ph-magnifying-glass" style={{fontSize:18,color:"var(--text-muted)"}}/>
+      <input value={value||""} onChange={e=>onChange?.(e.target.value)} placeholder="Busca una carta o set" style={{flex:1,border:"none",background:"transparent",outline:"none",fontSize:14,color:"var(--text-primary)",fontFamily:"'IBM Plex Sans',sans-serif"}}/>
+      {value&&<button onClick={()=>onChange?.("")} style={{background:"transparent",border:"none",color:"var(--text-muted)",cursor:"pointer",padding:0}}><i className="ph ph-x-circle" style={{fontSize:16}}/></button>}
+    </label>
+    <button onClick={onFilter} style={{width:40,height:40,borderRadius:8,background:"transparent",border:"1px solid var(--border)",color:"var(--text-primary)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
+      <i className="ph ph-funnel" style={{fontSize:20}}/>
+    </button>
+  </div>;
+}
+
+// ─── SCREENS ─────────────────────────────────────────────────────────────────
+function HomeScreen({ onOpenCard, onScan, watchlist=[], trendingCards=[], catalog=CATALOG, shellVariant="A" }) {
+  const featured = trendingCards.length ? trendingCards.slice(0,4) : catalog.slice(0,4);
+  return <div style={{flex:1,overflow:"auto",background:"var(--bg-page)"}}>
+    <div style={{padding:"20px 18px 8px"}}>
+      <div style={{fontSize:13,color:"var(--text-secondary)"}}>Hola, Diego.</div>
+      <div style={{fontSize:26,fontWeight:300,color:"var(--text-primary)",letterSpacing:-0.02,lineHeight:1.2,marginTop:2}}>Los datos que tu colección merece.</div>
+    </div>
+    <button onClick={onScan} style={{display:"flex",alignItems:"center",gap:12,margin:"16px 14px 0",padding:"14px 16px",background:"var(--inverse-surface)",color:"var(--on-inverse-surface)",border:"none",borderRadius:12,cursor:"pointer",textAlign:"left",width:"calc(100% - 28px)",fontFamily:"'IBM Plex Sans',sans-serif"}}>
+      <div style={{width:40,height:40,borderRadius:8,background:"rgba(106,170,216,.18)",display:"flex",alignItems:"center",justifyContent:"center",color:"#6AAAD8"}}><i className="ph ph-camera" style={{fontSize:22}}/></div>
+      <div style={{flex:1}}>
+        <div style={{fontSize:14,fontWeight:500}}>Escanear una carta</div>
+        <div style={{fontSize:12,opacity:0.65,marginTop:2}}>Apuntá con la cámara y te decimos cuánto vale.</div>
+      </div>
+      <i className="ph ph-arrow-right" style={{fontSize:18,opacity:0.55}}/>
+    </button>
+    <div style={{padding:"24px 14px 0"}}>
+      <div style={{display:"flex",alignItems:"flex-end",justifyContent:"space-between"}}>
+        <div><div style={labelUp}>Tu watchlist</div><div style={{fontSize:14,color:"var(--text-primary)",marginTop:2}}><span style={{fontFamily:"'IBM Plex Mono',monospace",fontWeight:500}}>{watchlist.length}</span> cartas vigiladas</div></div>
+        {watchlist.length>0&&<button style={linkBtn}>Ver todas</button>}
+      </div>
+      {watchlist.length===0 ? <EmptyState icon="ph-heart" title="Aún no sigues ninguna carta" desc="Agrega cartas a tu watchlist para ver su precio y recibir alertas cuando se mueva." cta="Buscar una carta" onCta={onScan}/>
+        : <div style={{display:"flex",flexDirection:"column",gap:8,marginTop:12}}>
+            {watchlist.map(c=><button key={c.id} onClick={()=>onOpenCard(c)} style={{display:"grid",gridTemplateColumns:"44px 1fr auto",gap:12,padding:12,background:"var(--bg-primary)",border:"1px solid var(--border)",borderRadius:10,alignItems:"center",cursor:"pointer",textAlign:"left",fontFamily:"'IBM Plex Sans',sans-serif"}}>
+              <div style={{width:44,height:60,borderRadius:4,...((TCG_SHELLS[shellVariant]||TCG_SHELLS.A)[c.productType]),display:"flex",alignItems:"center",justifyContent:"center",overflow:"hidden"}}>
+                {c.image
+                  ? <img src={c.image} alt={c.name} style={{height:56,objectFit:"contain"}}/>
+                  : <div style={{width:28,height:44,borderRadius:2,background:artColorFor(c.name)}}/>}
+              </div>
+              <div style={{minWidth:0}}>
+                <div style={{fontSize:13,fontWeight:500,color:"var(--text-primary)",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{c.name}</div>
+                <div style={{fontSize:11,color:"var(--text-muted)"}}>{c.setShort||c.set}</div>
+              </div>
+              <div style={{textAlign:"right"}}>
+                {c.price>0?<Price value={c.price} size="sm"/>:<span style={{fontSize:13,color:"var(--text-muted)",fontFamily:"'IBM Plex Mono',monospace"}}>—</span>}
+                <div style={{marginTop:2}}><Delta value={c.delta} period={c.period} size="sm"/></div>
+              </div>
+            </button>)}
+          </div>}
+    </div>
+    <div style={{padding:"28px 14px 24px"}}>
+      <div style={{display:"flex",alignItems:"flex-end",justifyContent:"space-between"}}>
+        <div><div style={labelUp}>Tendencias</div><div style={{fontSize:14,color:"var(--text-primary)",marginTop:2}}>Las cartas que más se mueven hoy</div></div>
+      </div>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginTop:12}}>
+        {featured.map(c=><TcgCard key={c.id} card={c} onClick={()=>onOpenCard(c)} shellVariant={shellVariant}/>)}
+      </div>
+    </div>
+    <div style={{padding:"16px 18px 24px",fontSize:10.5,color:"var(--text-muted)",fontFamily:"'IBM Plex Mono',monospace",lineHeight:1.5,textAlign:"center"}}>
+      Tradeit TCG no entrega asesoría financiera<br/>ni recomendaciones de compra.
+    </div>
+  </div>;
+}
+
+function SearchScreen({ onOpenCard, onScan, shellVariant="A" }) {
+  const [query,setQuery] = React.useState("");
+  const [productType,setProductType] = React.useState("all");
+  const [results,setResults] = React.useState([]);
+  const [loading,setLoading] = React.useState(false);
+  const [error,setError] = React.useState(null);
+  const [total,setTotal] = React.useState(0);
+
+  React.useEffect(()=>{
+    if(productType==="sealed"||productType==="graded"){
+      const filtered=CATALOG.filter(c=>c.productType===productType);
+      setResults(filtered);setTotal(filtered.length);setLoading(false);setError(null);
+      return;
+    }
+    setLoading(true);setError(null);
+    const timer=setTimeout(async()=>{
+      try{
+        const {cards,total}=await ptcgSearch(query);
+        setResults(cards);setTotal(total);
+      }catch(e){setError(e.message);}
+      finally{setLoading(false);}
+    }, query?500:0);
+    return()=>clearTimeout(timer);
+  },[query,productType]);
+
+  return <div style={{flex:1,display:"flex",flexDirection:"column",background:"var(--bg-page)",overflow:"hidden"}}>
+    <SearchBar value={query} onChange={setQuery}/>
+    <div style={{padding:"10px 14px",background:"var(--bg-primary)",borderBottom:"1px solid var(--border)",display:"flex",gap:6,overflowX:"auto",flexShrink:0}}>
+      <Chip active={productType==="all"} onClick={()=>setProductType("all")}>Todo</Chip>
+      <Chip active={productType==="single"} onClick={()=>setProductType("single")}>Single Card</Chip>
+      <Chip active={productType==="sealed"} onClick={()=>setProductType("sealed")}>Sealed</Chip>
+      <Chip active={productType==="graded"} onClick={()=>setProductType("graded")}>Graded</Chip>
+    </div>
+    <div style={{flex:1,overflowY:"auto",padding:"14px 14px 20px"}}>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}>
+        <span style={{fontSize:12,color:"var(--text-secondary)"}}>
+          {loading
+            ? <span style={{color:"var(--text-muted)"}}>Buscando en la API…</span>
+            : <><span style={{fontFamily:"'IBM Plex Mono',monospace",color:"var(--text-primary)",fontWeight:500}}>{total>0&&!query?`${results.length}+`:results.length}</span> resultados · Pokémon TCG API</>}
+        </span>
+        <button style={{background:"transparent",border:"none",color:"var(--interactive)",fontSize:12,fontWeight:500,cursor:"pointer",display:"inline-flex",alignItems:"center",gap:4}}>Relevancia <i className="ph ph-caret-down" style={{fontSize:12}}/></button>
+      </div>
+      {loading?(
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+          {[0,1,2,3,4,5].map(i=><div key={i} style={{height:200,borderRadius:12,background:"linear-gradient(90deg,var(--bg-secondary) 25%,var(--bg-primary) 50%,var(--bg-secondary) 75%)",backgroundSize:"600px 100%",animation:"shimmer 1.4s infinite"}}/>)}
+        </div>
+      ):error?(
+        <EmptyState icon="ph-warning-circle" title="No se pudo conectar con la API" desc={`Error: ${error}. Verificá tu conexión.`}/>
+      ):results.length===0?(
+        <EmptyState icon="ph-magnifying-glass" title="No encontramos cartas con esos filtros" desc="Probá quitar un filtro o usar el scan para identificar una carta física." cta="Escanear carta" onCta={onScan}/>
+      ):(
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+          {results.map(c=><TcgCard key={c.id} card={c} onClick={()=>onOpenCard(c)} shellVariant={shellVariant}/>)}
+        </div>
+      )}
+    </div>
+  </div>;
+}
+
+function CardDetail({ card, onBack, isInWatchlist, onToggleWatchlist, onCreateAlert, shellVariant="A" }) {
+  if (!card) return null;
+  const [period,setPeriod] = React.useState("3m");
+  const series = React.useMemo(()=>generatePriceSeries(),[card.id]);
+  const isDarkHero = shellVariant==="D";
+  const heroNameColor = isDarkHero?"#F0EFEC":"#131210";
+  const heroSubColor  = isDarkHero?"#9B9892":"#5C5A56";
+  const apiVariants = card._raw ? getPriceVariants(card._raw) : null;
+  const variants = apiVariants || card.variants;
+  const tcgUrl = card._raw?.tcgplayer?.url;
+  return <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden",background:"var(--bg-page)"}}>
+    <TopBar variant="back" title="Carta" onBack={onBack} right={<div style={{display:"flex",gap:4}}>
+      {tcgUrl&&<a href={tcgUrl} target="_blank" rel="noopener noreferrer" style={{...iconBtn(),textDecoration:"none"}} aria-label="Ver en TCGPlayer"><i className="ph ph-arrow-square-out" style={{fontSize:20}}/></a>}
+      <button style={iconBtn()} aria-label="Compartir"><i className="ph ph-share-network" style={{fontSize:20}}/></button>
+    </div>}/>
+    <div style={{flex:1,overflowY:"auto"}}>
+      <div style={{...((TCG_SHELLS[shellVariant]||TCG_SHELLS.A)[card.productType]),padding:"20px 18px 24px",display:"flex",gap:16,alignItems:"center"}}>
+        {card.imageLarge||card.image
+          ? <img src={card.imageLarge||card.image} alt={card.name} style={{width:96,height:134,objectFit:"contain",filter:"drop-shadow(0 8px 24px rgba(0,0,0,.35))",flexShrink:0}}/>
+          : <div style={{width:96,height:134,borderRadius:8,background:artColorFor(card.name),boxShadow:"0 8px 24px rgba(0,0,0,.25)",display:"flex",alignItems:"center",justifyContent:"center",color:"rgba(255,255,255,.55)",fontSize:11,fontFamily:"'IBM Plex Mono',monospace",flexShrink:0}}>art</div>}
+        <div style={{flex:1,minWidth:0}}>
+          <div style={{fontSize:24,fontWeight:500,color:heroNameColor,lineHeight:1.2}}>{card.name}</div>
+          <div style={{fontSize:12,color:heroSubColor,marginTop:4,fontFamily:"'IBM Plex Mono',monospace"}}>{card.number?`${card.number} · `:""}{card.set}</div>
+          <div style={{marginTop:10,display:"flex",gap:6,flexWrap:"wrap"}}>
+            {card.rarity&&<Badge variant="info">{card.rarity}</Badge>}
+            {card.grading&&<Badge variant="grading">{card.grading}</Badge>}
+            {card.delta>5&&<Badge variant="warning">Tendencia alcista</Badge>}
+            {card._raw&&<Badge variant="neutral">TCGPlayer</Badge>}
+          </div>
+        </div>
+      </div>
+      <div style={{padding:14,display:"flex",flexDirection:"column",gap:14}}>
+        <PriceBlock current={card.price} updatedAgo={card._raw?.tcgplayer?.updatedAt?"actualizado "+card._raw.tcgplayer.updatedAt:"hace 12 min"} source="TCGPlayer" averages={card.averages} tendency={card.tendency||"—"} volatility={card.volatility||"—"}/>
+        <PriceChart data={series} active={period} onPeriod={setPeriod}/>
+        {variants&&variants.length>0&&<div style={{background:"var(--bg-primary)",border:"1px solid var(--border)",borderRadius:12,padding:14}}>
+          <div style={labelUp}>Precios por variante · TCGPlayer</div>
+          <div style={{display:"flex",flexDirection:"column",gap:2,marginTop:8}}>
+            {variants.map(v=><div key={v.label} style={{display:"grid",gridTemplateColumns:"1fr auto auto",alignItems:"baseline",columnGap:12,padding:"10px 0",borderBottom:"1px solid var(--bg-secondary)"}}>
+              <span style={{fontSize:13,color:"var(--text-primary)"}}>{v.label}</span>
+              {v.price>0?<Price value={v.price} size="sm"/>:<span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:13,color:"var(--text-muted)"}}>—</span>}
+              {v.delta!=null?<Delta value={v.delta} period="30d" size="sm"/>:<span style={{fontSize:11,color:"var(--text-muted)"}}>—</span>}
+            </div>)}
+          </div>
+        </div>}
+        {card.listings&&<div>
+          <div style={{display:"flex",alignItems:"baseline",justifyContent:"space-between",padding:"0 4px 10px"}}>
+            <span style={{fontSize:16,fontWeight:500}}>Disponible en Tradeit <span style={{color:"var(--text-muted)",fontFamily:"'IBM Plex Mono',monospace",fontWeight:400}}>{card.listings.length}</span></span>
+            <button style={linkBtn}>Ver todas</button>
+          </div>
+          <div style={{display:"flex",flexDirection:"column",gap:8}}>
+            {card.listings.map((l,i)=><ListingRow key={i} listing={l} marketPrice={card.price}/>)}
+          </div>
+        </div>}
+        <div style={{background:"var(--bg-primary)",border:"1px solid var(--border)",borderRadius:12,padding:14,marginTop:4}}>
+          <div style={{fontSize:13,fontWeight:500,color:"var(--text-primary)",marginBottom:4}}>¿Qué es la volatilidad?</div>
+          <div style={{fontSize:12.5,color:"var(--text-secondary)",lineHeight:1.5}}>La volatilidad mide qué tanto sube y baja el precio de una carta en un período. Una volatilidad alta significa precios menos predecibles; una baja, precios más estables.</div>
+        </div>
+        <div style={{fontSize:11,color:"var(--text-muted)",textAlign:"center",fontFamily:"'IBM Plex Mono',monospace",padding:"4px 8px 80px"}}>Tradeit TCG no entrega asesoría financiera ni recomendaciones de compra.</div>
+      </div>
+    </div>
+    <div style={{background:"var(--bg-primary)",borderTop:"1px solid var(--border)",padding:"10px 14px",display:"flex",gap:8,flexShrink:0}}>
+      <Button variant="secondary" icon={isInWatchlist?"ph-fill ph-heart":"ph-heart"} onClick={onToggleWatchlist} style={{flex:1,color:isInWatchlist?"#A02C2C":"var(--text-primary)"}}>{isInWatchlist?"Siguiendo":"Watchlist"}</Button>
+      <Button variant="primary" icon="ph-bell" onClick={onCreateAlert} style={{flex:1.4}}>Crear alerta</Button>
+    </div>
+  </div>;
+}
+
+function ScanScreen({ onClose, onResult, scanCard }) {
+  const [scanning,setScanning] = React.useState(true);
+  const [result,setResult] = React.useState(null);
+  React.useEffect(()=>{
+    if(!scanning)return;
+    const t=setTimeout(()=>{setResult(scanCard||CATALOG[0]);setScanning(false);},3000);
+    return()=>clearTimeout(t);
+  },[scanning]);
+  return <div style={{flex:1,background:"#131210",display:"flex",flexDirection:"column",overflow:"hidden",position:"relative"}}>
+    <div style={{flex:1,position:"relative",background:"radial-gradient(ellipse at center,#252421 0%,#131210 60%,#050504 100%)",display:"flex",alignItems:"center",justifyContent:"center"}}>
+      <div style={{width:240,height:336,position:"relative",borderRadius:8}}>
+        {[{t:0,l:0,br:"8px 0 0 0",b_:"tl"},{t:0,r:0,br:"0 8px 0 0",b_:"tr"},{b:0,l:0,br:"0 0 0 8px",b_:"bl"},{b:0,r:0,br:"0 0 8px 0",b_:"br"}].map((c,i)=>{
+          const s={position:"absolute",width:28,height:28,top:c.t,left:c.l,right:c.r,bottom:c.b,borderColor:scanning?"#6AAAD8":"#2DA67E",borderStyle:"solid",borderWidth:0,borderRadius:c.br};
+          if(c.b_==="tl"){s.borderTopWidth=3;s.borderLeftWidth=3;}
+          if(c.b_==="tr"){s.borderTopWidth=3;s.borderRightWidth=3;}
+          if(c.b_==="bl"){s.borderBottomWidth=3;s.borderLeftWidth=3;}
+          if(c.b_==="br"){s.borderBottomWidth=3;s.borderRightWidth=3;}
+          return <div key={i} style={s}/>;
+        })}
+        {result&&(result.imageLarge||result.image
+          ? <img src={result.imageLarge||result.image} alt={result.name} style={{position:"absolute",inset:8,width:"calc(100% - 16px)",height:"calc(100% - 16px)",objectFit:"contain",animation:"scanReveal 600ms ease-out",filter:"drop-shadow(0 4px 16px rgba(0,0,0,.6))"}}/>
+          : <div style={{position:"absolute",inset:12,borderRadius:4,background:artColorFor(result.name),boxShadow:"0 4px 16px rgba(0,0,0,.4)",animation:"scanReveal 600ms ease-out"}}/>
+        )}
+        {scanning&&<div style={{position:"absolute",left:0,right:0,height:2,background:"#6AAAD8",boxShadow:"0 0 12px #6AAAD8",animation:"scanLine 2s ease-in-out infinite",top:12}}/>}
+      </div>
+      <div style={{position:"absolute",top:20,left:14,right:14,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+        <button onClick={onClose} style={{width:40,height:40,borderRadius:20,background:"rgba(0,0,0,.4)",border:"1px solid rgba(255,255,255,.15)",color:"#F0EFEC",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><i className="ph ph-x" style={{fontSize:20}}/></button>
+        <button style={{width:40,height:40,borderRadius:20,background:"rgba(0,0,0,.4)",border:"1px solid rgba(255,255,255,.15)",color:"#F0EFEC",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><i className="ph ph-lightning" style={{fontSize:20}}/></button>
+      </div>
+      <div style={{position:"absolute",bottom:110,left:0,right:0,textAlign:"center",color:"#F0EFEC",fontFamily:"'IBM Plex Sans',sans-serif"}}>
+        {scanning?<><div style={{fontSize:14,fontWeight:500,marginBottom:4}}>Enmarca la carta</div><div style={{fontSize:12,color:"#9B9892"}}>Reconocimiento automático en curso…</div></>
+          :<><div style={{fontSize:14,fontWeight:500,marginBottom:4}}>Carta identificada</div><div style={{fontSize:12,color:"#9B9892"}}>Confianza 97% · OCR + image matching</div></>}
+      </div>
+    </div>
+    <div style={{background:"#1E1D1A",borderTop:"1px solid #2E2D2A",padding:16,color:"#F0EFEC",flexShrink:0}}>
+      {result?<div style={{display:"flex",alignItems:"center",gap:12}}>
+        <div style={{width:44,height:60,borderRadius:4,background:artColorFor(result.name),overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+          {result.image
+            ? <img src={result.image} alt={result.name} style={{height:58,objectFit:"contain"}}/>
+            : <div style={{width:44,height:60,background:artColorFor(result.name)}}/>}
+        </div>
+        <div style={{flex:1,minWidth:0}}>
+          <div style={{fontSize:14,fontWeight:500}}>{result.name}</div>
+          <div style={{fontSize:11,color:"#9B9892"}}>{[result.number,result.set].filter(Boolean).join(" · ")}</div>
+          <div style={{marginTop:4}}>
+            <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:14,fontWeight:500,color:"#F0EFEC"}}>{result.price>0?`USD ${result.price.toFixed(2).replace(".",",")}`: "—"}</span>
+            {result.delta!=null&&<span style={{marginLeft:8,color:"#2DA67E",fontFamily:"'IBM Plex Mono',monospace",fontSize:12}}>↑ +{result.delta.toFixed(1).replace(".",",")}%</span>}
+            {result._raw&&<span style={{marginLeft:8,fontSize:10,color:"#5C5A56"}}>TCGPlayer</span>}
+          </div>
+        </div>
+        <button onClick={()=>onResult?.(result)} style={{height:36,padding:"0 14px",borderRadius:8,background:"#6AAAD8",color:"#131210",border:"none",fontWeight:500,fontSize:13,cursor:"pointer",fontFamily:"'IBM Plex Sans',sans-serif"}}>Ver detalle</button>
+      </div>:<div style={{display:"flex",alignItems:"center",gap:12}}>
+        <div style={{width:24,height:24,borderRadius:"50%",border:"2px solid #2E2D2A",borderTopColor:"#6AAAD8",animation:"spin 800ms linear infinite"}}/>
+        <span style={{fontSize:13,color:"#9B9892"}}>OCR sobre nombre + número de carta + set symbol…</span>
+      </div>}
+    </div>
+  </div>;
+}
+
+function CardThumb({ card, size=44 }) {
+  const h = size*1.4|0;
+  if (!card) return <div style={{width:size,height:h,borderRadius:4,background:"var(--bg-secondary)",flexShrink:0}}/>;
+  return <div style={{width:size,height:h,borderRadius:4,overflow:"hidden",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",...((TCG_SHELLS.A)[card.productType]||{})}}>
+    {card.image
+      ? <img src={card.image} alt={card.name} style={{height:h,objectFit:"contain"}}/>
+      : <div style={{width:size-4,height:h-6,borderRadius:3,background:artColorFor(card.name)}}/>}
+  </div>;
+}
+
+function OpsScreen({ onPublish, catalog=CATALOG, onOpenCard }) {
+  const [role,setRole] = React.useState("buyer");
+  const buyerStats=[{label:"Gasto · este mes",value:"USD 1.245",helper:"+18% vs mes anterior"},{label:"Watchlist",value:"12",helper:"3 con alerta activa"},{label:"Cartas valorizadas",value:"USD 8.420",helper:"↑ 4,2% · 30d",positive:true}];
+
+  const alertDefs=[
+    {name:"Charizard ex",trigger:400,status:"Activa",color:"info",catId:"charizard-ex"},
+    {name:"Umbreon VMAX",trigger:500,status:"Disparada · hace 2h",color:"success",catId:"umbreon-vmax"},
+    {name:"Mewtwo VMAX",trigger:140,status:"Activa",color:"info",catId:"mewtwo-vmax"},
+  ].map(a=>({...a,card:catalog.find(c=>c.id===a.catId)||null}));
+
+  const purchaseDefs=[
+    {name:"Lugia V",date:"14 may",price:168,cond:"NM",catId:"lugia-v"},
+    {name:"Espeon V",date:"08 may",price:690,cond:"Graded",catId:"espeon-v"},
+    {name:"Rayquaza VMAX",date:"02 may",price:285,cond:"NM",catId:"rayquaza-vmax"},
+  ].map(p=>({...p,card:catalog.find(c=>c.id===p.catId)||null}));
+
+  const sellerDefs=[
+    {name:"Charizard ex (NM)",price:410,views:47,watchlists:8,status:"Activo",catId:"charizard-ex"},
+    {name:"Pikachu V Alt Art",price:320,views:19,watchlists:4,status:"Activo",catId:null},
+    {name:"Booster Box · Paldea",price:95,views:11,watchlists:2,status:"Pausado",catId:null},
+  ].map(l=>({...l,card:catalog.find(c=>c.id===l.catId)||null}));
+
+  return <div style={{flex:1,display:"flex",flexDirection:"column",background:"var(--bg-page)",overflow:"hidden"}}>
+    <div style={{padding:"16px 18px 8px",background:"var(--bg-primary)",borderBottom:"1px solid var(--border)",flexShrink:0}}>
+      <div style={{fontSize:22,fontWeight:300,color:"var(--text-primary)",letterSpacing:-0.02}}>Mis operaciones</div>
+      <div style={{display:"inline-flex",background:"var(--bg-secondary)",borderRadius:6,padding:2,marginTop:12}}>
+        {[["buyer","Comprador"],["seller","Vendedor"]].map(([k,label])=><button key={k} onClick={()=>setRole(k)} style={{padding:"6px 16px",border:role===k?"1px solid var(--border)":"1px solid transparent",background:role===k?"var(--bg-primary)":"transparent",color:role===k?"var(--text-primary)":"var(--text-secondary)",fontWeight:500,fontSize:13,borderRadius:4,cursor:"pointer",boxShadow:role===k?"0 1px 4px rgba(0,0,0,.06)":"none",fontFamily:"'IBM Plex Sans',sans-serif"}}>{label}</button>)}
+      </div>
+    </div>
+    <div style={{flex:1,overflowY:"auto",padding:"16px 14px 24px"}}>
+      {role==="buyer"?<div style={{display:"flex",flexDirection:"column",gap:14}}>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+          {buyerStats.slice(0,2).map((s,i)=><div key={i} style={{background:"var(--bg-primary)",border:"1px solid var(--border)",borderRadius:10,padding:"14px 16px"}}>
+            <div style={{fontSize:10,fontWeight:500,textTransform:"uppercase",letterSpacing:0.08,color:"var(--text-muted)"}}>{s.label}</div>
+            <div style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:20,fontWeight:400,color:"var(--text-primary)",marginTop:4}}>{s.value}</div>
+            <div style={{fontSize:11,color:"var(--text-secondary)",marginTop:2}}>{s.helper}</div>
+          </div>)}
+        </div>
+        <div style={{background:"var(--bg-primary)",border:"1px solid var(--border)",borderRadius:10,padding:"14px 16px"}}>
+          <div style={{fontSize:10,fontWeight:500,textTransform:"uppercase",letterSpacing:0.08,color:"var(--text-muted)"}}>{buyerStats[2].label}</div>
+          <div style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:24,fontWeight:400,color:"var(--text-primary)",marginTop:4}}>{buyerStats[2].value}</div>
+          <div style={{fontSize:11,color:"#0F6E56",marginTop:2}}>{buyerStats[2].helper}</div>
+        </div>
+
+        <div>
+          <div style={labelUp}>Alertas activas</div>
+          <div style={{display:"flex",flexDirection:"column",gap:8,marginTop:8}}>
+            {alertDefs.map((a,i)=><button key={i} onClick={()=>a.card&&onOpenCard?.(a.card)} style={{background:"var(--bg-primary)",border:"1px solid var(--border)",borderRadius:8,padding:"10px 12px",display:"flex",alignItems:"center",gap:10,cursor:a.card?"pointer":"default",textAlign:"left",fontFamily:"'IBM Plex Sans',sans-serif",width:"100%"}}>
+              <CardThumb card={a.card} size={36}/>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{fontSize:13,fontWeight:500,color:"var(--text-primary)"}}>{a.name}</div>
+                <div style={{fontSize:11,color:"var(--text-muted)",marginTop:1,fontFamily:"'IBM Plex Mono',monospace",display:"flex",gap:8}}>
+                  <span>Cruce: USD {a.trigger}</span>
+                  {a.card?.price>0&&<span style={{color:"var(--text-secondary)"}}>· Mercado: USD {a.card.price.toFixed(2).replace(".",",")}</span>}
+                </div>
+              </div>
+              <Badge variant={a.color}>{a.status}</Badge>
+            </button>)}
+          </div>
+        </div>
+
+        <div>
+          <div style={labelUp}>Compras declaradas · últimas</div>
+          <div style={{display:"flex",flexDirection:"column",gap:8,marginTop:8}}>
+            {purchaseDefs.map((p,i)=><button key={i} onClick={()=>p.card&&onOpenCard?.(p.card)} style={{background:"var(--bg-primary)",border:"1px solid var(--border)",borderRadius:8,padding:"10px 12px",display:"flex",alignItems:"center",gap:10,cursor:p.card?"pointer":"default",textAlign:"left",fontFamily:"'IBM Plex Sans',sans-serif",width:"100%"}}>
+              <CardThumb card={p.card} size={36}/>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{fontSize:13,fontWeight:500,color:"var(--text-primary)"}}>{p.name}</div>
+                <div style={{fontSize:11,color:"var(--text-muted)",marginTop:1,display:"flex",alignItems:"center",gap:6}}><span>{p.date}</span><span>·</span><ConditionBadge code={p.cond}/></div>
+              </div>
+              <div style={{textAlign:"right"}}>
+                <Price value={p.price} size="sm"/>
+                {p.card?.price>0&&<div style={{fontSize:10,color:p.card.price>p.price?"#0F6E56":"#A02C2C",fontFamily:"'IBM Plex Mono',monospace",marginTop:2}}>Mercado: {p.card.price.toFixed(0).replace(".",",")} USD</div>}
+              </div>
+            </button>)}
+          </div>
+        </div>
+      </div>:<div style={{display:"flex",flexDirection:"column",gap:14}}>
+        <Button variant="primary" icon="ph-tag" size="lg" onClick={onPublish} style={{width:"100%"}}>Publicar producto</Button>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+          {[{label:"Ingresos · este mes",value:"USD 2.180",helper:"+34% vs mes anterior"},{label:"Listings activos",value:"8",helper:"2 borradores"}].map((s,i)=><div key={i} style={{background:"var(--bg-primary)",border:"1px solid var(--border)",borderRadius:10,padding:"14px 16px"}}>
+            <div style={{fontSize:10,fontWeight:500,textTransform:"uppercase",letterSpacing:0.08,color:"var(--text-muted)"}}>{s.label}</div>
+            <div style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:20,fontWeight:400,color:"var(--text-primary)",marginTop:4}}>{s.value}</div>
+            <div style={{fontSize:11,color:"var(--text-secondary)",marginTop:2}}>{s.helper}</div>
+          </div>)}
+        </div>
+        <div>
+          <div style={labelUp}>Listings</div>
+          <div style={{display:"flex",flexDirection:"column",gap:8,marginTop:8}}>
+            {sellerDefs.map((l,i)=><div key={i} style={{background:"var(--bg-primary)",border:"1px solid var(--border)",borderRadius:8,padding:12,display:"flex",gap:10,alignItems:"flex-start"}}>
+              <CardThumb card={l.card} size={40}/>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                  <div style={{fontSize:13,fontWeight:500,color:"var(--text-primary)",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",maxWidth:160}}>{l.name}</div>
+                  <Badge variant={l.status==="Activo"?"success":"neutral"}>{l.status}</Badge>
+                </div>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginTop:6}}>
+                  <div>
+                    <Price value={l.price} size="md"/>
+                    {l.card?.price>0&&<div style={{fontSize:10,color:"var(--text-muted)",fontFamily:"'IBM Plex Mono',monospace",marginTop:1}}>Mercado: USD {l.card.price.toFixed(2).replace(".",",")}</div>}
+                  </div>
+                  <div style={{display:"flex",gap:12,fontSize:11,color:"var(--text-secondary)",fontFamily:"'IBM Plex Mono',monospace"}}>
+                    <span><i className="ph ph-eye" style={{fontSize:12,verticalAlign:-1}}/> {l.views}</span>
+                    <span><i className="ph ph-heart" style={{fontSize:12,verticalAlign:-1}}/> {l.watchlists}</span>
+                  </div>
+                </div>
+              </div>
+            </div>)}
+          </div>
+        </div>
+      </div>}
+    </div>
+  </div>;
+}
+
+function ProfileScreen() {
+  return <div style={{flex:1,overflowY:"auto",background:"var(--bg-page)"}}>
+    <div style={{background:"var(--bg-primary)",borderBottom:"1px solid var(--border)",padding:"20px 18px",display:"flex",flexDirection:"column",alignItems:"center",gap:12}}>
+      <div style={{position:"relative"}}>
+        <Avatar name="Diego G" size="lg"/>
+        <div style={{position:"absolute",bottom:0,right:0,width:20,height:20,borderRadius:"50%",background:"var(--success)",border:"2px solid var(--bg-primary)",display:"flex",alignItems:"center",justifyContent:"center"}}><i className="ph ph-seal-check" style={{fontSize:11,color:"#fff"}}/></div>
+      </div>
+      <div style={{textAlign:"center"}}>
+        <div style={{fontSize:20,fontWeight:500,color:"var(--text-primary)"}}>Diego G.</div>
+        <div style={{fontSize:13,color:"var(--text-secondary)",marginTop:2}}>Comprador verificado · desde mayo 2026</div>
+      </div>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:16,width:"100%",marginTop:8}}>
+        {[["12","Watchlist"],["4","Alertas"],["USD 1.245","Este mes"]].map(([v,l])=><div key={l} style={{textAlign:"center"}}>
+          <div style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:16,fontWeight:500,color:"var(--text-primary)"}}>{v}</div>
+          <div style={{fontSize:10,color:"var(--text-muted)",marginTop:2}}>{l}</div>
+        </div>)}
+      </div>
+    </div>
+    <div style={{padding:"16px 14px",display:"flex",flexDirection:"column",gap:8}}>
+      {[{icon:"ph-bell",label:"Notificaciones"},{icon:"ph-currency-dollar",label:"Moneda · USD"},{icon:"ph-lock-simple",label:"Privacidad"},{icon:"ph-gear-six",label:"Configuración"},{icon:"ph-sign-out",label:"Cerrar sesión",danger:true}].map((item,i)=><button key={i} style={{display:"flex",alignItems:"center",gap:14,padding:"14px 16px",background:"var(--bg-primary)",border:"1px solid var(--border)",borderRadius:10,cursor:"pointer",textAlign:"left",fontFamily:"'IBM Plex Sans',sans-serif",color:item.danger?"var(--danger)":"var(--text-primary)"}}>
+        <i className={"ph "+item.icon} style={{fontSize:20,color:item.danger?"var(--danger)":"var(--text-secondary)"}}/>
+        <span style={{fontSize:14,fontWeight:500,flex:1}}>{item.label}</span>
+        {!item.danger&&<i className="ph ph-caret-right" style={{fontSize:16,color:"var(--text-muted)"}}/>}
+      </button>)}
+    </div>
+  </div>;
+}
+
+// ─── MAIN APP ─────────────────────────────────────────────────────────────────
+function MainApp({ shellVariant="A" }) {
+  const [tab,setTab] = React.useState("home");
+  const [activeCard,setActiveCard] = React.useState(null);
+  const [scanning,setScanning] = React.useState(false);
+  const [catalog,setCatalog] = React.useState(CATALOG);
+  const [trendingCards,setTrendingCards] = React.useState([]);
+  const [watchlist,setWatchlist] = React.useState([
+    CATALOG.find(c=>c.id==="charizard-ex"),
+    CATALOG.find(c=>c.id==="umbreon-vmax"),
+    CATALOG.find(c=>c.id==="pikachu-illustrator"),
+  ].filter(Boolean));
+  const [toast,setToast] = React.useState(null);
+  const [confirmRemove,setConfirmRemove] = React.useState(null);
+
+  // ── Enrich catalog + fetch trending on mount ──────────────────────────────
+  React.useEffect(()=>{
+    let alive=true;
+    // Trending cards for HomeScreen hero grid (SIR / Illustration Rare)
+    ptcgSearch("",8).then(({cards})=>{ if(alive) setTrendingCards(cards); }).catch(()=>{});
+    // Enrich each single in the seed catalog with real image + TCGPlayer price
+    CATALOG.filter(c=>c.productType==="single").forEach(seed=>{
+      ptcgFetchByName(seed.name).then(apiCard=>{
+        if(!alive||!apiCard) return;
+        const enriched={...seed, image:apiCard.image, imageLarge:apiCard.imageLarge, price:apiCard.price||seed.price, _raw:apiCard._raw};
+        setCatalog(prev=>prev.map(c=>c.id===seed.id?enriched:c));
+        setWatchlist(prev=>prev.map(c=>c.id===seed.id?enriched:c));
+      }).catch(()=>{});
+    });
+    return ()=>{ alive=false; };
+  },[]);
+
+  const flash = msg=>{setToast(msg);setTimeout(()=>setToast(null),2400);};
+  const openCard = card=>{setActiveCard(card);setScanning(false);};
+  const isInWatchlist = card=>watchlist.some(c=>c.id===card?.id);
+  const requestRemove = card=>{
+    if(isInWatchlist(card)) setConfirmRemove(card);
+    else{setWatchlist([...watchlist,card]);flash("Carta agregada a tu watchlist.");}
+  };
+  const confirmRemoveYes = ()=>{setWatchlist(watchlist.filter(c=>c.id!==confirmRemove?.id));flash("Carta retirada de tu watchlist.");setConfirmRemove(null);};
+  const inSubScreen = activeCard||scanning;
+  const scanCard = catalog.find(c=>c.id==="charizard-ex")||CATALOG[0];
+
+  return <>
+    {scanning
+      ?<ScanScreen onClose={()=>setScanning(false)} onResult={card=>{setScanning(false);openCard(card);}} scanCard={scanCard}/>
+      :activeCard
+        ?<CardDetail card={activeCard} shellVariant={shellVariant} onBack={()=>setActiveCard(null)} isInWatchlist={isInWatchlist(activeCard)} onToggleWatchlist={()=>requestRemove(activeCard)} onCreateAlert={()=>flash("Alerta creada. Te avisamos cuando el precio cruce el umbral.")}/>
+        :<>
+          <TopBar variant="home" rightCount={2}/>
+          {tab==="home"&&<HomeScreen shellVariant={shellVariant} watchlist={watchlist} trendingCards={trendingCards} catalog={catalog} onOpenCard={openCard} onScan={()=>setScanning(true)}/>}
+          {tab==="search"&&<SearchScreen shellVariant={shellVariant} onOpenCard={openCard} onScan={()=>setScanning(true)}/>}
+          {tab==="ops"&&<OpsScreen catalog={catalog} onPublish={()=>flash("Redirigiendo al wizard…")} onOpenCard={openCard}/>}
+          {tab==="profile"&&<ProfileScreen/>}
+        </>}
+    {!inSubScreen&&<BottomNav active={tab} onChange={setTab}/>}
+    <Toast message={toast} visible={!!toast}/>
+    <Modal open={!!confirmRemove} onClose={()=>setConfirmRemove(null)} title="Retirar de watchlist" primaryLabel="Retirar" primaryVariant="danger" onPrimary={confirmRemoveYes} summary={confirmRemove?`${confirmRemove.name} · ${confirmRemove.set}`:null}>
+      Dejarás de recibir alertas de esta carta. Podés volver a agregarla cuando quieras.
+    </Modal>
+  </>;
+}
+
+// ─── ROOT APP ─────────────────────────────────────────────────────────────────
+function App() {
+  const [dark,setDark] = React.useState(false);
+  const [shellVariant,setShellVariant] = React.useState("A");
+
+  return <div className="page-shell">
+    {/* Toolbar */}
+    <div className="toolbar">
+      <span style={{fontSize:13,fontWeight:500,color:"#131210",padding:"0 4px"}}>Tradeit TCG · Mulligan DS</span>
+      <span className="toolbar-sep"/>
+
+      <label className="toolbar-label">
+        <i className="ph ph-stack" style={{fontSize:14}}/>
+        Shell card
+        <select value={shellVariant} onChange={e=>setShellVariant(e.target.value)} style={{height:28,padding:"0 8px",border:"1px solid #D6D4CE",borderRadius:6,background:"#fff",color:"#131210",fontFamily:"'IBM Plex Sans',sans-serif",fontSize:12.5,fontWeight:500,cursor:"pointer"}}>
+          <option value="A">A · Canonical</option>
+          <option value="B">B · Muted</option>
+          <option value="C">C · Saturated</option>
+          <option value="D">D · Dark base</option>
+          <option value="E">E · Paper</option>
+        </select>
+      </label>
+
+      <span className="toolbar-sep"/>
+      <button className={"toolbar-btn"+(dark?" active":"")} onClick={()=>setDark(d=>!d)}>
+        <i className={"ph "+(dark?"ph-fill ph-moon":"ph-sun")} style={{fontSize:14}}/>
+        {dark?"Dark mode":"Light mode"}
+      </button>
+    </div>
+
+    {/* Phone stage */}
+    <div className="stage">
+      <div>
+        <PhoneFrame dark={dark} time="9:41">
+          <MainApp shellVariant={shellVariant}/>
+        </PhoneFrame>
+        <div className="phone-label">Tradeit TCG · MVP v1.0</div>
+      </div>
+    </div>
+
+    {/* Tips */}
+    <div className="tips-row">
+      {[
+        {label:"Inicio",title:"Home + Watchlist",body:"Tapea en cualquier carta de tendencias o watchlist para abrir la ficha completa."},
+        {label:"Buscar",title:"Search + filtros",body:"Tab 'Buscar' en el nav inferior. Filtra por tipo: Single, Sealed, Graded. Búsqueda en vivo."},
+        {label:"Ficha",title:"Card Detail",body:"Precio actual, promedios 30/60/90d, gráfico histórico interactivo, variantes y listings activos."},
+        {label:"Scan",title:"Escaneo de carta",body:"Tap en el banner oscuro 'Escanear'. El reconocimiento automático tarda ~3 segundos."},
+        {label:"Operaciones",title:"Buyer & Seller",body:"Tab 'Operaciones'. Toggle entre vista Comprador y Vendedor con stats y listings."},
+        {label:"Shell",title:"5 variantes de card",body:"El selector 'Shell card' en el toolbar cambia el estilo visual del fondo de las cartas."},
+      ].map((t,i)=><div key={i} className="tip">
+        <div className="tip-label">{t.label}</div>
+        <div className="tip-title">{t.title}</div>
+        <div className="tip-body">{t.body}</div>
+      </div>)}
+    </div>
+  </div>;
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>

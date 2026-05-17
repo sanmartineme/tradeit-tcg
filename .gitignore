@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Android build outputs
+android/app/build/
+android/.gradle/
+android/build/
+
+# Capacitor generated (keep android/ source, ignore caches)
+.capacitor/
+
+# macOS
+.DS_Store
+
+# Env / secrets
+.env
+.env.local
