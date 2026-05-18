@@ -203,6 +203,21 @@ async function ptcgFetchByName(name) {
   return cards[0]||null;
 }
 
+// ─── AUTH HELPERS ────────────────────────────────────────────────────────────
+const AUTH_KEY = "tradeit_user";
+function getStoredUser() { try { const r=localStorage.getItem(AUTH_KEY); return r?JSON.parse(r):null; } catch{return null;} }
+function storeUser(u) { localStorage.setItem(AUTH_KEY, JSON.stringify(u)); }
+function clearUser() { localStorage.removeItem(AUTH_KEY); }
+
+// ─── NOTIFICATIONS DATA ───────────────────────────────────────────────────────
+const SAMPLE_NOTIFS = [
+  {id:"1",type:"price",  title:"Charizard ex bajó a USD 390",   body:"Cruzó tu alerta de USD 400",         time:"hace 2h", read:false},
+  {id:"2",type:"offer",  title:"Nueva oferta en tu listing",     body:"Umbreon VMAX · USD 510 ofertado",    time:"hace 4h", read:false},
+  {id:"3",type:"listing",title:"Nuevo listing en tu watchlist",  body:"Pikachu Illustrator · 3 vendedores", time:"hace 6h", read:true},
+  {id:"4",type:"system", title:"Cuenta verificada",              body:"Tu identidad fue confirmada",        time:"ayer",    read:true},
+  {id:"5",type:"price",  title:"Umbreon VMAX subió 8.2%",        body:"USD 540 · máximo de 60 días",        time:"ayer",    read:true},
+];
+
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 const TCG_SHELLS = {
   A:{ single:{background:"linear-gradient(135deg,#EBF2FB 0%,#C5DAEF 100%)"}, graded:{background:"linear-gradient(135deg,#FAF0D8 0%,#F5D68C 100%)"}, sealed:{background:"linear-gradient(135deg,#F0EFEC 0%,#D6D4CE 100%)"} },
@@ -308,7 +323,7 @@ function PhoneFrame({ children, dark=false, time="9:41" }) {
 }
 
 // ─── TOP BAR ─────────────────────────────────────────────────────────────────
-function TopBar({ variant="home", title, onBack, right, rightCount }) {
+function TopBar({ variant="home", title, onBack, right, rightCount, onNotifications }) {
   return <div style={{ height:52, padding:"0 12px", display:"flex", alignItems:"center", gap:8, borderBottom:"1px solid var(--border)", background:"var(--bg-primary)", color:"var(--text-primary)", flexShrink:0 }}>
     {variant==="back" ? <button onClick={onBack} style={iconBtn()} aria-label="Volver"><i className="ph ph-arrow-left" style={{fontSize:22}}/></button>
       : <div style={{display:"flex",alignItems:"center",gap:8,padding:"0 4px"}}>
@@ -321,7 +336,7 @@ function TopBar({ variant="home", title, onBack, right, rightCount }) {
       {variant==="back"&&title&&<span style={{fontSize:17,fontWeight:500}}>{title}</span>}
     </div>
     {right || <div style={{display:"flex",alignItems:"center",gap:4}}>
-      <button style={iconBtn()} aria-label="Notificaciones">
+      <button onClick={onNotifications} style={iconBtn()} aria-label="Notificaciones">
         <i className="ph ph-bell" style={{fontSize:22}}/>
         {rightCount>0&&<span style={{position:"absolute",top:6,right:6,width:8,height:8,borderRadius:"50%",background:"var(--danger)"}}/>}
       </button>
@@ -489,6 +504,118 @@ function Modal({ open, onClose, title, summary, children, primaryLabel, onPrimar
 function Toast({ message, visible }) {
   if (!visible) return null;
   return <div style={{position:"absolute",bottom:84,left:"50%",transform:"translateX(-50%)",background:"#131210",color:"#F0EFEC",padding:"10px 16px",borderRadius:8,fontSize:13,boxShadow:"0 8px 32px rgba(0,0,0,.20)",maxWidth:"84%",textAlign:"center",zIndex:50,fontFamily:"'IBM Plex Sans',sans-serif",animation:"toastIn 200ms ease-out both"}}>{message}</div>;
+}
+
+// ─── AUTH MODAL ──────────────────────────────────────────────────────────────
+function AuthModal({ open, onClose, onAuth }) {
+  const [tab,setTab]         = React.useState("login");
+  const [name,setName]       = React.useState("");
+  const [email,setEmail]     = React.useState("");
+  const [password,setPassword] = React.useState("");
+  const [showPwd,setShowPwd] = React.useState(false);
+  const [loading,setLoading] = React.useState(false);
+  const [error,setError]     = React.useState("");
+
+  React.useEffect(()=>{ if(open){ setTab("login");setName("");setEmail("");setPassword("");setError("");setLoading(false); } },[open]);
+
+  if(!open) return null;
+
+  function handleSubmit() {
+    setError("");
+    if(tab==="register"&&!name.trim()){setError("Ingresá tu nombre.");return;}
+    if(!email.trim()||!password){setError("Completá todos los campos.");return;}
+    if(password.length<6){setError("La contraseña debe tener al menos 6 caracteres.");return;}
+    setLoading(true);
+    setTimeout(()=>{
+      const u={id:Date.now().toString(),name:tab==="login"?email.split("@")[0]:name.trim(),email:email.trim(),joinDate:new Date().toLocaleDateString("es-CL",{month:"long",year:"numeric"})};
+      storeUser(u); onAuth(u); onClose();
+    },700);
+  }
+
+  const iStyle={width:"100%",height:44,borderRadius:8,border:"1px solid var(--border)",background:"var(--bg-secondary)",color:"var(--text-primary)",padding:"0 12px 0 38px",fontSize:14,fontFamily:"'IBM Plex Sans',sans-serif",outline:"none",boxSizing:"border-box"};
+
+  return <div onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(0,0,0,.45)",zIndex:80,display:"flex",flexDirection:"column",justifyContent:"flex-end",animation:"fadeIn 200ms ease-out both"}}>
+    <div onClick={e=>e.stopPropagation()} style={{background:"var(--bg-primary)",borderRadius:"20px 20px 0 0",overflow:"hidden",animation:"sheetIn 300ms ease-out both"}}>
+      <div style={{display:"flex",justifyContent:"center",padding:"12px 0 4px"}}><div style={{width:36,height:4,borderRadius:2,background:"var(--border)"}}/></div>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 20px 14px",borderBottom:"1px solid var(--border)"}}>
+        <div>
+          <div style={{fontSize:17,fontWeight:500,color:"var(--text-primary)"}}>{tab==="login"?"Iniciar sesión":"Crear cuenta"}</div>
+          <div style={{fontSize:12,color:"var(--text-muted)",marginTop:2}}>{tab==="login"?"El marketplace de cartas TCG más inteligente.":"Únete a la comunidad Tradeit TCG."}</div>
+        </div>
+        <button onClick={onClose} style={{width:32,height:32,borderRadius:8,border:"none",background:"transparent",color:"var(--text-secondary)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><i className="ph ph-x" style={{fontSize:18}}/></button>
+      </div>
+
+      {/* Tab switcher */}
+      <div style={{display:"flex",margin:"16px 20px 0",background:"var(--bg-secondary)",borderRadius:10,padding:3,gap:3}}>
+        {[["login","Ingresar"],["register","Registrarse"]].map(([k,lbl])=><button key={k} onClick={()=>{setTab(k);setError("");}} style={{flex:1,height:36,borderRadius:7,border:"none",background:tab===k?"var(--bg-primary)":"transparent",color:tab===k?"var(--text-primary)":"var(--text-secondary)",fontWeight:600,fontSize:13,cursor:"pointer",fontFamily:"'IBM Plex Sans',sans-serif",boxShadow:tab===k?"0 1px 4px rgba(0,0,0,.06)":"none"}}>{lbl}</button>)}
+      </div>
+
+      <div style={{padding:"16px 20px 24px",display:"flex",flexDirection:"column",gap:12}}>
+        {tab==="register"&&<div style={{position:"relative"}}>
+          <i className="ph ph-user" style={{position:"absolute",left:12,top:"50%",transform:"translateY(-50%)",fontSize:16,color:"var(--text-muted)"}}/>
+          <input value={name} onChange={e=>setName(e.target.value)} placeholder="Tu nombre completo" style={iStyle}/>
+        </div>}
+        <div style={{position:"relative"}}>
+          <i className="ph ph-envelope" style={{position:"absolute",left:12,top:"50%",transform:"translateY(-50%)",fontSize:16,color:"var(--text-muted)"}}/>
+          <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="tu@email.com" style={iStyle}/>
+        </div>
+        <div style={{position:"relative"}}>
+          <i className="ph ph-lock-simple" style={{position:"absolute",left:12,top:"50%",transform:"translateY(-50%)",fontSize:16,color:"var(--text-muted)"}}/>
+          <input type={showPwd?"text":"password"} value={password} onChange={e=>setPassword(e.target.value)} onKeyDown={e=>e.key==="Enter"&&handleSubmit()} placeholder={tab==="register"?"Mínimo 6 caracteres":"••••••••"} style={{...iStyle,paddingRight:40}}/>
+          <button onClick={()=>setShowPwd(v=>!v)} style={{position:"absolute",right:10,top:"50%",transform:"translateY(-50%)",background:"transparent",border:"none",color:"var(--text-muted)",cursor:"pointer",padding:0}}>
+            <i className={"ph "+(showPwd?"ph-eye-slash":"ph-eye")} style={{fontSize:16}}/>
+          </button>
+        </div>
+        {error&&<div style={{display:"flex",alignItems:"center",gap:8,padding:"10px 12px",background:"var(--red-10)",borderRadius:8,fontSize:12,color:"var(--red-60)",fontWeight:500}}>
+          <i className="ph ph-warning-circle" style={{fontSize:14,flexShrink:0}}/>{error}
+        </div>}
+        <button onClick={handleSubmit} disabled={loading} style={{height:48,borderRadius:10,background:"var(--interactive)",color:"var(--on-interactive)",border:"none",fontWeight:600,fontSize:15,cursor:loading?"not-allowed":"pointer",opacity:loading?0.7:1,fontFamily:"'IBM Plex Sans',sans-serif",display:"flex",alignItems:"center",justifyContent:"center",gap:8,marginTop:4}}>
+          {loading&&<span style={{width:16,height:16,borderRadius:"50%",border:"2px solid rgba(255,255,255,.4)",borderTopColor:"#fff",animation:"spin 800ms linear infinite"}}/>}
+          {loading?(tab==="login"?"Ingresando…":"Creando cuenta…"):tab==="login"?"Ingresar":"Crear cuenta"}
+        </button>
+        {tab==="login"&&<button style={{background:"transparent",border:"none",color:"var(--text-muted)",fontSize:12,cursor:"pointer",fontFamily:"'IBM Plex Sans',sans-serif",textAlign:"center"}}>¿Olvidaste tu contraseña?</button>}
+      </div>
+    </div>
+  </div>;
+}
+
+// ─── NOTIFICATIONS PANEL ─────────────────────────────────────────────────────
+function NotificationsPanel({ open, onClose, notifs, onMarkAll, onMarkOne }) {
+  if(!open) return null;
+  const unread = notifs.filter(n=>!n.read).length;
+  const iconMap = {price:"ph-trend-up",offer:"ph-tag",listing:"ph-bell",system:"ph-info"};
+  const colorMap = {price:"#2DA67E",offer:"#1A6FB5",listing:"#E69A20",system:"#9B9892"};
+  const bgMap = {price:"#E0F4EF",offer:"#EBF2FB",listing:"#FAF0D8",system:"var(--bg-secondary)"};
+  return <div onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(0,0,0,.35)",zIndex:75,display:"flex",flexDirection:"column",justifyContent:"flex-end",animation:"fadeIn 200ms ease-out both"}}>
+    <div onClick={e=>e.stopPropagation()} style={{background:"var(--bg-primary)",borderRadius:"20px 20px 0 0",maxHeight:"75vh",display:"flex",flexDirection:"column",overflow:"hidden",animation:"sheetIn 300ms ease-out both"}}>
+      <div style={{display:"flex",justifyContent:"center",padding:"12px 0 4px",flexShrink:0}}><div style={{width:36,height:4,borderRadius:2,background:"var(--border)"}}/></div>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"8px 20px 14px",borderBottom:"1px solid var(--border)",flexShrink:0}}>
+        <div style={{display:"flex",alignItems:"center",gap:8}}>
+          <i className="ph ph-bell" style={{fontSize:18,color:"var(--text-primary)"}}/>
+          <span style={{fontSize:16,fontWeight:600,color:"var(--text-primary)"}}>Notificaciones</span>
+          {unread>0&&<span style={{height:20,minWidth:20,padding:"0 6px",background:"var(--danger)",color:"#fff",fontSize:10,fontWeight:700,borderRadius:999,display:"inline-flex",alignItems:"center",justifyContent:"center"}}>{unread}</span>}
+        </div>
+        <div style={{display:"flex",alignItems:"center",gap:8}}>
+          {unread>0&&<button onClick={onMarkAll} style={{background:"transparent",border:"none",color:"var(--interactive)",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"'IBM Plex Sans',sans-serif",display:"flex",alignItems:"center",gap:4}}><i className="ph ph-checks" style={{fontSize:13}}/>Marcar todas</button>}
+          <button onClick={onClose} style={{width:28,height:28,borderRadius:7,border:"none",background:"transparent",color:"var(--text-secondary)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><i className="ph ph-x" style={{fontSize:16}}/></button>
+        </div>
+      </div>
+      <div style={{flex:1,overflowY:"auto"}}>
+        {notifs.map(n=><button key={n.id} onClick={()=>onMarkOne(n.id)} style={{width:"100%",padding:"14px 20px",display:"flex",gap:12,alignItems:"flex-start",background:n.read?"transparent":"rgba(26,111,181,.05)",border:"none",borderBottom:"1px solid var(--border)",cursor:"pointer",textAlign:"left",fontFamily:"'IBM Plex Sans',sans-serif"}}>
+          <div style={{width:36,height:36,borderRadius:10,background:bgMap[n.type],display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,marginTop:2}}>
+            <i className={"ph "+iconMap[n.type]} style={{fontSize:18,color:colorMap[n.type]}}/>
+          </div>
+          <div style={{flex:1,minWidth:0}}>
+            <div style={{fontSize:13,fontWeight:n.read?400:600,color:"var(--text-primary)",lineHeight:1.3}}>{n.title}</div>
+            <div style={{fontSize:11,color:"var(--text-muted)",marginTop:3,lineHeight:1.4}}>{n.body}</div>
+            <div style={{fontSize:10,color:"var(--text-muted)",marginTop:5,fontFamily:"'IBM Plex Mono',monospace"}}>{n.time}</div>
+          </div>
+          {!n.read&&<div style={{width:8,height:8,borderRadius:"50%",background:"var(--danger)",flexShrink:0,marginTop:5}}/>}
+        </button>)}
+      </div>
+      <div style={{height:20,flexShrink:0}}/>
+    </div>
+  </div>;
 }
 
 // ─── SEARCH BAR ──────────────────────────────────────────────────────────────
@@ -869,55 +996,102 @@ function OpsScreen({ onPublish, catalog=CATALOG, onOpenCard }) {
   </div>;
 }
 
-function ProfileScreen() {
+function ProfileScreen({ user, onLogin, onLogout, onUpdateUser }) {
+  const [editing,setEditing] = React.useState(false);
+  const [draft,setDraft]     = React.useState({name:user?.name||"",location:"",phone:"",description:""});
+  const [authOpen,setAuthOpen] = React.useState(false);
+
+  React.useEffect(()=>{
+    if(user) setDraft({name:user.name||"",location:user.location||"",phone:user.phone||"",description:user.description||""});
+  },[user]);
+
+  if(!user) return <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px 24px",background:"var(--bg-page)"}}>
+    <i className="ph ph-shield-check" style={{fontSize:48,color:"var(--text-muted)",marginBottom:16}}/>
+    <div style={{fontSize:20,fontWeight:500,color:"var(--text-primary)",textAlign:"center",marginBottom:8}}>Ingresá para ver tu perfil</div>
+    <div style={{fontSize:13,color:"var(--text-secondary)",textAlign:"center",lineHeight:1.5,maxWidth:260,marginBottom:24}}>Administrá tus compras, watchlist y alertas de precio desde un solo lugar.</div>
+    <Button onClick={()=>setAuthOpen(true)} style={{width:"100%",maxWidth:280}} size="lg">Ingresar o Registrarse</Button>
+    <AuthModal open={authOpen} onClose={()=>setAuthOpen(false)} onAuth={u=>{onLogin(u);setAuthOpen(false);}}/>
+  </div>;
+
+  const initials = user.name.split(" ").map(p=>p[0]).join("").slice(0,2).toUpperCase();
+  function saveEdit(){onUpdateUser({...user,...draft});setEditing(false);}
+
   return <div style={{flex:1,overflowY:"auto",background:"var(--bg-page)"}}>
+    {/* Header */}
     <div style={{background:"var(--bg-primary)",borderBottom:"1px solid var(--border)",padding:"20px 18px",display:"flex",flexDirection:"column",alignItems:"center",gap:12}}>
       <div style={{position:"relative"}}>
-        <Avatar name="Diego G" size="lg"/>
+        <Avatar name={user.name} size="lg"/>
         <div style={{position:"absolute",bottom:0,right:0,width:20,height:20,borderRadius:"50%",background:"var(--success)",border:"2px solid var(--bg-primary)",display:"flex",alignItems:"center",justifyContent:"center"}}><i className="ph ph-seal-check" style={{fontSize:11,color:"#fff"}}/></div>
       </div>
-      <div style={{textAlign:"center"}}>
-        <div style={{fontSize:20,fontWeight:500,color:"var(--text-primary)"}}>Diego G.</div>
-        <div style={{fontSize:13,color:"var(--text-secondary)",marginTop:2}}>Comprador verificado · desde mayo 2026</div>
-      </div>
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:16,width:"100%",marginTop:8}}>
+      {!editing?(
+        <div style={{textAlign:"center"}}>
+          <div style={{fontSize:20,fontWeight:500,color:"var(--text-primary)"}}>{user.name}</div>
+          <div style={{fontSize:12,color:"var(--text-secondary)",marginTop:2}}>{user.email}</div>
+          <div style={{fontSize:11,color:"var(--text-muted)",marginTop:2}}>Verificado · desde {user.joinDate}</div>
+        </div>
+      ):(
+        <div style={{width:"100%",display:"flex",flexDirection:"column",gap:8}}>
+          <input value={draft.name} onChange={e=>setDraft(d=>({...d,name:e.target.value}))} placeholder="Nombre" style={{width:"100%",height:40,borderRadius:8,border:"1px solid var(--border)",background:"var(--bg-secondary)",color:"var(--text-primary)",padding:"0 12px",fontSize:14,fontFamily:"'IBM Plex Sans',sans-serif",outline:"none",boxSizing:"border-box"}}/>
+          <textarea value={draft.description} onChange={e=>setDraft(d=>({...d,description:e.target.value}))} placeholder="Bio / descripción" rows={2} style={{width:"100%",borderRadius:8,border:"1px solid var(--border)",background:"var(--bg-secondary)",color:"var(--text-primary)",padding:"8px 12px",fontSize:13,fontFamily:"'IBM Plex Sans',sans-serif",outline:"none",resize:"none",boxSizing:"border-box"}}/>
+          <div style={{display:"flex",gap:8}}>
+            <Button variant="secondary" onClick={()=>setEditing(false)} style={{flex:1}}>Cancelar</Button>
+            <Button variant="primary" onClick={saveEdit} style={{flex:1}}>Guardar</Button>
+          </div>
+        </div>
+      )}
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:16,width:"100%",marginTop:4}}>
         {[["12","Watchlist"],["4","Alertas"],["USD 1.245","Este mes"]].map(([v,l])=><div key={l} style={{textAlign:"center"}}>
-          <div style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:16,fontWeight:500,color:"var(--text-primary)"}}>{v}</div>
+          <div style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:15,fontWeight:500,color:"var(--text-primary)"}}>{v}</div>
           <div style={{fontSize:10,color:"var(--text-muted)",marginTop:2}}>{l}</div>
         </div>)}
       </div>
+      {!editing&&<Button variant="secondary" icon="ph-pencil-simple" size="sm" onClick={()=>setEditing(true)} style={{width:"100%"}}>Editar perfil</Button>}
     </div>
-    <div style={{padding:"16px 14px",display:"flex",flexDirection:"column",gap:8}}>
-      {[{icon:"ph-bell",label:"Notificaciones"},{icon:"ph-currency-dollar",label:"Moneda · USD"},{icon:"ph-lock-simple",label:"Privacidad"},{icon:"ph-gear-six",label:"Configuración"},{icon:"ph-sign-out",label:"Cerrar sesión",danger:true}].map((item,i)=><button key={i} style={{display:"flex",alignItems:"center",gap:14,padding:"14px 16px",background:"var(--bg-primary)",border:"1px solid var(--border)",borderRadius:10,cursor:"pointer",textAlign:"left",fontFamily:"'IBM Plex Sans',sans-serif",color:item.danger?"var(--danger)":"var(--text-primary)"}}>
-        <i className={"ph "+item.icon} style={{fontSize:20,color:item.danger?"var(--danger)":"var(--text-secondary)"}}/>
+
+    {/* Settings */}
+    <div style={{padding:"16px 14px",display:"flex",flexDirection:"column",gap:6}}>
+      <div style={{fontSize:11,fontWeight:500,textTransform:"uppercase",letterSpacing:0.08,color:"var(--text-muted)",padding:"4px 4px 8px"}}>Cuenta</div>
+      {[{icon:"ph-bell",label:"Notificaciones"},{icon:"ph-currency-dollar",label:"Moneda · USD"},{icon:"ph-lock-simple",label:"Privacidad"},{icon:"ph-gear-six",label:"Configuración"}].map((item,i)=><button key={i} style={{display:"flex",alignItems:"center",gap:14,padding:"14px 16px",background:"var(--bg-primary)",border:"1px solid var(--border)",borderRadius:10,cursor:"pointer",textAlign:"left",fontFamily:"'IBM Plex Sans',sans-serif",color:"var(--text-primary)"}}>
+        <i className={"ph "+item.icon} style={{fontSize:20,color:"var(--text-secondary)"}}/>
         <span style={{fontSize:14,fontWeight:500,flex:1}}>{item.label}</span>
-        {!item.danger&&<i className="ph ph-caret-right" style={{fontSize:16,color:"var(--text-muted)"}}/>}
+        <i className="ph ph-caret-right" style={{fontSize:16,color:"var(--text-muted)"}}/>
       </button>)}
+      <button onClick={onLogout} style={{display:"flex",alignItems:"center",gap:14,padding:"14px 16px",background:"var(--bg-primary)",border:"1px solid var(--border)",borderRadius:10,cursor:"pointer",textAlign:"left",fontFamily:"'IBM Plex Sans',sans-serif",color:"var(--danger)",marginTop:8}}>
+        <i className="ph ph-sign-out" style={{fontSize:20,color:"var(--danger)"}}/>
+        <span style={{fontSize:14,fontWeight:500}}>Cerrar sesión</span>
+      </button>
     </div>
   </div>;
 }
 
 // ─── MAIN APP ─────────────────────────────────────────────────────────────────
 function MainApp({ shellVariant="A" }) {
-  const [tab,setTab] = React.useState("home");
+  const [tab,setTab]           = React.useState("home");
   const [activeCard,setActiveCard] = React.useState(null);
   const [scanning,setScanning] = React.useState(false);
-  const [catalog,setCatalog] = React.useState(CATALOG);
+  const [catalog,setCatalog]   = React.useState(CATALOG);
   const [trendingCards,setTrendingCards] = React.useState([]);
   const [watchlist,setWatchlist] = React.useState([
     CATALOG.find(c=>c.id==="charizard-ex"),
     CATALOG.find(c=>c.id==="umbreon-vmax"),
     CATALOG.find(c=>c.id==="pikachu-illustrator"),
   ].filter(Boolean));
-  const [toast,setToast] = React.useState(null);
+  const [toast,setToast]             = React.useState(null);
   const [confirmRemove,setConfirmRemove] = React.useState(null);
 
-  // ── Enrich catalog + fetch trending on mount ──────────────────────────────
+  // ── Auth state ──────────────────────────────────────────────────────────────
+  const [user,setUser]           = React.useState(getStoredUser);
+  const [authOpen,setAuthOpen]   = React.useState(false);
+
+  // ── Notifications state ─────────────────────────────────────────────────────
+  const [notifs,setNotifs]         = React.useState(SAMPLE_NOTIFS);
+  const [notifsOpen,setNotifsOpen] = React.useState(false);
+  const unreadCount = notifs.filter(n=>!n.read).length;
+
+  // ── Catalog enrichment ──────────────────────────────────────────────────────
   React.useEffect(()=>{
     let alive=true;
-    // Trending cards for HomeScreen hero grid (SIR / Illustration Rare)
     ptcgSearch("",8).then(({cards})=>{ if(alive) setTrendingCards(cards); }).catch(()=>{});
-    // Enrich each single in the seed catalog with real image + TCGPlayer price
     CATALOG.filter(c=>c.productType==="single").forEach(seed=>{
       ptcgFetchByName(seed.name).then(apiCard=>{
         if(!alive||!apiCard) return;
@@ -929,16 +1103,18 @@ function MainApp({ shellVariant="A" }) {
     return ()=>{ alive=false; };
   },[]);
 
-  const flash = msg=>{setToast(msg);setTimeout(()=>setToast(null),2400);};
-  const openCard = card=>{setActiveCard(card);setScanning(false);};
-  const isInWatchlist = card=>watchlist.some(c=>c.id===card?.id);
-  const requestRemove = card=>{
-    if(isInWatchlist(card)) setConfirmRemove(card);
-    else{setWatchlist([...watchlist,card]);flash("Carta agregada a tu watchlist.");}
-  };
+  const flash          = msg=>{setToast(msg);setTimeout(()=>setToast(null),2400);};
+  const openCard       = card=>{setActiveCard(card);setScanning(false);};
+  const isInWatchlist  = card=>watchlist.some(c=>c.id===card?.id);
+  const requestRemove  = card=>{ if(isInWatchlist(card)) setConfirmRemove(card); else{setWatchlist([...watchlist,card]);flash("Carta agregada a tu watchlist.");} };
   const confirmRemoveYes = ()=>{setWatchlist(watchlist.filter(c=>c.id!==confirmRemove?.id));flash("Carta retirada de tu watchlist.");setConfirmRemove(null);};
-  const inSubScreen = activeCard||scanning;
-  const scanCard = catalog.find(c=>c.id==="charizard-ex")||CATALOG[0];
+  const inSubScreen    = activeCard||scanning;
+  const scanCard       = catalog.find(c=>c.id==="charizard-ex")||CATALOG[0];
+
+  function handleLogin(u){ setUser(u); }
+  function handleLogout(){ clearUser(); setUser(null); flash("Sesión cerrada."); }
+  function handleUpdateUser(u){ storeUser(u); setUser(u); flash("Perfil actualizado."); }
+  function openNotifications(){ setNotifsOpen(true); }
 
   return <>
     {scanning
@@ -946,17 +1122,21 @@ function MainApp({ shellVariant="A" }) {
       :activeCard
         ?<CardDetail card={activeCard} shellVariant={shellVariant} onBack={()=>setActiveCard(null)} isInWatchlist={isInWatchlist(activeCard)} onToggleWatchlist={()=>requestRemove(activeCard)} onCreateAlert={()=>flash("Alerta creada. Te avisamos cuando el precio cruce el umbral.")}/>
         :<>
-          <TopBar variant="home" rightCount={2}/>
-          {tab==="home"&&<HomeScreen shellVariant={shellVariant} watchlist={watchlist} trendingCards={trendingCards} catalog={catalog} onOpenCard={openCard} onScan={()=>setScanning(true)}/>}
-          {tab==="search"&&<SearchScreen shellVariant={shellVariant} onOpenCard={openCard} onScan={()=>setScanning(true)}/>}
-          {tab==="ops"&&<OpsScreen catalog={catalog} onPublish={()=>flash("Redirigiendo al wizard…")} onOpenCard={openCard}/>}
-          {tab==="profile"&&<ProfileScreen/>}
+          <TopBar variant="home" rightCount={unreadCount} onNotifications={openNotifications}/>
+          {tab==="home"    &&<HomeScreen shellVariant={shellVariant} watchlist={watchlist} trendingCards={trendingCards} catalog={catalog} onOpenCard={openCard} onScan={()=>setScanning(true)}/>}
+          {tab==="search"  &&<SearchScreen shellVariant={shellVariant} onOpenCard={openCard} onScan={()=>setScanning(true)}/>}
+          {tab==="ops"     &&<OpsScreen catalog={catalog} onPublish={()=>flash("Redirigiendo al wizard…")} onOpenCard={openCard}/>}
+          {tab==="profile" &&<ProfileScreen user={user} onLogin={handleLogin} onLogout={handleLogout} onUpdateUser={handleUpdateUser}/>}
         </>}
     {!inSubScreen&&<BottomNav active={tab} onChange={setTab}/>}
     <Toast message={toast} visible={!!toast}/>
     <Modal open={!!confirmRemove} onClose={()=>setConfirmRemove(null)} title="Retirar de watchlist" primaryLabel="Retirar" primaryVariant="danger" onPrimary={confirmRemoveYes} summary={confirmRemove?`${confirmRemove.name} · ${confirmRemove.set}`:null}>
       Dejarás de recibir alertas de esta carta. Podés volver a agregarla cuando quieras.
     </Modal>
+    <AuthModal open={authOpen} onClose={()=>setAuthOpen(false)} onAuth={handleLogin}/>
+    <NotificationsPanel open={notifsOpen} onClose={()=>setNotifsOpen(false)} notifs={notifs}
+      onMarkAll={()=>setNotifs(ns=>ns.map(n=>({...n,read:true})))}
+      onMarkOne={id=>setNotifs(ns=>ns.map(n=>n.id===id?{...n,read:true}:n))}/>
   </>;
 }
 
