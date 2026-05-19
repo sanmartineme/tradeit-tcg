@@ -273,7 +273,7 @@ function PhoneFrame({ children, dark=false, time="9:41" }) {
 }
 
 // ─── TOP BAR ─────────────────────────────────────────────────────────────────
-function TopBar({ variant="home", title, onBack, right, rightCount, onNotifications }) {
+function TopBar({ variant="home", title, onBack, right, rightCount, onNotifications, dark, toggleDark }) {
   return <div style={{ height:52, padding:"0 12px", display:"flex", alignItems:"center", gap:8, borderBottom:"1px solid var(--border)", background:"var(--bg-primary)", color:"var(--text-primary)", flexShrink:0 }}>
     {variant==="back" ? <button onClick={onBack} style={iconBtn()} aria-label="Volver"><i className="ph ph-arrow-left" style={{fontSize:22}}/></button>
       : <div style={{display:"flex",alignItems:"center",gap:8,padding:"0 4px"}}>
@@ -285,7 +285,10 @@ function TopBar({ variant="home", title, onBack, right, rightCount, onNotificati
     <div style={{flex:1,display:"flex",alignItems:"center"}}>
       {variant==="back"&&title&&<span style={{fontSize:17,fontWeight:500}}>{title}</span>}
     </div>
-    {right || <div style={{display:"flex",alignItems:"center",gap:4}}>
+    {right || <div style={{display:"flex",alignItems:"center",gap:2}}>
+      {toggleDark&&<button onClick={toggleDark} style={iconBtn()} aria-label={dark?"Modo claro":"Modo oscuro"}>
+        <i className={dark?"ph ph-sun":"ph ph-moon"} style={{fontSize:20}}/>
+      </button>}
       <button onClick={onNotifications} style={iconBtn()} aria-label="Notificaciones">
         <i className="ph ph-bell" style={{fontSize:22}}/>
         {rightCount>0&&<span style={{position:"absolute",top:6,right:6,width:8,height:8,borderRadius:"50%",background:"var(--danger)"}}/>}
@@ -1007,7 +1010,7 @@ function OpsScreen({ onOpenPublish, listings=[], catalog=CATALOG, onOpenCard, on
   </div>;
 }
 
-function ProfileScreen({ user, onOpenAuth, onLogout }) {
+function ProfileScreen({ user, onOpenAuth, onLogout, dark, toggleDark }) {
   if (!user) {
     return (
       <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px 24px",background:"var(--bg-page)",gap:16,textAlign:"center"}}>
@@ -1022,6 +1025,13 @@ function ProfileScreen({ user, onOpenAuth, onLogout }) {
           <Button variant="primary" size="lg" onClick={onOpenAuth} style={{width:"100%"}}>Iniciar sesión</Button>
           <Button variant="secondary" size="lg" onClick={onOpenAuth} style={{width:"100%"}}>Crear cuenta</Button>
         </div>
+        {toggleDark&&<button onClick={toggleDark} style={{marginTop:20,display:"flex",alignItems:"center",gap:10,padding:"12px 20px",background:"var(--bg-primary)",border:"1px solid var(--border)",borderRadius:10,cursor:"pointer",fontFamily:"'IBM Plex Sans',sans-serif",color:"var(--text-primary)"}}>
+          <i className={dark?"ph ph-sun":"ph ph-moon"} style={{fontSize:20,color:"var(--text-secondary)"}}/>
+          <span style={{fontSize:14,fontWeight:500}}>{dark?"Modo oscuro":"Modo claro"}</span>
+          <div style={{marginLeft:"auto",width:40,height:22,borderRadius:11,background:dark?"var(--interactive)":"var(--border)",position:"relative",transition:"background 200ms ease-out",flexShrink:0}}>
+            <div style={{position:"absolute",top:3,left:dark?20:3,width:16,height:16,borderRadius:"50%",background:"#fff",transition:"left 200ms ease-out",boxShadow:"0 1px 4px rgba(0,0,0,.2)"}}/>
+          </div>
+        </button>}
       </div>
     );
   }
@@ -1050,6 +1060,13 @@ function ProfileScreen({ user, onOpenAuth, onLogout }) {
           <i className="ph ph-caret-right" style={{fontSize:16,color:"var(--text-muted)"}}/>
         </button>
       ))}
+      {toggleDark&&<button onClick={toggleDark} style={{display:"flex",alignItems:"center",gap:14,padding:"14px 16px",background:"var(--bg-primary)",border:"1px solid var(--border)",borderRadius:10,cursor:"pointer",textAlign:"left",fontFamily:"'IBM Plex Sans',sans-serif",color:"var(--text-primary)"}}>
+        <i className={dark?"ph ph-sun":"ph ph-moon"} style={{fontSize:20,color:"var(--text-secondary)"}}/>
+        <span style={{fontSize:14,fontWeight:500,flex:1}}>{dark?"Modo oscuro":"Modo claro"}</span>
+        <div style={{width:40,height:22,borderRadius:11,background:dark?"var(--interactive)":"var(--border)",position:"relative",transition:"background 200ms ease-out",flexShrink:0}}>
+          <div style={{position:"absolute",top:3,left:dark?20:3,width:16,height:16,borderRadius:"50%",background:"#fff",transition:"left 200ms ease-out",boxShadow:"0 1px 4px rgba(0,0,0,.2)"}}/>
+        </div>
+      </button>}
       <button onClick={onLogout} style={{display:"flex",alignItems:"center",gap:14,padding:"14px 16px",background:"var(--bg-primary)",border:"1px solid var(--border)",borderRadius:10,cursor:"pointer",textAlign:"left",fontFamily:"'IBM Plex Sans',sans-serif",color:"var(--danger)"}}>
         <i className="ph ph-sign-out" style={{fontSize:20,color:"var(--danger)"}}/>
         <span style={{fontSize:14,fontWeight:500,flex:1}}>Cerrar sesión</span>
@@ -1112,19 +1129,19 @@ function PublishWizard({ open, onClose, onPublish, preCard=null, user }) {
   const marketPrice = card?.price>0 ? card.price : null;
   const inputPrice = parseFloat(price)||0;
   const priceDelta = marketPrice&&inputPrice>0 ? ((inputPrice-marketPrice)/marketPrice)*100 : null;
-  const titles = {1:"¿Qué carta vendes?", 2:"Condición e idioma", 3:"Precio y publicar"};
+  const canPublish = !publishing && inputPrice>0;
 
   return (
     <div onClick={onClose} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.5)",zIndex:70,display:"flex",alignItems:"flex-end",animation:"fadeIn 200ms ease-out both"}}>
-      <div onClick={e=>e.stopPropagation()} style={{width:"100%",maxHeight:"92%",background:"var(--bg-primary)",color:"var(--text-primary)",borderRadius:"20px 20px 0 0",display:"flex",flexDirection:"column",animation:"sheetIn 300ms ease-out both",fontFamily:"'IBM Plex Sans',sans-serif"}}>
+      <div onClick={e=>e.stopPropagation()} style={{width:"100%",maxHeight:"94%",background:"var(--bg-primary)",color:"var(--text-primary)",borderRadius:"20px 20px 0 0",display:"flex",flexDirection:"column",animation:"sheetIn 300ms ease-out both",fontFamily:"'IBM Plex Sans',sans-serif"}}>
 
         {/* Header */}
         <div style={{padding:"16px 20px 12px",display:"flex",alignItems:"center",gap:12,borderBottom:"1px solid var(--border)",flexShrink:0}}>
-          {step>1&&!preCard&&<button onClick={()=>setStep(s=>s-1)} style={{width:32,height:32,border:"none",background:"transparent",cursor:"pointer",color:"var(--text-secondary)",display:"flex",alignItems:"center",justifyContent:"center",padding:0}}><i className="ph ph-arrow-left" style={{fontSize:20}}/></button>}
+          {step===2&&!preCard&&<button onClick={()=>setStep(1)} style={{width:32,height:32,border:"none",background:"transparent",cursor:"pointer",color:"var(--text-secondary)",display:"flex",alignItems:"center",justifyContent:"center",padding:0}}><i className="ph ph-arrow-left" style={{fontSize:20}}/></button>}
           <div style={{flex:1}}>
-            <div style={{fontSize:17,fontWeight:500}}>{titles[step]}</div>
+            <div style={{fontSize:17,fontWeight:500}}>{step===1?"¿Qué carta vendes?":"Detalles y precio"}</div>
             <div style={{display:"flex",gap:4,marginTop:8}}>
-              {[1,2,3].map(s=><div key={s} style={{height:3,flex:1,borderRadius:2,background:s<=step?"var(--interactive)":"var(--bg-secondary)",transition:"background 200ms ease-out"}}/>)}
+              {[1,2].map(s=><div key={s} style={{height:3,flex:1,borderRadius:2,background:s<=step?"var(--interactive)":"var(--bg-secondary)",transition:"background 200ms ease-out"}}/>)}
             </div>
           </div>
           <button onClick={onClose} style={{width:32,height:32,border:"none",background:"transparent",cursor:"pointer",color:"var(--text-secondary)",display:"flex",alignItems:"center",justifyContent:"center",padding:0}}><i className="ph ph-x" style={{fontSize:20}}/></button>
@@ -1168,8 +1185,10 @@ function PublishWizard({ open, onClose, onPublish, preCard=null, user }) {
             {searchQ&&!searching&&searchRes.length===0&&<EmptyState icon="ph-magnifying-glass" title="Sin resultados" desc="Intenta con otro nombre o número de carta."/>}
           </div>}
 
-          {/* Step 2 — Condición / idioma / notas */}
-          {step===2&&card&&<div style={{padding:"16px 20px 24px",display:"flex",flexDirection:"column",gap:20}}>
+          {/* Step 2 — Condición + idioma + precio + notas */}
+          {step===2&&card&&<div style={{padding:"16px 20px 32px",display:"flex",flexDirection:"column",gap:20}}>
+
+            {/* Card preview */}
             <div style={{display:"flex",alignItems:"center",gap:14,padding:"12px 14px",background:"var(--bg-page)",border:"1px solid var(--border)",borderRadius:12}}>
               <CardThumb card={card} size={44}/>
               <div style={{flex:1,minWidth:0}}>
@@ -1179,62 +1198,55 @@ function PublishWizard({ open, onClose, onPublish, preCard=null, user }) {
               {!preCard&&<button onClick={()=>setStep(1)} style={{...linkBtn,fontSize:12}}>Cambiar</button>}
             </div>
 
+            {/* ── Precio ── */}
+            <div>
+              <div style={{display:"flex",alignItems:"baseline",justifyContent:"space-between",marginBottom:8}}>
+                <div style={{fontSize:13,fontWeight:500,color:"var(--text-primary)"}}>Precio de venta <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:11,fontWeight:400,color:"var(--text-muted)"}}>USD</span></div>
+                {marketPrice>0&&<span style={{fontSize:12,color:"var(--text-muted)"}}>Mercado: <span style={{fontFamily:"'IBM Plex Mono',monospace",color:"var(--interactive)",fontWeight:500}}>USD {marketPrice.toFixed(2).replace(".",",")}</span></span>}
+              </div>
+              <div style={{position:"relative"}}>
+                <span style={{position:"absolute",left:16,top:"50%",transform:"translateY(-50%)",fontSize:18,fontWeight:400,color:"var(--text-muted)",fontFamily:"'IBM Plex Mono',monospace",pointerEvents:"none",lineHeight:1}}>$</span>
+                <input
+                  type="number" min="0.01" step="0.01"
+                  value={price}
+                  onChange={e=>setPrice(e.target.value)}
+                  placeholder={marketPrice>0?marketPrice.toFixed(2):"0.00"}
+                  style={{width:"100%",height:60,padding:"0 16px 0 36px",border:`2px solid ${inputPrice>0?"var(--interactive)":"var(--border)"}`,borderRadius:12,fontSize:28,fontFamily:"'IBM Plex Mono',monospace",fontWeight:400,color:"var(--text-primary)",background:"var(--bg-secondary)",outline:"none",boxSizing:"border-box",transition:"border-color 150ms ease-out"}}
+                />
+              </div>
+              {priceDelta!==null&&<div style={{marginTop:6,fontSize:12,fontFamily:"'IBM Plex Mono',monospace",color:Math.abs(priceDelta)<5?"var(--text-muted)":priceDelta>0?"#A02C2C":"#0F6E56"}}>
+                {priceDelta>=0?"+":" "}{priceDelta.toFixed(1).replace(".",",")}% vs mercado
+              </div>}
+            </div>
+
+            {/* ── Condición ── */}
             <div>
               <div style={{fontSize:13,fontWeight:500,color:"var(--text-primary)",marginBottom:10}}>Condición</div>
-              <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
-                {[["M","Mint"],["NM","Near Mint"],["LP","Lightly Played"],["MP","Moderately Played"],["HP","Heavily Played"],["DMG","Damaged"]].map(([code,label])=>(
-                  <button key={code} onClick={()=>setCondition(code)} style={{padding:"8px 14px",borderRadius:8,border:`1px solid ${condition===code?"var(--interactive)":"var(--border)"}`,background:condition===code?"var(--interactive)":"transparent",color:condition===code?"var(--on-interactive)":"var(--text-primary)",fontSize:13,fontWeight:500,cursor:"pointer",fontFamily:"'IBM Plex Sans',sans-serif",display:"flex",flexDirection:"column",alignItems:"center",gap:2}}>
-                    <span style={{fontFamily:"'IBM Plex Mono',monospace"}}>{code}</span>
-                    <span style={{fontSize:10,opacity:0.7}}>{label}</span>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8}}>
+                {[["M","Mint"],["NM","Near Mint"],["LP","Lightly Played"],["MP","Mod. Played"],["HP","Heavily Played"],["DMG","Damaged"]].map(([code,label])=>(
+                  <button key={code} onClick={()=>setCondition(code)} style={{padding:"10px 8px",borderRadius:10,border:`1.5px solid ${condition===code?"var(--interactive)":"var(--border)"}`,background:condition===code?"var(--interactive)":"var(--bg-page)",color:condition===code?"var(--on-interactive)":"var(--text-primary)",cursor:"pointer",fontFamily:"'IBM Plex Sans',sans-serif",display:"flex",flexDirection:"column",alignItems:"center",gap:3,transition:"border-color 100ms,background 100ms"}}>
+                    <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:13,fontWeight:500}}>{code}</span>
+                    <span style={{fontSize:10,opacity:condition===code?0.85:0.55,lineHeight:1.2,textAlign:"center"}}>{label}</span>
                   </button>
                 ))}
               </div>
             </div>
 
+            {/* ── Idioma ── */}
             <div>
               <div style={{fontSize:13,fontWeight:500,color:"var(--text-primary)",marginBottom:10}}>Idioma</div>
               <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
                 {[["EN","Inglés"],["ES","Español"],["JP","Japonés"],["PT","Portugués"]].map(([code,label])=>(
-                  <button key={code} onClick={()=>setLanguage(code)} style={{height:36,padding:"0 14px",borderRadius:8,border:`1px solid ${language===code?"var(--interactive)":"var(--border)"}`,background:language===code?"var(--interactive)":"transparent",color:language===code?"var(--on-interactive)":"var(--text-primary)",fontSize:13,fontWeight:500,cursor:"pointer",fontFamily:"'IBM Plex Sans',sans-serif"}}>{label}</button>
+                  <button key={code} onClick={()=>setLanguage(code)} style={{height:36,padding:"0 16px",borderRadius:8,border:`1.5px solid ${language===code?"var(--interactive)":"var(--border)"}`,background:language===code?"var(--interactive)":"transparent",color:language===code?"var(--on-interactive)":"var(--text-primary)",fontSize:13,fontWeight:500,cursor:"pointer",fontFamily:"'IBM Plex Sans',sans-serif",transition:"border-color 100ms,background 100ms"}}>{label}</button>
                 ))}
               </div>
             </div>
 
+            {/* ── Descripción ── */}
             <div>
               <div style={{fontSize:13,fontWeight:500,color:"var(--text-primary)",marginBottom:8}}>Descripción <span style={{fontWeight:400,color:"var(--text-muted)"}}>(opcional)</span></div>
               <textarea value={notes} onChange={e=>setNotes(e.target.value)} placeholder="Ej: leve roce en borde inferior. Fotos disponibles." maxLength={200} rows={3} style={{width:"100%",border:"1px solid var(--border)",borderRadius:10,padding:"10px 14px",fontSize:13,color:"var(--text-primary)",background:"var(--bg-secondary)",outline:"none",fontFamily:"'IBM Plex Sans',sans-serif",resize:"none",boxSizing:"border-box"}}/>
               <div style={{fontSize:11,color:"var(--text-muted)",textAlign:"right",marginTop:4}}>{notes.length}/200</div>
-            </div>
-          </div>}
-
-          {/* Step 3 — Precio */}
-          {step===3&&card&&<div style={{padding:"16px 20px 24px",display:"flex",flexDirection:"column",gap:20}}>
-            <div style={{display:"flex",alignItems:"center",gap:14,padding:"12px 14px",background:"var(--bg-page)",border:"1px solid var(--border)",borderRadius:12}}>
-              <CardThumb card={card} size={44}/>
-              <div style={{flex:1,minWidth:0}}>
-                <div style={{fontSize:14,fontWeight:500,color:"var(--text-primary)",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{card.name}</div>
-                <div style={{display:"flex",gap:6,marginTop:4,alignItems:"center"}}>
-                  <ConditionBadge code={condition}/>
-                  <span style={{fontSize:11,color:"var(--text-muted)"}}>{language}</span>
-                  {notes&&<span style={{fontSize:11,color:"var(--text-muted)",maxWidth:140,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}> · {notes}</span>}
-                </div>
-              </div>
-            </div>
-
-            {marketPrice>0&&<div style={{padding:"12px 14px",background:"#EBF2FB",borderRadius:10,display:"flex",justifyContent:"space-between",alignItems:"baseline"}}>
-              <span style={{fontSize:13,color:"#0D4A80"}}>Referencia TCGPlayer</span>
-              <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:15,fontWeight:500,color:"#0D4A80"}}>USD {marketPrice.toFixed(2).replace(".",",")}</span>
-            </div>}
-
-            <div>
-              <div style={{fontSize:13,fontWeight:500,color:"var(--text-primary)",marginBottom:8}}>Tu precio de venta</div>
-              <div style={{position:"relative"}}>
-                <span style={{position:"absolute",left:14,top:"50%",transform:"translateY(-50%)",fontSize:14,color:"var(--text-muted)",fontFamily:"'IBM Plex Mono',monospace",pointerEvents:"none"}}>USD</span>
-                <input type="number" min="0.01" step="0.01" value={price} onChange={e=>setPrice(e.target.value)} placeholder={marketPrice>0?marketPrice.toFixed(2):"0.00"} style={{width:"100%",height:56,padding:"0 14px 0 56px",border:"1px solid var(--border)",borderRadius:10,fontSize:22,fontFamily:"'IBM Plex Mono',monospace",color:"var(--text-primary)",background:"var(--bg-secondary)",outline:"none",boxSizing:"border-box"}}/>
-              </div>
-              {priceDelta!==null&&<div style={{marginTop:6,fontSize:12,fontFamily:"'IBM Plex Mono',monospace",color:Math.abs(priceDelta)<5?"var(--text-muted)":priceDelta>0?"#A02C2C":"#0F6E56"}}>
-                {priceDelta>=0?"+":""}{priceDelta.toFixed(1).replace(".",",")}% vs mercado
-              </div>}
             </div>
 
             <div style={{padding:"10px 14px",background:"var(--bg-secondary)",borderRadius:8,fontSize:12,color:"var(--text-muted)",lineHeight:1.5}}>
@@ -1246,9 +1258,10 @@ function PublishWizard({ open, onClose, onPublish, preCard=null, user }) {
         {/* Footer */}
         <div style={{padding:"12px 20px 40px",borderTop:"1px solid var(--border)",flexShrink:0}}>
           {step===1&&<p style={{margin:0,fontSize:13,color:"var(--text-muted)",textAlign:"center"}}>Busca o selecciona la carta que quieres vender.</p>}
-          {step===2&&<Button variant="primary" size="lg" onClick={()=>setStep(3)} style={{width:"100%"}}>Continuar</Button>}
-          {step===3&&<Button variant="primary" size="lg" onClick={submit} disabled={publishing||parseFloat(price)<=0||!price} style={{width:"100%"}}>
-            {publishing?<><div style={{width:16,height:16,borderRadius:"50%",border:"2px solid rgba(255,255,255,.3)",borderTopColor:"#fff",animation:"spin 600ms linear infinite",display:"inline-block",marginRight:8}}/> Publicando…</>:"Publicar listing"}
+          {step===2&&<Button variant="primary" size="lg" onClick={submit} disabled={!canPublish} style={{width:"100%"}}>
+            {publishing
+              ?<><div style={{width:16,height:16,borderRadius:"50%",border:"2px solid rgba(255,255,255,.3)",borderTopColor:"#fff",animation:"spin 600ms linear infinite",display:"inline-block",marginRight:8}}/> Publicando…</>
+              :"Publicar listing"}
           </Button>}
         </div>
       </div>
@@ -1257,7 +1270,7 @@ function PublishWizard({ open, onClose, onPublish, preCard=null, user }) {
 }
 
 // ─── MAIN APP ─────────────────────────────────────────────────────────────────
-function MainApp({ shellVariant="A" }) {
+function MainApp({ shellVariant="A", dark=false, toggleDark }) {
   const [tab,setTab] = React.useState("home");
   const [activeCard,setActiveCard] = React.useState(null);
   const [scanning,setScanning] = React.useState(false);
@@ -1329,11 +1342,11 @@ function MainApp({ shellVariant="A" }) {
       :activeCard
         ?<CardDetail card={activeCard} shellVariant={shellVariant} onBack={()=>setActiveCard(null)} isInWatchlist={isInWatchlist(activeCard)} onToggleWatchlist={()=>requestRemove(activeCard)} onCreateAlert={()=>flash("Alerta creada. Te avisamos cuando el precio cruce el umbral.")} onPublish={openPublish}/>
         :<>
-          <TopBar variant="home" rightCount={unreadCount} onNotifications={()=>setNotifsOpen(true)}/>
+          <TopBar variant="home" rightCount={unreadCount} onNotifications={()=>setNotifsOpen(true)} dark={dark} toggleDark={toggleDark}/>
           {tab==="home"&&<HomeScreen shellVariant={shellVariant} watchlist={watchlist} trendingCards={trendingCards} catalog={catalog} onOpenCard={openCard} onScan={()=>setScanning(true)} user={user} onOpenAuth={()=>setAuthOpen(true)}/>}
           {tab==="search"&&<SearchScreen shellVariant={shellVariant} onOpenCard={openCard} onScan={()=>setScanning(true)}/>}
           {tab==="ops"&&<OpsScreen catalog={catalog} listings={listings} onOpenPublish={openPublish} onOpenCard={openCard} onPauseToggle={pauseToggle}/>}
-          {tab==="profile"&&<ProfileScreen user={user} onOpenAuth={()=>setAuthOpen(true)} onLogout={handleLogout}/>}
+          {tab==="profile"&&<ProfileScreen user={user} onOpenAuth={()=>setAuthOpen(true)} onLogout={handleLogout} dark={dark} toggleDark={toggleDark}/>}
         </>}
     {!inSubScreen&&<BottomNav active={tab} onChange={setTab}/>}
     <Toast message={toast} visible={!!toast}/>
@@ -1345,15 +1358,26 @@ function MainApp({ shellVariant="A" }) {
 
 // ─── ROOT APP (mobile full-screen) ────────────────────────────────────────────
 function App() {
-  const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-  const [dark] = React.useState(prefersDark);
+  const getInitial = () => {
+    try {
+      const s = localStorage.getItem("tradeit_dark");
+      if (s !== null) return s === "1";
+    } catch {}
+    return !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  };
+  const [dark, setDark] = React.useState(getInitial);
+  const toggleDark = () => setDark(d => {
+    const next = !d;
+    try { localStorage.setItem("tradeit_dark", next?"1":"0"); } catch {}
+    return next;
+  });
   return (
     <div className={dark?"dark":""} style={{
       height:"100dvh", display:"flex", flexDirection:"column",
       background:"var(--bg-page)", overflow:"hidden",
       fontFamily:"var(--font-sans)", color:"var(--text-primary)",
     }}>
-      <MainApp shellVariant="A"/>
+      <MainApp shellVariant="A" dark={dark} toggleDark={toggleDark}/>
     </div>
   );
 }
