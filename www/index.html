@@ -153,6 +153,21 @@ async function ptcgFetchByName(name) {
   return cards[0]||null;
 }
 
+// ─── AUTH ─────────────────────────────────────────────────────────────────────
+const AUTH_KEY = "tradeit_user";
+function getStoredUser() { try { const s=localStorage.getItem(AUTH_KEY); return s?JSON.parse(s):null; } catch{return null;} }
+function storeUser(u) { try { localStorage.setItem(AUTH_KEY,JSON.stringify(u)); } catch{} }
+function clearUser() { try { localStorage.removeItem(AUTH_KEY); } catch{} }
+
+// ─── NOTIFICATIONS DATA ────────────────────────────────────────────────────────
+const SAMPLE_NOTIFS = [
+  { id:"n1", type:"price", title:"Charizard ex bajó de USD 420", body:"El precio cruzó tu umbral de USD 400. Revisa las ofertas disponibles.", time:"hace 5 min", read:false },
+  { id:"n2", type:"offer", title:"Nueva oferta recibida", body:"Un vendedor ofreció USD 395 por tu Umbreon VMAX. Responde antes de que expire.", time:"hace 1 h", read:false },
+  { id:"n3", type:"price", title:"Pikachu Illustrator subió 18%", body:"El precio de mercado alcanzó USD 5.450 en los últimos 90 días.", time:"hace 3 h", read:true },
+  { id:"n4", type:"system", title:"Verificación completada", body:"Tu cuenta fue verificada como comprador. Ya puedes acceder a todos los listados.", time:"ayer", read:true },
+  { id:"n5", type:"listing", title:"Tu listing fue publicado", body:"Charizard ex (NM) está visible para otros usuarios.", time:"hace 2 días", read:true },
+];
+
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 const TCG_SHELLS = {
   A:{ single:{background:"linear-gradient(135deg,#EBF2FB 0%,#C5DAEF 100%)"}, graded:{background:"linear-gradient(135deg,#FAF0D8 0%,#F5D68C 100%)"}, sealed:{background:"linear-gradient(135deg,#F0EFEC 0%,#D6D4CE 100%)"} },
@@ -258,7 +273,7 @@ function PhoneFrame({ children, dark=false, time="9:41" }) {
 }
 
 // ─── TOP BAR ─────────────────────────────────────────────────────────────────
-function TopBar({ variant="home", title, onBack, right, rightCount }) {
+function TopBar({ variant="home", title, onBack, right, rightCount, onNotifications }) {
   return <div style={{ height:52, padding:"0 12px", display:"flex", alignItems:"center", gap:8, borderBottom:"1px solid var(--border)", background:"var(--bg-primary)", color:"var(--text-primary)", flexShrink:0 }}>
     {variant==="back" ? <button onClick={onBack} style={iconBtn()} aria-label="Volver"><i className="ph ph-arrow-left" style={{fontSize:22}}/></button>
       : <div style={{display:"flex",alignItems:"center",gap:8,padding:"0 4px"}}>
@@ -271,7 +286,7 @@ function TopBar({ variant="home", title, onBack, right, rightCount }) {
       {variant==="back"&&title&&<span style={{fontSize:17,fontWeight:500}}>{title}</span>}
     </div>
     {right || <div style={{display:"flex",alignItems:"center",gap:4}}>
-      <button style={iconBtn()} aria-label="Notificaciones">
+      <button onClick={onNotifications} style={iconBtn()} aria-label="Notificaciones">
         <i className="ph ph-bell" style={{fontSize:22}}/>
         {rightCount>0&&<span style={{position:"absolute",top:6,right:6,width:8,height:8,borderRadius:"50%",background:"var(--danger)"}}/>}
       </button>
@@ -455,19 +470,169 @@ function SearchBar({ value, onChange, onFilter }) {
   </div>;
 }
 
+// ─── AUTH MODAL ───────────────────────────────────────────────────────────────
+function AuthModal({ open, onClose, onLogin }) {
+  const [tab,setTab] = React.useState("login");
+  const [name,setName] = React.useState("");
+  const [email,setEmail] = React.useState("");
+  const [password,setPassword] = React.useState("");
+  const [showPw,setShowPw] = React.useState(false);
+  const [loading,setLoading] = React.useState(false);
+  const [error,setError] = React.useState("");
+
+  React.useEffect(()=>{ if(!open){ setError("");setEmail("");setPassword("");setName("");setLoading(false); } },[open]);
+
+  const submit = async () => {
+    setError("");
+    if (!email.includes("@")) { setError("Ingresa un correo válido."); return; }
+    if (password.length < 6) { setError("La contraseña debe tener al menos 6 caracteres."); return; }
+    if (tab==="register" && !name.trim()) { setError("Ingresa tu nombre."); return; }
+    setLoading(true);
+    await new Promise(r=>setTimeout(r,700));
+    setLoading(false);
+    const user = { name: tab==="register" ? name.trim() : email.split("@")[0], email };
+    storeUser(user);
+    onLogin(user);
+    onClose();
+  };
+
+  if (!open) return null;
+  return (
+    <div onClick={onClose} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.5)",zIndex:60,display:"flex",alignItems:"flex-end",animation:"fadeIn 200ms ease-out both"}}>
+      <div onClick={e=>e.stopPropagation()} style={{width:"100%",background:"var(--bg-primary)",color:"var(--text-primary)",borderRadius:"20px 20px 0 0",padding:"20px 20px 40px",animation:"sheetIn 300ms ease-out both",fontFamily:"'IBM Plex Sans',sans-serif"}}>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:20}}>
+          <div style={{display:"inline-flex",background:"var(--bg-secondary)",borderRadius:6,padding:2}}>
+            {[["login","Iniciar sesión"],["register","Crear cuenta"]].map(([k,label])=>(
+              <button key={k} onClick={()=>{setTab(k);setError("");}} style={{padding:"6px 14px",border:tab===k?"1px solid var(--border)":"1px solid transparent",background:tab===k?"var(--bg-primary)":"transparent",color:tab===k?"var(--text-primary)":"var(--text-secondary)",fontWeight:500,fontSize:13,borderRadius:4,cursor:"pointer",fontFamily:"'IBM Plex Sans',sans-serif"}}>{label}</button>
+            ))}
+          </div>
+          <button onClick={onClose} style={{width:32,height:32,borderRadius:8,border:"none",background:"transparent",color:"var(--text-secondary)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><i className="ph ph-x" style={{fontSize:18}}/></button>
+        </div>
+        {tab==="register"&&(
+          <div style={{marginBottom:12}}>
+            <label style={{fontSize:12,fontWeight:500,color:"var(--text-secondary)",display:"block",marginBottom:4}}>Nombre</label>
+            <input value={name} onChange={e=>setName(e.target.value)} placeholder="Tu nombre" style={{width:"100%",height:44,padding:"0 14px",border:"1px solid var(--border)",borderRadius:8,fontSize:14,color:"var(--text-primary)",background:"var(--bg-secondary)",outline:"none",fontFamily:"'IBM Plex Sans',sans-serif",boxSizing:"border-box"}}/>
+          </div>
+        )}
+        <div style={{marginBottom:12}}>
+          <label style={{fontSize:12,fontWeight:500,color:"var(--text-secondary)",display:"block",marginBottom:4}}>Correo</label>
+          <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="tu@correo.com" style={{width:"100%",height:44,padding:"0 14px",border:"1px solid var(--border)",borderRadius:8,fontSize:14,color:"var(--text-primary)",background:"var(--bg-secondary)",outline:"none",fontFamily:"'IBM Plex Sans',sans-serif",boxSizing:"border-box"}}/>
+        </div>
+        <div style={{marginBottom:error?12:20}}>
+          <label style={{fontSize:12,fontWeight:500,color:"var(--text-secondary)",display:"block",marginBottom:4}}>Contraseña</label>
+          <div style={{position:"relative"}}>
+            <input type={showPw?"text":"password"} value={password} onChange={e=>setPassword(e.target.value)} placeholder="Mínimo 6 caracteres" style={{width:"100%",height:44,padding:"0 40px 0 14px",border:"1px solid var(--border)",borderRadius:8,fontSize:14,color:"var(--text-primary)",background:"var(--bg-secondary)",outline:"none",fontFamily:"'IBM Plex Sans',sans-serif",boxSizing:"border-box"}}/>
+            <button onClick={()=>setShowPw(v=>!v)} style={{position:"absolute",right:12,top:"50%",transform:"translateY(-50%)",background:"transparent",border:"none",cursor:"pointer",color:"var(--text-muted)",padding:0}}><i className={`ph ${showPw?"ph-eye-slash":"ph-eye"}`} style={{fontSize:18}}/></button>
+          </div>
+        </div>
+        {error&&<div style={{marginBottom:14,padding:"10px 12px",background:"var(--red-10)",border:"1px solid var(--red-20)",borderRadius:8,color:"var(--red-60)",fontSize:13}}>{error}</div>}
+        <Button variant="primary" size="lg" onClick={submit} disabled={loading} style={{width:"100%"}}>
+          {loading?<><div style={{width:16,height:16,borderRadius:"50%",border:"2px solid rgba(255,255,255,.3)",borderTopColor:"#fff",animation:"spin 600ms linear infinite",display:"inline-block",marginRight:8}}/> Verificando…</>:tab==="login"?"Iniciar sesión":"Crear cuenta"}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+// ─── NOTIFICATIONS PANEL ──────────────────────────────────────────────────────
+function NotificationsPanel({ open, onClose, notifs, onMarkAll, onMarkOne }) {
+  if (!open) return null;
+  const typeIcon = { price:"ph-trend-up", offer:"ph-handshake", listing:"ph-tag", system:"ph-info" };
+  const typeBg = { price:"#EBF2FB", offer:"#E0F4EF", listing:"#FAF0D8", system:"var(--bg-secondary)" };
+  const typeFg = { price:"#1A6FB5", offer:"#0F6E56", listing:"#9B6510", system:"var(--text-secondary)" };
+  const unread = notifs.filter(n=>!n.read).length;
+  return (
+    <div onClick={onClose} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.5)",zIndex:60,display:"flex",alignItems:"flex-end",animation:"fadeIn 200ms ease-out both"}}>
+      <div onClick={e=>e.stopPropagation()} style={{width:"100%",maxHeight:"80%",background:"var(--bg-primary)",color:"var(--text-primary)",borderRadius:"20px 20px 0 0",display:"flex",flexDirection:"column",animation:"sheetIn 300ms ease-out both",fontFamily:"'IBM Plex Sans',sans-serif"}}>
+        <div style={{padding:"16px 20px 12px",display:"flex",alignItems:"center",justifyContent:"space-between",borderBottom:"1px solid var(--border)",flexShrink:0}}>
+          <div style={{display:"flex",alignItems:"center",gap:8}}>
+            <span style={{fontSize:17,fontWeight:500}}>Notificaciones</span>
+            {unread>0&&<span style={{display:"inline-flex",alignItems:"center",height:18,padding:"0 6px",borderRadius:9,background:"var(--danger)",color:"#fff",fontSize:11,fontWeight:500}}>{unread}</span>}
+          </div>
+          <div style={{display:"flex",gap:8,alignItems:"center"}}>
+            {unread>0&&<button onClick={onMarkAll} style={{...linkBtn,fontSize:13}}>Marcar todas</button>}
+            <button onClick={onClose} style={{width:32,height:32,borderRadius:8,border:"none",background:"transparent",color:"var(--text-secondary)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><i className="ph ph-x" style={{fontSize:18}}/></button>
+          </div>
+        </div>
+        <div style={{overflowY:"auto",flex:1,padding:"8px 0 32px"}}>
+          {notifs.length===0
+            ? <EmptyState icon="ph-bell-slash" title="Todo al día" desc="No tienes notificaciones pendientes."/>
+            : notifs.map(n=>(
+              <button key={n.id} onClick={()=>onMarkOne(n.id)} style={{width:"100%",background:n.read?"transparent":"rgba(26,111,181,.04)",border:"none",borderBottom:"1px solid var(--border)",padding:"14px 20px",display:"flex",gap:12,alignItems:"flex-start",cursor:"pointer",textAlign:"left",fontFamily:"'IBM Plex Sans',sans-serif"}}>
+                <div style={{width:36,height:36,borderRadius:8,background:typeBg[n.type]||"var(--bg-secondary)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                  <i className={"ph "+(typeIcon[n.type]||"ph-bell")} style={{fontSize:18,color:typeFg[n.type]||"var(--text-secondary)"}}/>
+                </div>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{fontSize:13,fontWeight:n.read?400:500,color:"var(--text-primary)",lineHeight:1.3}}>{n.title}</div>
+                  <div style={{fontSize:12,color:"var(--text-secondary)",marginTop:3,lineHeight:1.4}}>{n.body}</div>
+                  <div style={{fontSize:11,color:"var(--text-muted)",marginTop:4,fontFamily:"'IBM Plex Mono',monospace"}}>{n.time}</div>
+                </div>
+                {!n.read&&<div style={{width:8,height:8,borderRadius:"50%",background:"var(--interactive)",marginTop:4,flexShrink:0}}/>}
+              </button>
+            ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── HERO BANNER ──────────────────────────────────────────────────────────────
+function HeroBanner({ cards=[], onOpenCard }) {
+  const [idx,setIdx] = React.useState(0);
+  React.useEffect(()=>{
+    if (cards.length<2) return;
+    const t=setInterval(()=>setIdx(i=>(i+1)%cards.length),4000);
+    return ()=>clearInterval(t);
+  },[cards.length]);
+
+  if (cards.length===0) {
+    return <div style={{margin:"16px 14px 0",borderRadius:16,height:160,background:"linear-gradient(90deg,var(--bg-secondary) 25%,var(--bg-primary) 50%,var(--bg-secondary) 75%)",backgroundSize:"600px 100%",animation:"shimmer 1.4s infinite"}}/>;
+  }
+
+  const card=cards[idx];
+  return (
+    <div style={{margin:"16px 14px 0",borderRadius:16,overflow:"hidden",position:"relative",cursor:"pointer"}} onClick={()=>onOpenCard(card)}>
+      <div style={{height:160,position:"relative",...(TCG_SHELLS.D.single),display:"flex",alignItems:"center",padding:"16px 20px",gap:16}}>
+        <div style={{flex:1,minWidth:0}}>
+          <div style={{fontSize:10,fontWeight:500,textTransform:"uppercase",letterSpacing:0.1,color:"rgba(240,239,236,0.5)",marginBottom:6}}>Destacado</div>
+          <div style={{fontSize:21,fontWeight:400,color:"#F0EFEC",lineHeight:1.2,letterSpacing:-0.01,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{card.name}</div>
+          <div style={{fontSize:11,color:"#9B9892",marginTop:4,fontFamily:"'IBM Plex Mono',monospace",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{card.set}</div>
+          <div style={{marginTop:10,display:"flex",alignItems:"baseline",gap:8}}>
+            {card.price>0
+              ? <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:20,fontWeight:400,color:"#F0EFEC"}}>USD {card.price.toFixed(2).replace(".",",")}</span>
+              : <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:20,color:"#5C5A56"}}>—</span>}
+            {card.delta!=null&&<span style={{color:card.delta>=0?"#2DA67E":"#D94646",fontFamily:"'IBM Plex Mono',monospace",fontSize:12}}>{card.delta>=0?"↑":"↓"} {Math.abs(card.delta).toFixed(1).replace(".",",")}%</span>}
+          </div>
+        </div>
+        {(card.image||card.imageLarge)&&<img src={card.image||card.imageLarge} alt={card.name} style={{height:128,objectFit:"contain",filter:"drop-shadow(0 8px 24px rgba(0,0,0,.6))",flexShrink:0}}/>}
+      </div>
+      {cards.length>1&&(
+        <div style={{position:"absolute",bottom:10,left:"50%",transform:"translateX(-50%)",display:"flex",gap:5}}>
+          {cards.map((_,i)=>(
+            <div key={i} onClick={e=>{e.stopPropagation();setIdx(i);}} style={{width:i===idx?16:6,height:6,borderRadius:3,background:i===idx?"#F0EFEC":"rgba(240,239,236,.3)",transition:"width 300ms ease-out,background 300ms ease-out",cursor:"pointer"}}/>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── SCREENS ─────────────────────────────────────────────────────────────────
-function HomeScreen({ onOpenCard, onScan, watchlist=[], trendingCards=[], catalog=CATALOG, shellVariant="A" }) {
+function HomeScreen({ onOpenCard, onScan, watchlist=[], trendingCards=[], catalog=CATALOG, shellVariant="A", user, onOpenAuth }) {
   const featured = trendingCards.length ? trendingCards.slice(0,4) : catalog.slice(0,4);
+  const bannerCards = trendingCards.length ? trendingCards.slice(0,5) : catalog.slice(0,5);
+  const firstName = user?.name ? user.name.split(" ")[0] : null;
   return <div style={{flex:1,overflow:"auto",background:"var(--bg-page)"}}>
     <div style={{padding:"20px 18px 8px"}}>
-      <div style={{fontSize:13,color:"var(--text-secondary)"}}>Hola, Diego.</div>
+      <div style={{fontSize:13,color:"var(--text-secondary)"}}>{firstName ? `Hola, ${firstName}.` : "Bienvenido a Tradeit TCG."}</div>
       <div style={{fontSize:26,fontWeight:300,color:"var(--text-primary)",letterSpacing:-0.02,lineHeight:1.2,marginTop:2}}>Los datos que tu colección merece.</div>
     </div>
+    <HeroBanner cards={bannerCards} onOpenCard={onOpenCard}/>
     <button onClick={onScan} style={{display:"flex",alignItems:"center",gap:12,margin:"16px 14px 0",padding:"14px 16px",background:"var(--inverse-surface)",color:"var(--on-inverse-surface)",border:"none",borderRadius:12,cursor:"pointer",textAlign:"left",width:"calc(100% - 28px)",fontFamily:"'IBM Plex Sans',sans-serif"}}>
       <div style={{width:40,height:40,borderRadius:8,background:"rgba(106,170,216,.18)",display:"flex",alignItems:"center",justifyContent:"center",color:"#6AAAD8"}}><i className="ph ph-camera" style={{fontSize:22}}/></div>
       <div style={{flex:1}}>
         <div style={{fontSize:14,fontWeight:500}}>Escanear una carta</div>
-        <div style={{fontSize:12,opacity:0.65,marginTop:2}}>Apuntá con la cámara y te decimos cuánto vale.</div>
+        <div style={{fontSize:12,opacity:0.65,marginTop:2}}>Apunta con la cámara y te decimos cuánto vale.</div>
       </div>
       <i className="ph ph-arrow-right" style={{fontSize:18,opacity:0.55}}/>
     </button>
@@ -476,7 +641,7 @@ function HomeScreen({ onOpenCard, onScan, watchlist=[], trendingCards=[], catalo
         <div><div style={labelUp}>Tu watchlist</div><div style={{fontSize:14,color:"var(--text-primary)",marginTop:2}}><span style={{fontFamily:"'IBM Plex Mono',monospace",fontWeight:500}}>{watchlist.length}</span> cartas vigiladas</div></div>
         {watchlist.length>0&&<button style={linkBtn}>Ver todas</button>}
       </div>
-      {watchlist.length===0 ? <EmptyState icon="ph-heart" title="Aún no sigues ninguna carta" desc="Agrega cartas a tu watchlist para ver su precio y recibir alertas cuando se mueva." cta="Buscar una carta" onCta={onScan}/>
+      {watchlist.length===0 ? <EmptyState icon="ph-heart" title="Aún no sigues ninguna carta." desc="Agrega cartas a tu watchlist para ver su precio y recibir alertas cuando se mueva." cta="Buscar una carta" onCta={onScan}/>
         : <div style={{display:"flex",flexDirection:"column",gap:8,marginTop:12}}>
             {watchlist.map(c=><button key={c.id} onClick={()=>onOpenCard(c)} style={{display:"grid",gridTemplateColumns:"44px 1fr auto",gap:12,padding:12,background:"var(--bg-primary)",border:"1px solid var(--border)",borderRadius:10,alignItems:"center",cursor:"pointer",textAlign:"left",fontFamily:"'IBM Plex Sans',sans-serif"}}>
               <div style={{width:44,height:60,borderRadius:4,...((TCG_SHELLS[shellVariant]||TCG_SHELLS.A)[c.productType]),display:"flex",alignItems:"center",justifyContent:"center",overflow:"hidden"}}>
@@ -556,9 +721,9 @@ function SearchScreen({ onOpenCard, onScan, shellVariant="A" }) {
           {[0,1,2,3,4,5].map(i=><div key={i} style={{height:200,borderRadius:12,background:"linear-gradient(90deg,var(--bg-secondary) 25%,var(--bg-primary) 50%,var(--bg-secondary) 75%)",backgroundSize:"600px 100%",animation:"shimmer 1.4s infinite"}}/>)}
         </div>
       ):error?(
-        <EmptyState icon="ph-warning-circle" title="No se pudo conectar con la API" desc={`Error: ${error}. Verificá tu conexión.`}/>
+        <EmptyState icon="ph-warning-circle" title="No se pudo conectar con la API" desc={`Error: ${error}. Verifica tu conexión e intenta de nuevo.`}/>
       ):results.length===0?(
-        <EmptyState icon="ph-magnifying-glass" title="No encontramos cartas con esos filtros" desc="Probá quitar un filtro o usar el scan para identificar una carta física." cta="Escanear carta" onCta={onScan}/>
+        <EmptyState icon="ph-magnifying-glass" title="No encontramos cartas con esos filtros" desc="Prueba quitar un filtro o usa el scan para identificar una carta física." cta="Escanear carta" onCta={onScan}/>
       ):(
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
           {results.map(c=><TcgCard key={c.id} card={c} onClick={()=>onOpenCard(c)} shellVariant={shellVariant}/>)}
@@ -568,7 +733,7 @@ function SearchScreen({ onOpenCard, onScan, shellVariant="A" }) {
   </div>;
 }
 
-function CardDetail({ card, onBack, isInWatchlist, onToggleWatchlist, onCreateAlert, shellVariant="A" }) {
+function CardDetail({ card, onBack, isInWatchlist, onToggleWatchlist, onCreateAlert, onPublish, shellVariant="A" }) {
   if (!card) return null;
   const [period,setPeriod] = React.useState("3m");
   const series = React.useMemo(()=>generatePriceSeries(),[card.id]);
@@ -630,12 +795,13 @@ function CardDetail({ card, onBack, isInWatchlist, onToggleWatchlist, onCreateAl
     </div>
     <div style={{background:"var(--bg-primary)",borderTop:"1px solid var(--border)",padding:"10px 14px",display:"flex",gap:8,flexShrink:0}}>
       <Button variant="secondary" icon={isInWatchlist?"ph-fill ph-heart":"ph-heart"} onClick={onToggleWatchlist} style={{flex:1,color:isInWatchlist?"#A02C2C":"var(--text-primary)"}}>{isInWatchlist?"Siguiendo":"Watchlist"}</Button>
-      <Button variant="primary" icon="ph-bell" onClick={onCreateAlert} style={{flex:1.4}}>Crear alerta</Button>
+      <Button variant="secondary" icon="ph-bell" onClick={onCreateAlert} style={{flex:1}}>Alerta</Button>
+      <Button variant="primary" icon="ph-tag" onClick={()=>onPublish?.(card)} style={{flex:1.2}}>Publicar</Button>
     </div>
   </div>;
 }
 
-function ScanScreen({ onClose, onResult, scanCard }) {
+function ScanScreen({ onClose, onResult, onPublish, scanCard }) {
   const [scanning,setScanning] = React.useState(true);
   const [result,setResult] = React.useState(null);
   React.useEffect(()=>{
@@ -685,7 +851,10 @@ function ScanScreen({ onClose, onResult, scanCard }) {
             {result._raw&&<span style={{marginLeft:8,fontSize:10,color:"#5C5A56"}}>TCGPlayer</span>}
           </div>
         </div>
-        <button onClick={()=>onResult?.(result)} style={{height:36,padding:"0 14px",borderRadius:8,background:"#6AAAD8",color:"#131210",border:"none",fontWeight:500,fontSize:13,cursor:"pointer",fontFamily:"'IBM Plex Sans',sans-serif"}}>Ver detalle</button>
+        <div style={{display:"flex",flexDirection:"column",gap:6}}>
+          <button onClick={()=>onResult?.(result)} style={{height:36,padding:"0 14px",borderRadius:8,background:"#6AAAD8",color:"#131210",border:"none",fontWeight:500,fontSize:13,cursor:"pointer",fontFamily:"'IBM Plex Sans',sans-serif",whiteSpace:"nowrap"}}>Ver detalle</button>
+          <button onClick={()=>onPublish?.(result)} style={{height:36,padding:"0 14px",borderRadius:8,background:"transparent",color:"#6AAAD8",border:"1px solid #6AAAD8",fontWeight:500,fontSize:13,cursor:"pointer",fontFamily:"'IBM Plex Sans',sans-serif",whiteSpace:"nowrap"}}>Publicar</button>
+        </div>
       </div>:<div style={{display:"flex",alignItems:"center",gap:12}}>
         <div style={{width:24,height:24,borderRadius:"50%",border:"2px solid #2E2D2A",borderTopColor:"#6AAAD8",animation:"spin 800ms linear infinite"}}/>
         <span style={{fontSize:13,color:"#9B9892"}}>OCR sobre nombre + número de carta + set symbol…</span>
@@ -704,9 +873,9 @@ function CardThumb({ card, size=44 }) {
   </div>;
 }
 
-function OpsScreen({ onPublish, catalog=CATALOG, onOpenCard }) {
+function OpsScreen({ onOpenPublish, listings=[], catalog=CATALOG, onOpenCard, onPauseToggle }) {
   const [role,setRole] = React.useState("buyer");
-  const buyerStats=[{label:"Gasto · este mes",value:"USD 1.245",helper:"+18% vs mes anterior"},{label:"Watchlist",value:"12",helper:"3 con alerta activa"},{label:"Cartas valorizadas",value:"USD 8.420",helper:"↑ 4,2% · 30d",positive:true}];
+  const buyerStats=[{label:"Gasto · este mes",value:"USD 1.245",helper:"+18% vs mes anterior"},{label:"Watchlist",value:"12",helper:"3 con alerta activa"},{label:"Cartas valorizadas",value:"USD 8.420",helper:"↑ 4,2% · 30d"}];
 
   const alertDefs=[
     {name:"Charizard ex",trigger:400,status:"Activa",color:"info",catId:"charizard-ex"},
@@ -720,11 +889,8 @@ function OpsScreen({ onPublish, catalog=CATALOG, onOpenCard }) {
     {name:"Rayquaza VMAX",date:"02 may",price:285,cond:"NM",catId:"rayquaza-vmax"},
   ].map(p=>({...p,card:catalog.find(c=>c.id===p.catId)||null}));
 
-  const sellerDefs=[
-    {name:"Charizard ex (NM)",price:410,views:47,watchlists:8,status:"Activo",catId:"charizard-ex"},
-    {name:"Pikachu V Alt Art",price:320,views:19,watchlists:4,status:"Activo",catId:null},
-    {name:"Booster Box · Paldea",price:95,views:11,watchlists:2,status:"Pausado",catId:null},
-  ].map(l=>({...l,card:catalog.find(c=>c.id===l.catId)||null}));
+  const activeListings = listings.filter(l=>l.status==="Activo");
+  const totalRevenue = listings.reduce((s,l)=>s+l.price,0);
 
   return <div style={{flex:1,display:"flex",flexDirection:"column",background:"var(--bg-page)",overflow:"hidden"}}>
     <div style={{padding:"16px 18px 8px",background:"var(--bg-primary)",borderBottom:"1px solid var(--border)",flexShrink:0}}>
@@ -745,9 +911,8 @@ function OpsScreen({ onPublish, catalog=CATALOG, onOpenCard }) {
         <div style={{background:"var(--bg-primary)",border:"1px solid var(--border)",borderRadius:10,padding:"14px 16px"}}>
           <div style={{fontSize:10,fontWeight:500,textTransform:"uppercase",letterSpacing:0.08,color:"var(--text-muted)"}}>{buyerStats[2].label}</div>
           <div style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:24,fontWeight:400,color:"var(--text-primary)",marginTop:4}}>{buyerStats[2].value}</div>
-          <div style={{fontSize:11,color:"#0F6E56",marginTop:2}}>{buyerStats[2].helper}</div>
+          <div style={{fontSize:11,color:"#0F6E56",marginTop:2}}>↑ 4,2% · 30d</div>
         </div>
-
         <div>
           <div style={labelUp}>Alertas activas</div>
           <div style={{display:"flex",flexDirection:"column",gap:8,marginTop:8}}>
@@ -764,7 +929,6 @@ function OpsScreen({ onPublish, catalog=CATALOG, onOpenCard }) {
             </button>)}
           </div>
         </div>
-
         <div>
           <div style={labelUp}>Compras declaradas · últimas</div>
           <div style={{display:"flex",flexDirection:"column",gap:8,marginTop:8}}>
@@ -782,53 +946,94 @@ function OpsScreen({ onPublish, catalog=CATALOG, onOpenCard }) {
           </div>
         </div>
       </div>:<div style={{display:"flex",flexDirection:"column",gap:14}}>
-        <Button variant="primary" icon="ph-tag" size="lg" onClick={onPublish} style={{width:"100%"}}>Publicar producto</Button>
+        <Button variant="primary" icon="ph-tag" size="lg" onClick={()=>onOpenPublish(null)} style={{width:"100%"}}>Publicar producto</Button>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
-          {[{label:"Ingresos · este mes",value:"USD 2.180",helper:"+34% vs mes anterior"},{label:"Listings activos",value:"8",helper:"2 borradores"}].map((s,i)=><div key={i} style={{background:"var(--bg-primary)",border:"1px solid var(--border)",borderRadius:10,padding:"14px 16px"}}>
-            <div style={{fontSize:10,fontWeight:500,textTransform:"uppercase",letterSpacing:0.08,color:"var(--text-muted)"}}>{s.label}</div>
-            <div style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:20,fontWeight:400,color:"var(--text-primary)",marginTop:4}}>{s.value}</div>
-            <div style={{fontSize:11,color:"var(--text-secondary)",marginTop:2}}>{s.helper}</div>
-          </div>)}
+          <div style={{background:"var(--bg-primary)",border:"1px solid var(--border)",borderRadius:10,padding:"14px 16px"}}>
+            <div style={{fontSize:10,fontWeight:500,textTransform:"uppercase",letterSpacing:0.08,color:"var(--text-muted)"}}>Listings activos</div>
+            <div style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:20,fontWeight:400,color:"var(--text-primary)",marginTop:4}}>{activeListings.length}</div>
+            <div style={{fontSize:11,color:"var(--text-secondary)",marginTop:2}}>{listings.length-activeListings.length} pausados</div>
+          </div>
+          <div style={{background:"var(--bg-primary)",border:"1px solid var(--border)",borderRadius:10,padding:"14px 16px"}}>
+            <div style={{fontSize:10,fontWeight:500,textTransform:"uppercase",letterSpacing:0.08,color:"var(--text-muted)"}}>Valor publicado</div>
+            <div style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:20,fontWeight:400,color:"var(--text-primary)",marginTop:4}}>USD {totalRevenue>0?totalRevenue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,"."):"0"}</div>
+            <div style={{fontSize:11,color:"var(--text-secondary)",marginTop:2}}>precio de venta</div>
+          </div>
         </div>
         <div>
-          <div style={labelUp}>Listings</div>
-          <div style={{display:"flex",flexDirection:"column",gap:8,marginTop:8}}>
-            {sellerDefs.map((l,i)=><div key={i} style={{background:"var(--bg-primary)",border:"1px solid var(--border)",borderRadius:8,padding:12,display:"flex",gap:10,alignItems:"flex-start"}}>
-              <CardThumb card={l.card} size={40}/>
-              <div style={{flex:1,minWidth:0}}>
-                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-                  <div style={{fontSize:13,fontWeight:500,color:"var(--text-primary)",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",maxWidth:160}}>{l.name}</div>
-                  <Badge variant={l.status==="Activo"?"success":"neutral"}>{l.status}</Badge>
-                </div>
-                <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginTop:6}}>
-                  <div>
-                    <Price value={l.price} size="md"/>
-                    {l.card?.price>0&&<div style={{fontSize:10,color:"var(--text-muted)",fontFamily:"'IBM Plex Mono',monospace",marginTop:1}}>Mercado: USD {l.card.price.toFixed(2).replace(".",",")}</div>}
-                  </div>
-                  <div style={{display:"flex",gap:12,fontSize:11,color:"var(--text-secondary)",fontFamily:"'IBM Plex Mono',monospace"}}>
-                    <span><i className="ph ph-eye" style={{fontSize:12,verticalAlign:-1}}/> {l.views}</span>
-                    <span><i className="ph ph-heart" style={{fontSize:12,verticalAlign:-1}}/> {l.watchlists}</span>
-                  </div>
-                </div>
+          <div style={{...labelUp,marginBottom:8}}>Mis listings</div>
+          {listings.length===0
+            ? <div style={{padding:"28px 20px",textAlign:"center",background:"var(--bg-primary)",border:"1px dashed var(--border)",borderRadius:12}}>
+                <i className="ph ph-tag" style={{fontSize:32,color:"var(--text-muted)",display:"block",marginBottom:10}}/>
+                <div style={{fontSize:14,fontWeight:500,color:"var(--text-primary)",marginBottom:6}}>Aún no tienes listings.</div>
+                <div style={{fontSize:13,color:"var(--text-secondary)",marginBottom:16}}>Publica tu primera carta y empieza a vender.</div>
+                <Button variant="primary" onClick={()=>onOpenPublish(null)}>Publicar producto</Button>
               </div>
-            </div>)}
-          </div>
+            : <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                {listings.map(l=>(
+                  <div key={l.id} style={{background:"var(--bg-primary)",border:"1px solid var(--border)",borderRadius:10,padding:12,display:"flex",gap:10,alignItems:"flex-start"}}>
+                    <CardThumb card={l.card} size={40}/>
+                    <div style={{flex:1,minWidth:0}}>
+                      <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:8}}>
+                        <div style={{fontSize:13,fontWeight:500,color:"var(--text-primary)",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",flex:1}}>{l.card?.name||"Carta"}</div>
+                        <Badge variant={l.status==="Activo"?"success":"neutral"}>{l.status}</Badge>
+                      </div>
+                      <div style={{display:"flex",gap:6,marginTop:4,alignItems:"center"}}>
+                        <ConditionBadge code={l.condition}/>
+                        <span style={{fontSize:11,color:"var(--text-muted)"}}>{l.language}</span>
+                        {l.notes&&<span style={{fontSize:11,color:"var(--text-muted)",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",maxWidth:120}}>{l.notes}</span>}
+                      </div>
+                      <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginTop:6}}>
+                        <div>
+                          <Price value={l.price} size="md"/>
+                          {l.card?.price>0&&<div style={{fontSize:10,color:"var(--text-muted)",fontFamily:"'IBM Plex Mono',monospace",marginTop:1}}>Mercado: USD {l.card.price.toFixed(2).replace(".",",")}</div>}
+                        </div>
+                        <div style={{display:"flex",gap:10,alignItems:"center"}}>
+                          <div style={{display:"flex",gap:10,fontSize:11,color:"var(--text-secondary)",fontFamily:"'IBM Plex Mono',monospace"}}>
+                            <span><i className="ph ph-eye" style={{fontSize:12,verticalAlign:-1}}/> {l.views}</span>
+                            <span><i className="ph ph-heart" style={{fontSize:12,verticalAlign:-1}}/> {l.watchlists}</span>
+                          </div>
+                          <button onClick={()=>onPauseToggle?.(l.id)} style={{height:28,padding:"0 10px",borderRadius:6,border:"1px solid var(--border)",background:"transparent",color:"var(--text-secondary)",fontSize:11,fontWeight:500,cursor:"pointer",fontFamily:"'IBM Plex Sans',sans-serif"}}>
+                            {l.status==="Activo"?"Pausar":"Activar"}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>}
         </div>
       </div>}
     </div>
   </div>;
 }
 
-function ProfileScreen() {
+function ProfileScreen({ user, onOpenAuth, onLogout }) {
+  if (!user) {
+    return (
+      <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"40px 24px",background:"var(--bg-page)",gap:16,textAlign:"center"}}>
+        <div style={{width:64,height:64,borderRadius:"50%",background:"var(--bg-secondary)",display:"flex",alignItems:"center",justifyContent:"center"}}>
+          <i className="ph ph-user" style={{fontSize:32,color:"var(--text-muted)"}}/>
+        </div>
+        <div>
+          <div style={{fontSize:20,fontWeight:500,color:"var(--text-primary)"}}>Crea tu cuenta</div>
+          <div style={{fontSize:13,color:"var(--text-secondary)",marginTop:6,lineHeight:1.5,maxWidth:280}}>Inicia sesión para acceder a tu watchlist, alertas y operaciones.</div>
+        </div>
+        <div style={{display:"flex",flexDirection:"column",gap:8,width:"100%",maxWidth:320,marginTop:4}}>
+          <Button variant="primary" size="lg" onClick={onOpenAuth} style={{width:"100%"}}>Iniciar sesión</Button>
+          <Button variant="secondary" size="lg" onClick={onOpenAuth} style={{width:"100%"}}>Crear cuenta</Button>
+        </div>
+      </div>
+    );
+  }
   return <div style={{flex:1,overflowY:"auto",background:"var(--bg-page)"}}>
     <div style={{background:"var(--bg-primary)",borderBottom:"1px solid var(--border)",padding:"20px 18px",display:"flex",flexDirection:"column",alignItems:"center",gap:12}}>
       <div style={{position:"relative"}}>
-        <Avatar name="Diego G" size="lg"/>
+        <Avatar name={user.name} size="lg"/>
         <div style={{position:"absolute",bottom:0,right:0,width:20,height:20,borderRadius:"50%",background:"var(--success)",border:"2px solid var(--bg-primary)",display:"flex",alignItems:"center",justifyContent:"center"}}><i className="ph ph-seal-check" style={{fontSize:11,color:"#fff"}}/></div>
       </div>
       <div style={{textAlign:"center"}}>
-        <div style={{fontSize:20,fontWeight:500,color:"var(--text-primary)"}}>Diego G.</div>
-        <div style={{fontSize:13,color:"var(--text-secondary)",marginTop:2}}>Comprador verificado · desde mayo 2026</div>
+        <div style={{fontSize:20,fontWeight:500,color:"var(--text-primary)"}}>{user.name}</div>
+        <div style={{fontSize:13,color:"var(--text-secondary)",marginTop:2}}>{user.email}</div>
       </div>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:16,width:"100%",marginTop:8}}>
         {[["12","Watchlist"],["4","Alertas"],["USD 1.245","Este mes"]].map(([v,l])=><div key={l} style={{textAlign:"center"}}>
@@ -838,13 +1043,217 @@ function ProfileScreen() {
       </div>
     </div>
     <div style={{padding:"16px 14px",display:"flex",flexDirection:"column",gap:8}}>
-      {[{icon:"ph-bell",label:"Notificaciones"},{icon:"ph-currency-dollar",label:"Moneda · USD"},{icon:"ph-lock-simple",label:"Privacidad"},{icon:"ph-gear-six",label:"Configuración"},{icon:"ph-sign-out",label:"Cerrar sesión",danger:true}].map((item,i)=><button key={i} style={{display:"flex",alignItems:"center",gap:14,padding:"14px 16px",background:"var(--bg-primary)",border:"1px solid var(--border)",borderRadius:10,cursor:"pointer",textAlign:"left",fontFamily:"'IBM Plex Sans',sans-serif",color:item.danger?"var(--danger)":"var(--text-primary)"}}>
-        <i className={"ph "+item.icon} style={{fontSize:20,color:item.danger?"var(--danger)":"var(--text-secondary)"}}/>
-        <span style={{fontSize:14,fontWeight:500,flex:1}}>{item.label}</span>
-        {!item.danger&&<i className="ph ph-caret-right" style={{fontSize:16,color:"var(--text-muted)"}}/>}
-      </button>)}
+      {[{icon:"ph-bell",label:"Notificaciones"},{icon:"ph-currency-dollar",label:"Moneda · USD"},{icon:"ph-lock-simple",label:"Privacidad"},{icon:"ph-gear-six",label:"Configuración"}].map((item,i)=>(
+        <button key={i} style={{display:"flex",alignItems:"center",gap:14,padding:"14px 16px",background:"var(--bg-primary)",border:"1px solid var(--border)",borderRadius:10,cursor:"pointer",textAlign:"left",fontFamily:"'IBM Plex Sans',sans-serif",color:"var(--text-primary)"}}>
+          <i className={"ph "+item.icon} style={{fontSize:20,color:"var(--text-secondary)"}}/>
+          <span style={{fontSize:14,fontWeight:500,flex:1}}>{item.label}</span>
+          <i className="ph ph-caret-right" style={{fontSize:16,color:"var(--text-muted)"}}/>
+        </button>
+      ))}
+      <button onClick={onLogout} style={{display:"flex",alignItems:"center",gap:14,padding:"14px 16px",background:"var(--bg-primary)",border:"1px solid var(--border)",borderRadius:10,cursor:"pointer",textAlign:"left",fontFamily:"'IBM Plex Sans',sans-serif",color:"var(--danger)"}}>
+        <i className="ph ph-sign-out" style={{fontSize:20,color:"var(--danger)"}}/>
+        <span style={{fontSize:14,fontWeight:500,flex:1}}>Cerrar sesión</span>
+      </button>
     </div>
   </div>;
+}
+
+// ─── PUBLISH WIZARD ───────────────────────────────────────────────────────────
+function PublishWizard({ open, onClose, onPublish, preCard=null, user }) {
+  const [step,setStep] = React.useState(1);
+  const [card,setCard] = React.useState(preCard);
+  const [searchQ,setSearchQ] = React.useState("");
+  const [searchRes,setSearchRes] = React.useState([]);
+  const [searching,setSearching] = React.useState(false);
+  const [condition,setCondition] = React.useState("NM");
+  const [language,setLanguage] = React.useState("EN");
+  const [notes,setNotes] = React.useState("");
+  const [price,setPrice] = React.useState("");
+  const [publishing,setPublishing] = React.useState(false);
+
+  React.useEffect(()=>{
+    if (open) {
+      setStep(preCard ? 2 : 1);
+      setCard(preCard);
+      setCondition("NM"); setLanguage("EN"); setNotes(""); setPublishing(false);
+      setPrice(preCard?.price>0 ? preCard.price.toFixed(2) : "");
+      setSearchQ(""); setSearchRes([]);
+    }
+  },[open, preCard]);
+
+  React.useEffect(()=>{
+    if (step!==1||!searchQ) { setSearchRes([]); return; }
+    setSearching(true);
+    const t=setTimeout(async()=>{
+      try { const {cards}=await ptcgSearch(searchQ,8); setSearchRes(cards); } catch {}
+      setSearching(false);
+    },500);
+    return ()=>clearTimeout(t);
+  },[searchQ,step]);
+
+  const selectCard = c => { setCard(c); setPrice(c.price>0?c.price.toFixed(2):""); setStep(2); };
+
+  const submit = async () => {
+    setPublishing(true);
+    await new Promise(r=>setTimeout(r,800));
+    setPublishing(false);
+    onPublish({
+      id:`lst-${Date.now()}`,
+      card, condition, language, notes:notes.trim(),
+      price:parseFloat(price)||0,
+      status:"Activo", views:0, watchlists:0,
+      createdAt:Date.now(),
+      seller:user?.name||"Tú",
+    });
+    onClose();
+  };
+
+  if (!open) return null;
+  const marketPrice = card?.price>0 ? card.price : null;
+  const inputPrice = parseFloat(price)||0;
+  const priceDelta = marketPrice&&inputPrice>0 ? ((inputPrice-marketPrice)/marketPrice)*100 : null;
+  const titles = {1:"¿Qué carta vendes?", 2:"Condición e idioma", 3:"Precio y publicar"};
+
+  return (
+    <div onClick={onClose} style={{position:"absolute",inset:0,background:"rgba(0,0,0,.5)",zIndex:70,display:"flex",alignItems:"flex-end",animation:"fadeIn 200ms ease-out both"}}>
+      <div onClick={e=>e.stopPropagation()} style={{width:"100%",maxHeight:"92%",background:"var(--bg-primary)",color:"var(--text-primary)",borderRadius:"20px 20px 0 0",display:"flex",flexDirection:"column",animation:"sheetIn 300ms ease-out both",fontFamily:"'IBM Plex Sans',sans-serif"}}>
+
+        {/* Header */}
+        <div style={{padding:"16px 20px 12px",display:"flex",alignItems:"center",gap:12,borderBottom:"1px solid var(--border)",flexShrink:0}}>
+          {step>1&&!preCard&&<button onClick={()=>setStep(s=>s-1)} style={{width:32,height:32,border:"none",background:"transparent",cursor:"pointer",color:"var(--text-secondary)",display:"flex",alignItems:"center",justifyContent:"center",padding:0}}><i className="ph ph-arrow-left" style={{fontSize:20}}/></button>}
+          <div style={{flex:1}}>
+            <div style={{fontSize:17,fontWeight:500}}>{titles[step]}</div>
+            <div style={{display:"flex",gap:4,marginTop:8}}>
+              {[1,2,3].map(s=><div key={s} style={{height:3,flex:1,borderRadius:2,background:s<=step?"var(--interactive)":"var(--bg-secondary)",transition:"background 200ms ease-out"}}/>)}
+            </div>
+          </div>
+          <button onClick={onClose} style={{width:32,height:32,border:"none",background:"transparent",cursor:"pointer",color:"var(--text-secondary)",display:"flex",alignItems:"center",justifyContent:"center",padding:0}}><i className="ph ph-x" style={{fontSize:20}}/></button>
+        </div>
+
+        {/* Body */}
+        <div style={{flex:1,overflowY:"auto"}}>
+
+          {/* Step 1 — Buscar carta */}
+          {step===1&&<div style={{padding:"16px 20px 24px",display:"flex",flexDirection:"column",gap:12}}>
+            <label style={{display:"flex",alignItems:"center",gap:8,height:44,padding:"0 14px",background:"var(--bg-secondary)",borderRadius:10}}>
+              <i className="ph ph-magnifying-glass" style={{fontSize:18,color:"var(--text-muted)"}}/>
+              <input autoFocus value={searchQ} onChange={e=>setSearchQ(e.target.value)} placeholder="Nombre de la carta…" style={{flex:1,border:"none",background:"transparent",outline:"none",fontSize:14,color:"var(--text-primary)",fontFamily:"'IBM Plex Sans',sans-serif"}}/>
+              {searching&&<div style={{width:14,height:14,borderRadius:"50%",border:"2px solid var(--border)",borderTopColor:"var(--interactive)",animation:"spin 600ms linear infinite"}}/>}
+            </label>
+            {!searchQ&&<div style={{display:"flex",flexDirection:"column",gap:8}}>
+              <div style={labelUp}>Populares</div>
+              {CATALOG.filter(c=>c.productType==="single").slice(0,4).map(c=>(
+                <button key={c.id} onClick={()=>selectCard(c)} style={{display:"flex",alignItems:"center",gap:12,padding:"10px 12px",background:"var(--bg-page)",border:"1px solid var(--border)",borderRadius:10,cursor:"pointer",textAlign:"left",fontFamily:"'IBM Plex Sans',sans-serif",width:"100%"}}>
+                  <CardThumb card={c} size={36}/>
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{fontSize:13,fontWeight:500,color:"var(--text-primary)",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{c.name}</div>
+                    <div style={{fontSize:11,color:"var(--text-muted)"}}>{c.setShort||c.set}</div>
+                  </div>
+                  {c.price>0&&<Price value={c.price} size="sm"/>}
+                </button>
+              ))}
+            </div>}
+            {searchQ&&searchRes.length>0&&<div style={{display:"flex",flexDirection:"column",gap:8}}>
+              {searchRes.map(c=>(
+                <button key={c.id} onClick={()=>selectCard(c)} style={{display:"flex",alignItems:"center",gap:12,padding:"10px 12px",background:"var(--bg-page)",border:"1px solid var(--border)",borderRadius:10,cursor:"pointer",textAlign:"left",fontFamily:"'IBM Plex Sans',sans-serif",width:"100%"}}>
+                  <CardThumb card={c} size={36}/>
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{fontSize:13,fontWeight:500,color:"var(--text-primary)",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{c.name}</div>
+                    <div style={{fontSize:11,color:"var(--text-muted)"}}>{c.set}</div>
+                  </div>
+                  {c.price>0&&<Price value={c.price} size="sm"/>}
+                </button>
+              ))}
+            </div>}
+            {searchQ&&!searching&&searchRes.length===0&&<EmptyState icon="ph-magnifying-glass" title="Sin resultados" desc="Intenta con otro nombre o número de carta."/>}
+          </div>}
+
+          {/* Step 2 — Condición / idioma / notas */}
+          {step===2&&card&&<div style={{padding:"16px 20px 24px",display:"flex",flexDirection:"column",gap:20}}>
+            <div style={{display:"flex",alignItems:"center",gap:14,padding:"12px 14px",background:"var(--bg-page)",border:"1px solid var(--border)",borderRadius:12}}>
+              <CardThumb card={card} size={44}/>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{fontSize:14,fontWeight:500,color:"var(--text-primary)",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{card.name}</div>
+                <div style={{fontSize:11,color:"var(--text-muted)"}}>{card.number?`${card.number} · `:""}{card.set}</div>
+              </div>
+              {!preCard&&<button onClick={()=>setStep(1)} style={{...linkBtn,fontSize:12}}>Cambiar</button>}
+            </div>
+
+            <div>
+              <div style={{fontSize:13,fontWeight:500,color:"var(--text-primary)",marginBottom:10}}>Condición</div>
+              <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
+                {[["M","Mint"],["NM","Near Mint"],["LP","Lightly Played"],["MP","Moderately Played"],["HP","Heavily Played"],["DMG","Damaged"]].map(([code,label])=>(
+                  <button key={code} onClick={()=>setCondition(code)} style={{padding:"8px 14px",borderRadius:8,border:`1px solid ${condition===code?"var(--interactive)":"var(--border)"}`,background:condition===code?"var(--interactive)":"transparent",color:condition===code?"var(--on-interactive)":"var(--text-primary)",fontSize:13,fontWeight:500,cursor:"pointer",fontFamily:"'IBM Plex Sans',sans-serif",display:"flex",flexDirection:"column",alignItems:"center",gap:2}}>
+                    <span style={{fontFamily:"'IBM Plex Mono',monospace"}}>{code}</span>
+                    <span style={{fontSize:10,opacity:0.7}}>{label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <div style={{fontSize:13,fontWeight:500,color:"var(--text-primary)",marginBottom:10}}>Idioma</div>
+              <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
+                {[["EN","Inglés"],["ES","Español"],["JP","Japonés"],["PT","Portugués"]].map(([code,label])=>(
+                  <button key={code} onClick={()=>setLanguage(code)} style={{height:36,padding:"0 14px",borderRadius:8,border:`1px solid ${language===code?"var(--interactive)":"var(--border)"}`,background:language===code?"var(--interactive)":"transparent",color:language===code?"var(--on-interactive)":"var(--text-primary)",fontSize:13,fontWeight:500,cursor:"pointer",fontFamily:"'IBM Plex Sans',sans-serif"}}>{label}</button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <div style={{fontSize:13,fontWeight:500,color:"var(--text-primary)",marginBottom:8}}>Descripción <span style={{fontWeight:400,color:"var(--text-muted)"}}>(opcional)</span></div>
+              <textarea value={notes} onChange={e=>setNotes(e.target.value)} placeholder="Ej: leve roce en borde inferior. Fotos disponibles." maxLength={200} rows={3} style={{width:"100%",border:"1px solid var(--border)",borderRadius:10,padding:"10px 14px",fontSize:13,color:"var(--text-primary)",background:"var(--bg-secondary)",outline:"none",fontFamily:"'IBM Plex Sans',sans-serif",resize:"none",boxSizing:"border-box"}}/>
+              <div style={{fontSize:11,color:"var(--text-muted)",textAlign:"right",marginTop:4}}>{notes.length}/200</div>
+            </div>
+          </div>}
+
+          {/* Step 3 — Precio */}
+          {step===3&&card&&<div style={{padding:"16px 20px 24px",display:"flex",flexDirection:"column",gap:20}}>
+            <div style={{display:"flex",alignItems:"center",gap:14,padding:"12px 14px",background:"var(--bg-page)",border:"1px solid var(--border)",borderRadius:12}}>
+              <CardThumb card={card} size={44}/>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{fontSize:14,fontWeight:500,color:"var(--text-primary)",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{card.name}</div>
+                <div style={{display:"flex",gap:6,marginTop:4,alignItems:"center"}}>
+                  <ConditionBadge code={condition}/>
+                  <span style={{fontSize:11,color:"var(--text-muted)"}}>{language}</span>
+                  {notes&&<span style={{fontSize:11,color:"var(--text-muted)",maxWidth:140,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}> · {notes}</span>}
+                </div>
+              </div>
+            </div>
+
+            {marketPrice>0&&<div style={{padding:"12px 14px",background:"#EBF2FB",borderRadius:10,display:"flex",justifyContent:"space-between",alignItems:"baseline"}}>
+              <span style={{fontSize:13,color:"#0D4A80"}}>Referencia TCGPlayer</span>
+              <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:15,fontWeight:500,color:"#0D4A80"}}>USD {marketPrice.toFixed(2).replace(".",",")}</span>
+            </div>}
+
+            <div>
+              <div style={{fontSize:13,fontWeight:500,color:"var(--text-primary)",marginBottom:8}}>Tu precio de venta</div>
+              <div style={{position:"relative"}}>
+                <span style={{position:"absolute",left:14,top:"50%",transform:"translateY(-50%)",fontSize:14,color:"var(--text-muted)",fontFamily:"'IBM Plex Mono',monospace",pointerEvents:"none"}}>USD</span>
+                <input type="number" min="0.01" step="0.01" value={price} onChange={e=>setPrice(e.target.value)} placeholder={marketPrice>0?marketPrice.toFixed(2):"0.00"} style={{width:"100%",height:56,padding:"0 14px 0 56px",border:"1px solid var(--border)",borderRadius:10,fontSize:22,fontFamily:"'IBM Plex Mono',monospace",color:"var(--text-primary)",background:"var(--bg-secondary)",outline:"none",boxSizing:"border-box"}}/>
+              </div>
+              {priceDelta!==null&&<div style={{marginTop:6,fontSize:12,fontFamily:"'IBM Plex Mono',monospace",color:Math.abs(priceDelta)<5?"var(--text-muted)":priceDelta>0?"#A02C2C":"#0F6E56"}}>
+                {priceDelta>=0?"+":""}{priceDelta.toFixed(1).replace(".",",")}% vs mercado
+              </div>}
+            </div>
+
+            <div style={{padding:"10px 14px",background:"var(--bg-secondary)",borderRadius:8,fontSize:12,color:"var(--text-muted)",lineHeight:1.5}}>
+              Tradeit TCG no cobra comisión en esta etapa beta. Tu oferta queda visible de inmediato para otros usuarios.
+            </div>
+          </div>}
+        </div>
+
+        {/* Footer */}
+        <div style={{padding:"12px 20px 40px",borderTop:"1px solid var(--border)",flexShrink:0}}>
+          {step===1&&<p style={{margin:0,fontSize:13,color:"var(--text-muted)",textAlign:"center"}}>Busca o selecciona la carta que quieres vender.</p>}
+          {step===2&&<Button variant="primary" size="lg" onClick={()=>setStep(3)} style={{width:"100%"}}>Continuar</Button>}
+          {step===3&&<Button variant="primary" size="lg" onClick={submit} disabled={publishing||parseFloat(price)<=0||!price} style={{width:"100%"}}>
+            {publishing?<><div style={{width:16,height:16,borderRadius:"50%",border:"2px solid rgba(255,255,255,.3)",borderTopColor:"#fff",animation:"spin 600ms linear infinite",display:"inline-block",marginRight:8}}/> Publicando…</>:"Publicar listing"}
+          </Button>}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 // ─── MAIN APP ─────────────────────────────────────────────────────────────────
@@ -861,6 +1270,27 @@ function MainApp({ shellVariant="A" }) {
   ].filter(Boolean));
   const [toast,setToast] = React.useState(null);
   const [confirmRemove,setConfirmRemove] = React.useState(null);
+  const [user,setUser] = React.useState(getStoredUser);
+  const [authOpen,setAuthOpen] = React.useState(false);
+  const [notifs,setNotifs] = React.useState(SAMPLE_NOTIFS);
+  const [notifsOpen,setNotifsOpen] = React.useState(false);
+  const [listings,setListings] = React.useState([]);
+  const [publishOpen,setPublishOpen] = React.useState(false);
+  const [publishCard,setPublishCard] = React.useState(null);
+
+  const unreadCount = notifs.filter(n=>!n.read).length;
+  const handleLogin = (u) => { setUser(u); };
+  const handleLogout = () => { clearUser(); setUser(null); };
+  const markAllRead = () => setNotifs(ns=>ns.map(n=>({...n,read:true})));
+  const markOneRead = (id) => setNotifs(ns=>ns.map(n=>n.id===id?{...n,read:true}:n));
+
+  const openPublish = (card) => { setPublishCard(card||null); setPublishOpen(true); };
+  const handlePublish = (listing) => {
+    setListings(prev=>[listing,...prev]);
+    flash(`Listing publicado · ${listing.card?.name||"carta"}`);
+    setTab("ops");
+  };
+  const pauseToggle = (id) => setListings(prev=>prev.map(l=>l.id===id?{...l,status:l.status==="Activo"?"Pausado":"Activo"}:l));
 
   // ── Enrich catalog + fetch trending on mount ──────────────────────────────
   React.useEffect(()=>{
@@ -891,21 +1321,24 @@ function MainApp({ shellVariant="A" }) {
   const scanCard = catalog.find(c=>c.id==="charizard-ex")||CATALOG[0];
 
   return <>
+    <AuthModal open={authOpen} onClose={()=>setAuthOpen(false)} onLogin={handleLogin}/>
+    <NotificationsPanel open={notifsOpen} onClose={()=>setNotifsOpen(false)} notifs={notifs} onMarkAll={markAllRead} onMarkOne={markOneRead}/>
+    <PublishWizard open={publishOpen} onClose={()=>setPublishOpen(false)} onPublish={handlePublish} preCard={publishCard} user={user}/>
     {scanning
-      ?<ScanScreen onClose={()=>setScanning(false)} onResult={card=>{setScanning(false);openCard(card);}} scanCard={scanCard}/>
+      ?<ScanScreen onClose={()=>setScanning(false)} onResult={card=>{setScanning(false);openCard(card);}} onPublish={card=>{setScanning(false);openPublish(card);}} scanCard={scanCard}/>
       :activeCard
-        ?<CardDetail card={activeCard} shellVariant={shellVariant} onBack={()=>setActiveCard(null)} isInWatchlist={isInWatchlist(activeCard)} onToggleWatchlist={()=>requestRemove(activeCard)} onCreateAlert={()=>flash("Alerta creada. Te avisamos cuando el precio cruce el umbral.")}/>
+        ?<CardDetail card={activeCard} shellVariant={shellVariant} onBack={()=>setActiveCard(null)} isInWatchlist={isInWatchlist(activeCard)} onToggleWatchlist={()=>requestRemove(activeCard)} onCreateAlert={()=>flash("Alerta creada. Te avisamos cuando el precio cruce el umbral.")} onPublish={openPublish}/>
         :<>
-          <TopBar variant="home" rightCount={2}/>
-          {tab==="home"&&<HomeScreen shellVariant={shellVariant} watchlist={watchlist} trendingCards={trendingCards} catalog={catalog} onOpenCard={openCard} onScan={()=>setScanning(true)}/>}
+          <TopBar variant="home" rightCount={unreadCount} onNotifications={()=>setNotifsOpen(true)}/>
+          {tab==="home"&&<HomeScreen shellVariant={shellVariant} watchlist={watchlist} trendingCards={trendingCards} catalog={catalog} onOpenCard={openCard} onScan={()=>setScanning(true)} user={user} onOpenAuth={()=>setAuthOpen(true)}/>}
           {tab==="search"&&<SearchScreen shellVariant={shellVariant} onOpenCard={openCard} onScan={()=>setScanning(true)}/>}
-          {tab==="ops"&&<OpsScreen catalog={catalog} onPublish={()=>flash("Redirigiendo al wizard…")} onOpenCard={openCard}/>}
-          {tab==="profile"&&<ProfileScreen/>}
+          {tab==="ops"&&<OpsScreen catalog={catalog} listings={listings} onOpenPublish={openPublish} onOpenCard={openCard} onPauseToggle={pauseToggle}/>}
+          {tab==="profile"&&<ProfileScreen user={user} onOpenAuth={()=>setAuthOpen(true)} onLogout={handleLogout}/>}
         </>}
     {!inSubScreen&&<BottomNav active={tab} onChange={setTab}/>}
     <Toast message={toast} visible={!!toast}/>
     <Modal open={!!confirmRemove} onClose={()=>setConfirmRemove(null)} title="Retirar de watchlist" primaryLabel="Retirar" primaryVariant="danger" onPrimary={confirmRemoveYes} summary={confirmRemove?`${confirmRemove.name} · ${confirmRemove.set}`:null}>
-      Dejarás de recibir alertas de esta carta. Podés volver a agregarla cuando quieras.
+      Dejarás de recibir alertas de esta carta. Puedes volver a agregarla cuando quieras.
     </Modal>
   </>;
 }
