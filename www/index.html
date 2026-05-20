@@ -64,6 +64,14 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg-pag
 @keyframes sheetIn { from { opacity: 0; transform: translateY(60%); } to { opacity: 1; transform: translateY(0); } }
 @keyframes modalIn { from { opacity: 0; transform: scale(.96) translateY(8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
 @keyframes shimmer { 0% { background-position: -600px 0; } 100% { background-position: 600px 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
 </style>
 </head>
 <body>
@@ -274,7 +282,7 @@ function PhoneFrame({ children, dark=false, time="9:41" }) {
 
 // ─── TOP BAR ─────────────────────────────────────────────────────────────────
 function TopBar({ variant="home", title, onBack, right, rightCount, onNotifications, dark, toggleDark }) {
-  return <div style={{ height:52, padding:"0 12px", display:"flex", alignItems:"center", gap:8, borderBottom:"1px solid var(--border)", background:"var(--bg-primary)", color:"var(--text-primary)", flexShrink:0 }}>
+  return <header style={{ height:52, padding:"0 12px", display:"flex", alignItems:"center", gap:8, borderBottom:"1px solid var(--border)", background:"var(--bg-primary)", color:"var(--text-primary)", flexShrink:0 }}>
     {variant==="back" ? <button onClick={onBack} style={iconBtn()} aria-label="Volver"><i className="ph ph-arrow-left" style={{fontSize:22}}/></button>
       : <div style={{display:"flex",alignItems:"center",gap:8,padding:"0 4px"}}>
           <div style={{width:28,height:28,borderRadius:6,background:"var(--interactive)",display:"flex",alignItems:"center",justifyContent:"center"}}>
@@ -294,18 +302,18 @@ function TopBar({ variant="home", title, onBack, right, rightCount, onNotificati
         {rightCount>0&&<span style={{position:"absolute",top:6,right:6,width:8,height:8,borderRadius:"50%",background:"var(--danger)"}}/>}
       </button>
     </div>}
-  </div>;
+  </header>;
 }
 
 // ─── BOTTOM NAV ──────────────────────────────────────────────────────────────
 function BottomNav({ active="home", onChange }) {
   const tabs = [{id:"home",label:"Inicio",icon:"ph-house"},{id:"search",label:"Buscar",icon:"ph-magnifying-glass"},{id:"ops",label:"Operaciones",icon:"ph-list-bullets"},{id:"profile",label:"Perfil",icon:"ph-user"}];
-  return <div style={{ height:64, background:"var(--bg-primary)", borderTop:"1px solid var(--border)", display:"grid", gridTemplateColumns:"repeat(4,1fr)", flexShrink:0 }}>
+  return <nav aria-label="Navegación principal" style={{ height:64, background:"var(--bg-primary)", borderTop:"1px solid var(--border)", display:"grid", gridTemplateColumns:"repeat(4,1fr)", flexShrink:0 }}>
     {tabs.map(t=>{const isActive=active===t.id; return <button key={t.id} onClick={()=>onChange?.(t.id)} style={{ border:"none", background:"transparent", color:isActive?"var(--interactive)":"var(--text-muted)", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:2, cursor:"pointer", padding:"8px 4px", fontFamily:"'IBM Plex Sans',sans-serif" }}>
       <i className={"ph "+(isActive?"ph-fill ph-"+t.icon.replace("ph-",""):t.icon)} style={{fontSize:22}}/>
       <span style={{fontSize:10,fontWeight:isActive?500:400}}>{t.label}</span>
     </button>;})}
-  </div>;
+  </nav>;
 }
 
 // ─── TCG CARD ────────────────────────────────────────────────────────────────
@@ -440,7 +448,7 @@ function Modal({ open, onClose, title, summary, children, primaryLabel, onPrimar
     <div onClick={e=>e.stopPropagation()} style={{width:"100%",maxWidth:360,background:"var(--bg-primary)",color:"var(--text-primary)",borderRadius:16,overflow:"hidden",boxShadow:"0 8px 32px rgba(0,0,0,.12)",animation:"modalIn 300ms ease-in-out both"}}>
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"18px 20px 6px"}}>
         <div style={{fontSize:17,fontWeight:500}}>{title}</div>
-        <button onClick={onClose} style={{width:32,height:32,borderRadius:8,border:"none",background:"transparent",color:"var(--text-secondary)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><i className="ph ph-x" style={{fontSize:18}}/></button>
+        <button onClick={onClose} aria-label="Cerrar" style={{width:32,height:32,borderRadius:8,border:"none",background:"transparent",color:"var(--text-secondary)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><i className="ph ph-x" style={{fontSize:18}}/></button>
       </div>
       <div style={{padding:"4px 20px 14px",fontSize:13.5,color:"var(--text-secondary)",lineHeight:1.55}}>
         {children}
@@ -465,9 +473,9 @@ function SearchBar({ value, onChange, onFilter }) {
     <label style={{flex:1,display:"flex",alignItems:"center",gap:8,height:40,padding:"0 14px",background:"var(--bg-secondary)",borderRadius:8}}>
       <i className="ph ph-magnifying-glass" style={{fontSize:18,color:"var(--text-muted)"}}/>
       <input value={value||""} onChange={e=>onChange?.(e.target.value)} placeholder="Busca una carta o set" style={{flex:1,border:"none",background:"transparent",outline:"none",fontSize:14,color:"var(--text-primary)",fontFamily:"'IBM Plex Sans',sans-serif"}}/>
-      {value&&<button onClick={()=>onChange?.("")} style={{background:"transparent",border:"none",color:"var(--text-muted)",cursor:"pointer",padding:0}}><i className="ph ph-x-circle" style={{fontSize:16}}/></button>}
+      {value&&<button onClick={()=>onChange?.("")} aria-label="Limpiar búsqueda" style={{background:"transparent",border:"none",color:"var(--text-muted)",cursor:"pointer",padding:0}}><i className="ph ph-x-circle" style={{fontSize:16}}/></button>}
     </label>
-    <button onClick={onFilter} style={{width:40,height:40,borderRadius:8,background:"transparent",border:"1px solid var(--border)",color:"var(--text-primary)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
+    <button onClick={onFilter} aria-label="Filtros" style={{width:40,height:40,borderRadius:8,background:"transparent",border:"1px solid var(--border)",color:"var(--text-primary)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
       <i className="ph ph-funnel" style={{fontSize:20}}/>
     </button>
   </div>;
@@ -509,7 +517,7 @@ function AuthModal({ open, onClose, onLogin }) {
               <button key={k} onClick={()=>{setTab(k);setError("");}} style={{padding:"6px 14px",border:tab===k?"1px solid var(--border)":"1px solid transparent",background:tab===k?"var(--bg-primary)":"transparent",color:tab===k?"var(--text-primary)":"var(--text-secondary)",fontWeight:500,fontSize:13,borderRadius:4,cursor:"pointer",fontFamily:"'IBM Plex Sans',sans-serif"}}>{label}</button>
             ))}
           </div>
-          <button onClick={onClose} style={{width:32,height:32,borderRadius:8,border:"none",background:"transparent",color:"var(--text-secondary)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><i className="ph ph-x" style={{fontSize:18}}/></button>
+          <button onClick={onClose} aria-label="Cerrar" style={{width:32,height:32,borderRadius:8,border:"none",background:"transparent",color:"var(--text-secondary)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><i className="ph ph-x" style={{fontSize:18}}/></button>
         </div>
         {tab==="register"&&(
           <div style={{marginBottom:12}}>
@@ -525,7 +533,7 @@ function AuthModal({ open, onClose, onLogin }) {
           <label style={{fontSize:12,fontWeight:500,color:"var(--text-secondary)",display:"block",marginBottom:4}}>Contraseña</label>
           <div style={{position:"relative"}}>
             <input type={showPw?"text":"password"} value={password} onChange={e=>setPassword(e.target.value)} placeholder="Mínimo 6 caracteres" style={{width:"100%",height:44,padding:"0 40px 0 14px",border:"1px solid var(--border)",borderRadius:8,fontSize:14,color:"var(--text-primary)",background:"var(--bg-secondary)",outline:"none",fontFamily:"'IBM Plex Sans',sans-serif",boxSizing:"border-box"}}/>
-            <button onClick={()=>setShowPw(v=>!v)} style={{position:"absolute",right:12,top:"50%",transform:"translateY(-50%)",background:"transparent",border:"none",cursor:"pointer",color:"var(--text-muted)",padding:0}}><i className={`ph ${showPw?"ph-eye-slash":"ph-eye"}`} style={{fontSize:18}}/></button>
+            <button onClick={()=>setShowPw(v=>!v)} aria-label={showPw?"Ocultar contraseña":"Mostrar contraseña"} style={{position:"absolute",right:12,top:"50%",transform:"translateY(-50%)",background:"transparent",border:"none",cursor:"pointer",color:"var(--text-muted)",padding:0}}><i className={`ph ${showPw?"ph-eye-slash":"ph-eye"}`} style={{fontSize:18}}/></button>
           </div>
         </div>
         {error&&<div style={{marginBottom:14,padding:"10px 12px",background:"var(--red-10)",border:"1px solid var(--red-20)",borderRadius:8,color:"var(--red-60)",fontSize:13}}>{error}</div>}
@@ -554,7 +562,7 @@ function NotificationsPanel({ open, onClose, notifs, onMarkAll, onMarkOne }) {
           </div>
           <div style={{display:"flex",gap:8,alignItems:"center"}}>
             {unread>0&&<button onClick={onMarkAll} style={{...linkBtn,fontSize:13}}>Marcar todas</button>}
-            <button onClick={onClose} style={{width:32,height:32,borderRadius:8,border:"none",background:"transparent",color:"var(--text-secondary)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><i className="ph ph-x" style={{fontSize:18}}/></button>
+            <button onClick={onClose} aria-label="Cerrar notificaciones" style={{width:32,height:32,borderRadius:8,border:"none",background:"transparent",color:"var(--text-secondary)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><i className="ph ph-x" style={{fontSize:18}}/></button>
           </div>
         </div>
         <div style={{overflowY:"auto",flex:1,padding:"8px 0 32px"}}>
@@ -830,8 +838,8 @@ function ScanScreen({ onClose, onResult, onPublish, scanCard }) {
         {scanning&&<div style={{position:"absolute",left:0,right:0,height:2,background:"#6AAAD8",boxShadow:"0 0 12px #6AAAD8",animation:"scanLine 2s ease-in-out infinite",top:12}}/>}
       </div>
       <div style={{position:"absolute",top:20,left:14,right:14,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-        <button onClick={onClose} style={{width:40,height:40,borderRadius:20,background:"rgba(0,0,0,.4)",border:"1px solid rgba(255,255,255,.15)",color:"#F0EFEC",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><i className="ph ph-x" style={{fontSize:20}}/></button>
-        <button style={{width:40,height:40,borderRadius:20,background:"rgba(0,0,0,.4)",border:"1px solid rgba(255,255,255,.15)",color:"#F0EFEC",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><i className="ph ph-lightning" style={{fontSize:20}}/></button>
+        <button onClick={onClose} aria-label="Cerrar escáner" style={{width:40,height:40,borderRadius:20,background:"rgba(0,0,0,.4)",border:"1px solid rgba(255,255,255,.15)",color:"#F0EFEC",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><i className="ph ph-x" style={{fontSize:20}}/></button>
+        <button aria-label="Activar flash" style={{width:40,height:40,borderRadius:20,background:"rgba(0,0,0,.4)",border:"1px solid rgba(255,255,255,.15)",color:"#F0EFEC",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}><i className="ph ph-lightning" style={{fontSize:20}}/></button>
       </div>
       <div style={{position:"absolute",bottom:110,left:0,right:0,textAlign:"center",color:"#F0EFEC",fontFamily:"'IBM Plex Sans',sans-serif"}}>
         {scanning?<><div style={{fontSize:14,fontWeight:500,marginBottom:4}}>Enmarca la carta</div><div style={{fontSize:12,color:"#9B9892"}}>Reconocimiento automático en curso…</div></>
@@ -1144,7 +1152,7 @@ function PublishWizard({ open, onClose, onPublish, preCard=null, user }) {
               {[1,2].map(s=><div key={s} style={{height:3,flex:1,borderRadius:2,background:s<=step?"var(--interactive)":"var(--bg-secondary)",transition:"background 200ms ease-out"}}/>)}
             </div>
           </div>
-          <button onClick={onClose} style={{width:32,height:32,border:"none",background:"transparent",cursor:"pointer",color:"var(--text-secondary)",display:"flex",alignItems:"center",justifyContent:"center",padding:0}}><i className="ph ph-x" style={{fontSize:20}}/></button>
+          <button onClick={onClose} aria-label="Cerrar" style={{width:32,height:32,border:"none",background:"transparent",cursor:"pointer",color:"var(--text-secondary)",display:"flex",alignItems:"center",justifyContent:"center",padding:0}}><i className="ph ph-x" style={{fontSize:20}}/></button>
         </div>
 
         {/* Body */}
@@ -1343,10 +1351,12 @@ function MainApp({ shellVariant="A", dark=false, toggleDark }) {
         ?<CardDetail card={activeCard} shellVariant={shellVariant} onBack={()=>setActiveCard(null)} isInWatchlist={isInWatchlist(activeCard)} onToggleWatchlist={()=>requestRemove(activeCard)} onCreateAlert={()=>flash("Alerta creada. Te avisamos cuando el precio cruce el umbral.")} onPublish={openPublish}/>
         :<>
           <TopBar variant="home" rightCount={unreadCount} onNotifications={()=>setNotifsOpen(true)} dark={dark} toggleDark={toggleDark}/>
-          {tab==="home"&&<HomeScreen shellVariant={shellVariant} watchlist={watchlist} trendingCards={trendingCards} catalog={catalog} onOpenCard={openCard} onScan={()=>setScanning(true)} user={user} onOpenAuth={()=>setAuthOpen(true)}/>}
-          {tab==="search"&&<SearchScreen shellVariant={shellVariant} onOpenCard={openCard} onScan={()=>setScanning(true)}/>}
-          {tab==="ops"&&<OpsScreen catalog={catalog} listings={listings} onOpenPublish={openPublish} onOpenCard={openCard} onPauseToggle={pauseToggle}/>}
-          {tab==="profile"&&<ProfileScreen user={user} onOpenAuth={()=>setAuthOpen(true)} onLogout={handleLogout} dark={dark} toggleDark={toggleDark}/>}
+          <main style={{flex:1,overflow:"hidden",display:"flex",flexDirection:"column"}}>
+            {tab==="home"&&<HomeScreen shellVariant={shellVariant} watchlist={watchlist} trendingCards={trendingCards} catalog={catalog} onOpenCard={openCard} onScan={()=>setScanning(true)} user={user} onOpenAuth={()=>setAuthOpen(true)}/>}
+            {tab==="search"&&<SearchScreen shellVariant={shellVariant} onOpenCard={openCard} onScan={()=>setScanning(true)}/>}
+            {tab==="ops"&&<OpsScreen catalog={catalog} listings={listings} onOpenPublish={openPublish} onOpenCard={openCard} onPauseToggle={pauseToggle}/>}
+            {tab==="profile"&&<ProfileScreen user={user} onOpenAuth={()=>setAuthOpen(true)} onLogout={handleLogout} dark={dark} toggleDark={toggleDark}/>}
+          </main>
         </>}
     {!inSubScreen&&<BottomNav active={tab} onChange={setTab}/>}
     <Toast message={toast} visible={!!toast}/>
